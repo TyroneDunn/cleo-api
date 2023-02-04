@@ -1,0 +1,17 @@
+{
+  "name": "cleo",
+  "version": "2.0.0",
+  "description": "A journal.",
+  "main": "cleo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "journal;"
+  ],
+  "author": "Tyrone B. Dunn",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
