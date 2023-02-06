@@ -9,6 +9,10 @@ export class CleoServer {
             res.send('Good day.');
         });
         
+        app.get('/journals/', (req, res) => {
+            res.send('Journals. Stub.');
+        });
+
         app.listen(port, () => {
             console.log("Cleo here. I'm listening on port " + port);
         });
