@@ -1,11 +1,4 @@
-const express = require('express');
-const app = express();
+const { CleoServer } = require('./cleo-server/cleo-server');
 const port = 5011;
 
-app.get('/', (req, res) => {
-    res.send('Good day.');
-});
-
-app.listen(port, () => {
-    console.log("Cleo here. I'm listening on port " + port);
-});
+const server = new CleoServer(port);
