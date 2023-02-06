@@ -1,7 +1,7 @@
+import { JournalsBuilder } from "./journals-builder/journals-builder.js";
+
 export class JournalsRepository {
-    journals = []
-    
     getJournals() {
-        return journals;
+        return new JournalsBuilder().buildJournals();
     }
 };
