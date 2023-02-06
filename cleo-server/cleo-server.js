@@ -1,8 +1,10 @@
 import express  from 'express';
+import bodyParser from 'body-parser';
 import { createHandler } from '../request-handler/request-handler-factory.js';
 import { JournalsRepository } from '../journals-repository/journals-repository.js';
 
 const app = express();
+app.use(bodyParser.json())
 
 export class CleoServer {
     constructor(port, journalsRepository) {
@@ -16,6 +18,13 @@ export class CleoServer {
                 dir: 'Journals.',
                 journals: journalsRepository.getJournals(),
             });
+        });
+
+        app.post('/journals/', (req, res) => {
+            const name = req.body.name;
+            console.log(name);
+            journalsRepository.createJournal(name);
+            res.json(req.body);
         });
 
         app.listen(port, () => {
