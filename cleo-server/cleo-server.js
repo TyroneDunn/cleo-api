@@ -1,7 +1,9 @@
-const express = require('express');
+import express  from 'express';
+import { createHandler } from '../request-handler/request-handler-factory.js';
+
 const app = express();
 
-class CleoServer {
+export class CleoServer {
     constructor(port) {
         app.get('/', (req, res) => {
             res.send('Good day.');
@@ -12,5 +14,3 @@ class CleoServer {
         });
     }
 };
-
-module.exports.CleoServer = CleoServer;
