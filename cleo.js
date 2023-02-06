@@ -1,4 +1,4 @@
 const { CleoServer } = require('./cleo-server/cleo-server');
-const port = 5011;
+const PORT = 5011;
 
-const server = new CleoServer(port);
+const server = new CleoServer(PORT);
