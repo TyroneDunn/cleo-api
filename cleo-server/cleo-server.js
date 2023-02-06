@@ -1,19 +1,20 @@
 import express  from 'express';
 import { createHandler } from '../request-handler/request-handler-factory.js';
+import { JournalsRepository } from '../journals-repository/journals-repository.js';
 
 const app = express();
 
 export class CleoServer {
-    constructor(port) {
+    constructor(port, journalsRepository) {
         app.get('/', (req, res) => {
             res.send('Good day.');
         });
-        
+
         app.get('/journals/', (req, res) => {
             // res.send('Journals. Stub.');
             res.json({
                 dir: 'Journals.',
-                journals: []
+                journals: journalsRepository.getJournals(),
             });
         });
 
