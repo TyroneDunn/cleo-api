@@ -10,7 +10,11 @@ export class CleoServer {
         });
         
         app.get('/journals/', (req, res) => {
-            res.send('Journals. Stub.');
+            // res.send('Journals. Stub.');
+            res.json({
+                dir: 'Journals.',
+                journals: []
+            });
         });
 
         app.listen(port, () => {
