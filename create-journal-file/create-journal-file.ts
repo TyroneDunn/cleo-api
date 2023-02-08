@@ -1,9 +1,9 @@
-import fs from 'fs';
-import { v4 as uuid } from 'uuid';
-import { Journal } from '../journal/journal.js';
+const fs = require('fs');
+const v4 = require('uuid');
+const  Journal = require('../journal/journal.ts');
 
 function getUniqueJournalID() {
-    return uuid();
+    return v4();
 };
 
 function getUniqueJournal(name) {
