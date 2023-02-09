@@ -23,7 +23,6 @@ export class CleoAPI {
 
         app.post('/journals/', async (req, res) => {
             const name = req.body.name;
-            console.log(name);
             await journalsRepository.createJournal(name);
             res.json(req.body);
         });
