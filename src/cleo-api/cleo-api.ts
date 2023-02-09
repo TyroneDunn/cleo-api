@@ -21,6 +21,13 @@ export class CleoAPI {
             res.json(journals);
         });
 
+        app.get('/journals/', async (req, res) => {
+            const journal = await journalsRepository.getJournal(req.query.id.toString());
+            console.log('Get Journal API: ', journal);
+            res.json(journal);
+        });
+
+
         app.post('/journals/', async (req, res) => {
             const name = req.body.name;
             await journalsRepository.createJournal(name);
