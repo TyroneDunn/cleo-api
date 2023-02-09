@@ -1,16 +1,21 @@
-import { createJournalFile } from "../create-journal-file/create-journal-file";
-import { Journal } from "../journal/journal";
-import { JournalRepository } from "./journal-repository";
-import { JournalsBuilder } from "./journals-builder/journals-builder";
+import {createJournalFile} from "../create-journal-file/create-journal-file";
+import {Journal} from "../journal/journal";
+import {JournalRepository} from "./journal-repository";
+import {JournalsBuilder} from "./journals-builder/journals-builder";
 
 export class JournalsFileRepository implements JournalRepository {
     journalPath = '/home/dunnt/Documents/cleo-data/journals/';
 
     async getJournals(): Promise<Journal[]> {
-        const journalsWrapper = new JournalsBuilder().buildJournals(this.journalPath);
-        console.log('JR Wrapper Return Test: ' + journalsWrapper);
-        return journalsWrapper;
+        return new JournalsBuilder().buildJournals(this.journalPath);
     };
+
+    getJournal(id: string): Promise<Journal> {
+        return new JournalsBuilder().buildJournals(this.journalPath)
+            .filter((journal) => {
+                return journal.id === id;
+            });
+    }
 
     async createJournal(name: string): Promise<void> {
         return Promise.resolve(createJournalFile({path: this.journalPath, name: name}));

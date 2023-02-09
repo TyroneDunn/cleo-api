@@ -18,12 +18,11 @@ export class CleoAPI {
         app.get('/journals/', async (req, res) => {
             try {
                 const idQuery = req.query.id.toString();
-                console.log('Get Journal ID API: ', idQuery);
-                res.json({"id": "stub return"});
+                const journal = await journalsRepository.getJournal(idQuery);
+                res.json(journal);
             }
             catch (e) {
                 const journals = await journalsRepository.getJournals();
-                console.log('Is this it?: ' + journals);
                 res.json(journals);
             }
         });
