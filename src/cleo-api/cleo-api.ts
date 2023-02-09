@@ -1,4 +1,4 @@
-import { JournalRepository } from "../journals-repository/journal-repository";
+import { JournalRepository } from "../journal-repository/journal-repository";
 
 import bodyParser = require("body-parser");
 import express = require("express");
