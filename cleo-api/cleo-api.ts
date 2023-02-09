@@ -1,14 +1,16 @@
-// import express  from 'express';
-const express = require('express');
-const bodyParser = require('body-parser');
-import { createHandler } from '../request-handler/request-handler-factory.js';
-import { JournalsFileRepository } from '../journals-repository/journals-repository.ts';
+import { JournalRepository } from "../journals-repository/journal-repository";
+
+import express from 'express';
+import bodyParser from 'body-parser';
 
 const app = express();
 app.use(bodyParser.json())
 
 export class CleoAPI {
-    constructor(port, journalsRepository) {
+    port: number;
+    constructor(port: number, journalsRepository: JournalRepository) {
+        this.port = port;
+        
         app.get('/', (req, res) => {
             res.send('Good day.');
         });
@@ -28,8 +30,12 @@ export class CleoAPI {
             res.json(req.body);
         });
 
-        app.listen(port, () => {
-            console.log("Cleo here. I'm listening on port " + port);
+        
+    };
+
+    run() {
+        app.listen(this.port, () => {
+            console.log("Cleo here. I'm listening on port " + this.port);
         });
-    }
+    };
 };
