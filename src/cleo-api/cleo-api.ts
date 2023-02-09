@@ -10,7 +10,15 @@ export class CleoAPI {
     port: number;
     constructor(port: number, journalsRepository: JournalRepository) {
         this.port = port;
-        
+
+        app.delete('/journals/', (req, res) => {
+            res.send("Delete Called.");
+            const id = req.query.id;
+            journalsRepository.deleteJournal(id.toString());
+            console.log('API delete: ', id);
+            // res.json(req.body);
+        });
+
         app.get('/', (req, res) => {
             res.send('Good day.');
         });

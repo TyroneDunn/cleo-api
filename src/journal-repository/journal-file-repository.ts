@@ -4,6 +4,9 @@ import {JournalRepository} from "./journal-repository";
 import {JournalsBuilder} from "./journals-builder/journals-builder";
 
 export class JournalsFileRepository implements JournalRepository {
+    deleteJournal(id: string): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
     journalPath = '/home/dunnt/Documents/cleo-data/journals/';
 
     async getJournals(): Promise<Journal[]> {
