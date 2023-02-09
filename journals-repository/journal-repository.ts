@@ -11,12 +11,13 @@ export class JournalsFileRepository implements JournalRepository{
         return journalsWrapper;
     };
 
-    async createJournal(name): Promise<void> {
+    async createJournal(name: string): Promise<void> {
         return Promise.resolve(createJournalFile({path: this.journalPath, name: name}));
     };
 };
 
 
-interface JournalRepository {
-    getJournals(): Promise<Journal[]>
-}
+export interface JournalRepository {
+    getJournals(): Promise<Journal[]>;
+    createJournal(name: string): Promise<void>;
+};

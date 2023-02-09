@@ -1,19 +1,28 @@
 const fs = require('fs');
-const v4 = require('uuid');
-const  Journal = require('../journal/journal.ts');
+import { v4 as uuid } from "uuid";
+import { Journal } from "../journal/journal";
 
 function getUniqueJournalID() {
-    return v4();
+    return uuid();
 };
 
-function getUniqueJournal(name) {
-    return new Journal(getUniqueJournalID(), name);
+function getUniqueJournal(name: string): Journal {
+    const journal = {"id": getUniqueJournalID(), "name": name};
+    return journal;
 };
 
-export function createJournalFile(args) {
+export function createJournalFile(args: CreateJournalFileArgs) {
     console.log("create journal stub.");
     const journal = getUniqueJournal(args.name);
+
+    console.log(journal);
+
     const ws = fs.createWriteStream(args.path + journal.id + '.cleo');
     ws.write(JSON.stringify(journal));
     ws.end();
 };
+
+export type CreateJournalFileArgs = {
+    name: string,
+    path: string,
+}
