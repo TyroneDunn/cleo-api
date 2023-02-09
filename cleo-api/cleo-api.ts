@@ -16,11 +16,9 @@ export class CleoAPI {
         });
 
         app.get('/journals/', async (req, res) => {
-            // res.send('Journals. Stub.');
             const journals = await journalsRepository.getJournals();
             console.log('Is this it?: ' + journals);
             res.json(journals);
-            // res.send(journals);
         });
 
         app.post('/journals/', async (req, res) => {
