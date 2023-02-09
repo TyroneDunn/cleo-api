@@ -1,10 +1,10 @@
 import { JournalRepository } from "../journals-repository/journal-repository";
 
-import express from 'express';
-import bodyParser from 'body-parser';
+import bodyParser = require("body-parser");
+import express = require("express");
 
 const app = express();
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 export class CleoAPI {
     port: number;
@@ -27,8 +27,6 @@ export class CleoAPI {
             await journalsRepository.createJournal(name);
             res.json(req.body);
         });
-
-        
     };
 
     run() {
@@ -36,4 +34,4 @@ export class CleoAPI {
             console.log("Cleo here. I'm listening on port " + this.port);
         });
     };
-};
+}
