@@ -2,7 +2,7 @@ const readJournalsFromDisk = require('../../read-journals-from-disk/read-journal
 
 export class JournalsBuilder {
     buildJournals(journalPath) {
-        const journalsWrapper = readJournalsFromDisk(journalPath);
+        const journalsWrapper = readJournalsFromDisk.readJournalsFromDisk(journalPath);
         console.log('Wrapper Return Test: ' + journalsWrapper);
         return journalsWrapper;
     };
