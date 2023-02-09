@@ -3,7 +3,7 @@ import { Journal } from "../journal/journal";
 import { JournalRepository } from "./journal-repository";
 import { JournalsBuilder } from "./journals-builder/journals-builder";
 
-export class JournalsFileRepository implements JournalRepository{
+export class JournalsFileRepository implements JournalRepository {
     journalPath = '/home/dunnt/Documents/cleo-data/journals/';
 
     async getJournals(): Promise<Journal[]> {
@@ -15,4 +15,4 @@ export class JournalsFileRepository implements JournalRepository{
     async createJournal(name: string): Promise<void> {
         return Promise.resolve(createJournalFile({path: this.journalPath, name: name}));
     };
-};
+}
