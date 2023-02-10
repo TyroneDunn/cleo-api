@@ -13,23 +13,23 @@ export class JournalsFileRepository implements JournalRepository {
         return new Promise<Journal[]>((resolve, reject) => {
             fs.readdir(this.journalPath, (err, files) => {
                 if (err) {
-                    return reject();
+                    reject();
                 } else {
-                    const fileData: Journal[] =
+                    const journals: Journal[] =
                         files.filter((file) => {
                             return (file !== '');
-                        }).map((filePath) => {
+                        }).map((filePath): Journal => {
+                            let journalData;
                             fs.readFile(this.journalPath+filePath,(err, data) => {
                                 if (err) {
                                     console.log('Error Reading Data from File Path: ', filePath, err);
                                 } else {
-                                    return data.toString();
+                                    journalData = JSON.parse(data.toString());
                                 }
                             });
-                            const jsonString = fs.readFileSync(this.journalPath + filePath).toString();
-                            return JSON.parse(jsonString);
+                            return journalData;
                         });
-                    return resolve(fileData);
+                    resolve(journals);
                 }
             })
         });
