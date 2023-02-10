@@ -1,49 +1,61 @@
 import { JournalRepository } from "../journal-repository/journal-repository";
-
 import bodyParser = require("body-parser");
 import express = require("express");
 
-const app = express();
-app.use(bodyParser.json());
+
 
 export class CleoAPI {
-    port: number;
+    private app = express();
+    private readonly port: number;
     constructor(port: number, journalsRepository: JournalRepository) {
+        this.app.use(bodyParser.json());
         this.port = port;
 
-        app.delete('/journals/', (req, res) => {
-            res.send("Delete Called.");
-            const id = req.query.id;
-            journalsRepository.deleteJournal(id.toString());
-            console.log('API delete: ', id);
-            // res.json(req.body);
-        });
-
-        app.get('/', (req, res) => {
+        this.app.get('/', (req, res) => {
             res.send('Good day.');
         });
 
-        app.get('/journals/', async (req, res) => {
+        this.app.get('/journals/', async (req, res) => {
             try {
-                const idQuery = req.query.id.toString();
-                const journal = await journalsRepository.getJournal(idQuery);
-                res.json(journal);
+                const id = req.query.id.toString();
+                journalsRepository.getJournal(id).then((journal) => {
+                    res.json(journal);
+                }).catch(() => {
+                    res.sendStatus(400);
+                });
             }
             catch (e) {
-                const journals = await journalsRepository.getJournals();
-                res.json(journals);
+                journalsRepository.getJournals()
+                    .then(journals => {
+                        res.json(journals);
+                    }).catch(() => {
+                        res.sendStatus(500);
+                });
             }
         });
 
-        app.post('/journals/', async (req, res) => {
-            const name = req.body.name;
-            await journalsRepository.createJournal(name);
-            res.json(req.body);
+        this.app.post('/journals/', async (req, res) => {
+            const name = req.body.name.toString();
+            journalsRepository.createJournal(name).then(() => {
+                res.sendStatus(200);
+            }).catch(() => {
+                res.sendStatus(500);
+            });
+        });
+
+        this.app.delete('/journals/', (req, res) => {
+            const id = req.query.id.toString();
+            journalsRepository.deleteJournal(id)
+                .then(() => {
+                    res.sendStatus(200);
+                }).catch(() => {
+                    res.sendStatus(500);
+            });
         });
     };
 
     run() {
-        app.listen(this.port, () => {
+        this.app.listen(this.port, () => {
             console.log("Cleo here. I'm listening on port " + this.port);
         });
     };
