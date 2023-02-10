@@ -1,4 +1,5 @@
 export type JournalEntryKey = {
-    entryid: string,
+    id: string,
     journalid: string,
+    entryid: string,
 }
