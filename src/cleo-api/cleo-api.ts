@@ -47,7 +47,7 @@ export class CleoAPI {
                 .then(() => {
                     res.sendStatus(200);
                 }).catch(() => {
-                    res.sendStatus(500);
+                    res.sendStatus(400);
             });
         });
     };
