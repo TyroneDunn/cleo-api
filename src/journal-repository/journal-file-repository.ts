@@ -88,12 +88,12 @@ export class JournalsFileRepository implements JournalRepository {
 
     private createNewJournal(name: string): Journal {
         return {
-            "id": this.getUniqueJournalID(),
+            "id": this.getUUID(),
             "name": name
         };
     }
 
-    private getUniqueJournalID(): string {
+    private getUUID(): string {
         return uuid();
     }
 
