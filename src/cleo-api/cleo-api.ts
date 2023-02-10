@@ -2,8 +2,6 @@ import { JournalRepository } from "../journal-repository/journal-repository";
 import bodyParser = require("body-parser");
 import express = require("express");
 
-
-
 export class CleoAPI {
     private app = express();
     private readonly port: number;
