@@ -69,7 +69,8 @@ export class JournalsFileRepository implements JournalRepository {
 
     async createJournal(name: string): Promise<void> {
         const journal = this.createNewJournal(name);
-        return this.writeJournalToFile(journal);
+        await this.writeJournalToFile(journal);
+        return Promise.resolve();
     }
 
     private writeJournalToFile(journal: Journal): Promise<void> {
