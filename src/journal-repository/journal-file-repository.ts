@@ -10,9 +10,6 @@ export class JournalsFileRepository implements JournalRepository {
     journalEntriesPath = '/home/dunnt/Documents/cleo-data/journal-entries/';
 
     async getJournals(): Promise<Journal[]> {
-        return this.readJournalsFromDisk();
-    };
-    private readJournalsFromDisk(): Promise<Journal[]> {
         return new Promise<Journal[]>((resolve, reject) => {
             this.getFilesFromDirectory(this.journalPath).then(journalFiles => {
                 this.getJournalsFromJournalFiles(journalFiles).then((journals => {
@@ -58,7 +55,7 @@ export class JournalsFileRepository implements JournalRepository {
 
     async getJournal(id: string): Promise<Journal[]> {
         return new Promise<Journal[]>((resolve, reject) => {
-            this.readJournalsFromDisk().then((journals) => {
+            this.getJournals().then((journals) => {
                 const journal = journals.filter((journal) => {
                     return journal.id === id;
                 });
