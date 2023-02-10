@@ -62,7 +62,17 @@ export class CleoAPI {
             } catch (e) {
                 res.sendStatus(400);
             }
-        })
+        });
+
+        this.app.post('/entries/', (req, res) => {
+            const body = req.body.body.toString();
+            const journalID = req.body.journalid.toString();
+            journalsRepository.createEntry(journalID, body).then(() => {
+                res.sendStatus(200);
+            }).catch(() => {
+                res.sendStatus(500);
+            });
+        });
     };
 
     run() {
