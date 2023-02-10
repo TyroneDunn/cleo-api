@@ -51,7 +51,7 @@ export class CleoAPI {
             });
         });
 
-        this.app.get('/entry/', (req, res) => {
+        this.app.get('/entries/', (req, res) => {
             try {
                 const id = req.query.id.toString();
                 journalsRepository.getEntry(id).then((entry) => {
