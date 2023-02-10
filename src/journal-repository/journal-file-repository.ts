@@ -1,6 +1,7 @@
 import {Journal} from "../journal/journal";
 import {JournalRepository} from "./journal-repository";
 import * as fs from "fs";
+import {readFile} from "fs";
 import {v4 as uuid} from "uuid";
 
 export class JournalsFileRepository implements JournalRepository {
@@ -8,31 +9,50 @@ export class JournalsFileRepository implements JournalRepository {
     async getJournals(): Promise<Journal[]> {
         return this.readJournalsFromDisk();
     };
-
     private readJournalsFromDisk(): Promise<Journal[]> {
         return new Promise<Journal[]>((resolve, reject) => {
+            this.getJournalFilesFromJournalDirectory().then(journalFiles => {
+                this.getJournalsFromJournalFiles(journalFiles).then((journals => {
+                    resolve(journals);
+                })).catch(() => {
+                    reject();
+                })
+            }).catch(() => {
+                reject();
+            })
+        })
+    }
+
+    private getJournalFilesFromJournalDirectory(): Promise<string[]> {
+        return new Promise<string[]>((resolve, reject) => {
             fs.readdir(this.journalPath, (err, files) => {
                 if (err) {
                     reject();
                 } else {
-                    const journals: Journal[] =
+                    const journalPaths: string[] =
                         files.filter((file) => {
                             return (file !== '');
-                        }).map((filePath): Journal => {
-                            let journalData;
-                            fs.readFile(this.journalPath+filePath,(err, data) => {
-                                if (err) {
-                                    console.log('Error Reading Data from File Path: ', filePath, err);
-                                } else {
-                                    journalData = JSON.parse(data.toString());
-                                }
-                            });
-                            return journalData;
                         });
-                    resolve(journals);
+                    resolve(journalPaths);
                 }
             })
         });
+    }
+
+    private getJournalsFromJournalFiles(journalFiles: string[]): Promise<Journal[]> {
+        return new Promise<Journal[]>((resolve, reject) => {
+            const journals: Journal[] = journalFiles.map((journalFilePath): Journal => {
+                let journalData: string;
+                readFile(this.journalPath+journalFilePath,(err, data) => {
+                    if (err)
+                        reject();
+                    else
+                        journalData = JSON.stringify(data.toString());
+                })
+                return {id: JSON.parse(journalData).id, name: JSON.parse(journalData).name};
+            })
+            resolve(journals);
+        })
     }
 
     async getJournal(id: string): Promise<Journal[]> {
