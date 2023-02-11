@@ -11,17 +11,8 @@ export class JournalsFileRepository implements JournalRepository {
     private journalEntryKeysPath = '/home/dunnt/Documents/cleo-data/journal-entry-keys/';
 
     async getJournals(): Promise<Journal[]> {
-        return new Promise<Journal[]>((resolve, reject) => {
-            this.getFilesFromDirectory(this.journalPath).then(journalFiles => {
-                this.getJournalsFromJournalFiles(journalFiles).then((journals => {
-                    resolve(journals);
-                })).catch(() => {
-                    reject();
-                })
-            }).catch(() => {
-                reject();
-            })
-        });
+        const filePaths = await this.getFilesFromDirectory(this.journalPath);
+        return this.getJournalsFromJournalFiles(filePaths);
     };
 
     private getJournalsFromJournalFiles(journalFilePaths: string[]): Promise<Journal[]> {
