@@ -51,26 +51,20 @@ export class CleoAPI {
             });
         });
 
-        this.app.get('/entries/', (req, res) => {
+        this.app.get('/entries/', async (req, res) => {
             try {
-                const entryid = req.query.id.toString();
+                const entryid = req.query.entryid.toString();
                 const journalid = req.query.journalid.toString();
-                journalsRepository.getEntry(journalid, entryid).then(entry => {
-                    res.json(entry);
-                }).catch(() => {
-                    res.sendStatus(400);
-                })
+                const entry = await journalsRepository.getEntry(journalid, entryid);
+                res.json(entry);
             } catch (e) {
                 console.log('high level fail');
                 try {
                     const journalid = req.query.journalid.toString();
-                    journalsRepository.getEntries(journalid).then(entries => {
-                        res.json(entries);
-                    }).catch(() => {
-                        res.sendStatus(400);
-                    })
+                    const entries = await journalsRepository.getEntries(journalid);
+                    res.json(entries);
                 } catch (e) {
-                   res.sendStatus(400);
+                    res.sendStatus(400);
                 }
             }
         });
