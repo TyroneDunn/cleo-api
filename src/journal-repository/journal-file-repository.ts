@@ -26,9 +26,13 @@ export class JournalsFileRepository implements JournalRepository {
     };
 
     private getJournalsFromJournalFiles(journalFilePaths: string[]): Promise<Journal[]> {
+        function getDataFromFile(filePath: string): string {
+            return readFileSync(filePath).toString();
+        }
+
         return new Promise<Journal[]>((resolve) => {
             const journalsData: string[] = journalFilePaths.map(journalFilePath => {
-                return readFileSync(this.journalPath+journalFilePath).toString();
+                return getDataFromFile(this.journalPath+journalFilePath);
             });
             const journals: Journal[] = journalsData.map(data => {
                 return {id: JSON.parse(data).id, name: JSON.parse(data).name};
