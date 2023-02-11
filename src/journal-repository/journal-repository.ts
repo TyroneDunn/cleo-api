@@ -6,7 +6,7 @@ export interface JournalRepository {
     getJournal(id: string): Promise<Journal[]>;
     createJournal(name: string): Promise<void>;
     deleteJournal(id: string): Promise<void>;
-    getEntry(journalid: string, id: string): Promise<JournalEntry[]>;
-    getEntries(journalid: string): Promise<JournalEntry[]>;
+    getEntry(journalid: string, entryID: string): Promise<JournalEntry[]>;
+    getEntries(journalID: string): Promise<JournalEntry[]>;
     createEntry(journalID: string, body: string): Promise<void>;
 }
