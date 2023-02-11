@@ -1,10 +1,9 @@
 import {Journal} from "../journal/journal";
 import {JournalEntry} from "../journal/journal-entry";
 import {JournalRepository} from "./journal-repository";
-import * as fs from "fs";
-import {readFileSync} from "fs";
 import {v4 as uuid} from "uuid";
 import {JournalEntryKey} from "../journal/journal-entry-key";
+import * as fs from "fs";
 
 export class JournalsFileRepository implements JournalRepository {
     private journalPath = '/home/dunnt/Documents/cleo-data/journals/';
