@@ -68,7 +68,10 @@ export class JournalsFileRepository implements JournalRepository {
     }
 
     async createJournal(name: string): Promise<void> {
-        const journal = this.createNewJournal(name);
+        const journal = {
+            "id": this.getUUID(),
+            "name": name
+        };
         await this.writeJournalToFile(journal);
         return Promise.resolve();
     }
@@ -85,14 +88,6 @@ export class JournalsFileRepository implements JournalRepository {
             }
         });
     }
-
-    private createNewJournal(name: string): Journal {
-        return {
-            "id": this.getUUID(),
-            "name": name
-        };
-    }
-
     private getUUID(): string {
         return uuid();
     }
