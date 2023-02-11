@@ -124,7 +124,7 @@ export class JournalsFileRepository implements JournalRepository {
         return new Promise<string[]>((resolve, reject) => {
             fs.readdir(path, (err, files) => {
                 if (err) {
-                    reject();
+                    reject(err);
                 } else {
                     const journalPaths: string[] =
                         files.filter((file) => {
