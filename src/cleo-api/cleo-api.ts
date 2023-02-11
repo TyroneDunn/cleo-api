@@ -58,7 +58,6 @@ export class CleoAPI {
                 const entry = await journalsRepository.getEntry(journalid, entryid);
                 res.json(entry);
             } catch (e) {
-                console.log('high level fail');
                 try {
                     const journalid = req.query.journalid.toString();
                     const entries = await journalsRepository.getEntries(journalid);
