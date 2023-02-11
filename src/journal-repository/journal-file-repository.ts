@@ -65,15 +65,12 @@ export class JournalsFileRepository implements JournalRepository {
     }
 
     async deleteJournal(id: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            fs.unlink(this.journalPath+id+'.cleo', (err) => {
-                if (err) {
-                    reject();
-                } else {
-                    resolve();
-                }
-            })
-        });
+        fs.unlink(this.journalPath+id+'.cleo', (err) => {
+        if (err)
+            return Promise.reject(err);
+        else
+            return Promise.resolve();
+        })
     }
 
     getEntry(journalid: string, id: string): Promise<JournalEntry[]> {
