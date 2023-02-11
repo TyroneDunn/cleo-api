@@ -51,16 +51,14 @@ export class JournalsFileRepository implements JournalRepository {
     }
 
     private writeJournalToFile(journal: Journal): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            try {
-                const ws = fs.createWriteStream(this.journalPath + journal.id + '.cleo');
-                ws.write(JSON.stringify(journal));
-                ws.end();
-                resolve();
-            } catch (err) {
-                reject();
-            }
-        });
+        try {
+            const ws = fs.createWriteStream(this.journalPath + journal.id + '.cleo');
+            ws.write(JSON.stringify(journal));
+            ws.end();
+            return Promise.resolve();
+        } catch (err) {
+            return Promise.reject(err);
+        }
     }
     private getUUID(): string {
         return uuid();
