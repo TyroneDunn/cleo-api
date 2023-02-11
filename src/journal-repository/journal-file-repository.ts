@@ -74,18 +74,14 @@ export class JournalsFileRepository implements JournalRepository {
     }
 
     getEntry(journalid: string, id: string): Promise<JournalEntry[]> {
-        return new Promise<JournalEntry[]>((resolve, reject) => {
-            this.getEntries(journalid).then((entries) => {
-                const entry = entries.filter((entry) => {
-                    return entry.id === id;
-                });
-                if (!entry.length)
-                    reject();
-                else
-                    resolve(entry);
-            }).catch(() => {
-                reject();
-            })
+        return new Promise<JournalEntry[]>(async (resolve, reject) => {
+            try {
+                const entries = await this.getEntries(journalid);
+                const entry = entries.filter(entry => { return entry.id === id; });
+                resolve(entry);
+            } catch (e) {
+                reject(e);
+            }
         });
     }
 
