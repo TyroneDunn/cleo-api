@@ -53,14 +53,25 @@ export class CleoAPI {
 
         this.app.get('/entries/', (req, res) => {
             try {
-                const id = req.query.id.toString();
-                journalsRepository.getEntry(id).then((entry) => {
+                const entryid = req.query.id.toString();
+                const journalid = req.query.journalid.toString();
+                journalsRepository.getEntry(journalid, entryid).then(entry => {
                     res.json(entry);
                 }).catch(() => {
                     res.sendStatus(400);
                 })
             } catch (e) {
-                res.sendStatus(400);
+                console.log('high level fail');
+                try {
+                    const journalid = req.query.journalid.toString();
+                    journalsRepository.getEntries(journalid).then(entries => {
+                        res.json(entries);
+                    }).catch(() => {
+                        res.sendStatus(400);
+                    })
+                } catch (e) {
+                   res.sendStatus(400);
+                }
             }
         });
 
