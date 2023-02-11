@@ -86,27 +86,28 @@ export class JournalsFileRepository implements JournalRepository {
     }
 
     async getEntries(journalid: string): Promise<JournalEntry[]> {
-       return new Promise<JournalEntry[]>((resolve, reject) => {
-           this.journalExists(journalid).then((journalExists) => {
-               if (journalExists) {
-                   this.getFilesFromDirectory(this.journalEntryKeysPath).then(journalEntryKeyFiles => {
-                       this.getJournalEntriesKeysFromJournalEntryKeyFiles(journalEntryKeyFiles).then(journalEntryKeys => {
-                           const filteredJournalEntryKeys = journalEntryKeys.filter(key => {
-                               if (key.journalid === journalid)
-                                   return key;
-                           });
-                           const entries: JournalEntry[] = filteredJournalEntryKeys.map(key => {
-                              return this.getJournalEntryFromFile(key.entryid);
-                           });
-
-                           resolve(entries);
-                       }).catch(() => { reject(); })
-                   })
+        return new Promise<JournalEntry[]>(async (resolve, reject) => {
+            const journalExists = await this.journalExists(journalid);
+            if (journalExists) {
+                try {
+                   const journalEntryKeyFiles = await this.getFilesFromDirectory(this.journalEntryKeysPath);
+                   const journalEntryKeys = await this.getJournalEntriesKeysFromJournalEntryKeyFiles(journalEntryKeyFiles);
+                   const filteredJournalEntryKeys = journalEntryKeys
+                       .filter(key => {
+                           if (key.journalid === journalid)
+                               return key;
+                       });
+                   const entries: JournalEntry[] = filteredJournalEntryKeys
+                       .map(key => {
+                           return this.getJournalEntryFromFile(key.entryid);
+                       });
+                   resolve(entries);
+               } catch (e) {
+                   reject(e);
                }
-               else {
-                   reject();
-               }
-           })
+           } else {
+               reject();
+           }
        });
     }
 
