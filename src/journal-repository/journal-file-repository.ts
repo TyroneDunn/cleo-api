@@ -18,7 +18,7 @@ export class JournalsFileRepository implements JournalRepository {
     private getJournalsFromJournalFiles(journalFilePaths: string[]): Promise<Journal[]> {
         return new Promise<Journal[]>((resolve) => {
             const journalsData: string[] = journalFilePaths.map(journalFilePath => {
-                return readFileSync(this.journalPath+journalFilePath).toString();
+                return fs.readFileSync(this.journalPath+journalFilePath).toString();
             });
             const journals: Journal[] = journalsData.map(data => {
                 return {id: JSON.parse(data).id, name: JSON.parse(data).name};
@@ -120,8 +120,7 @@ export class JournalsFileRepository implements JournalRepository {
     }
 
     private getJournalEntryFromFile(entryid: string): JournalEntry {
-        const data = readFileSync(this.journalEntriesPath+entryid+'.cleo').toString();
-        console.log('entry data: ', data);
+        const data = fs.readFileSync(this.journalEntriesPath+entryid+'.cleo').toString();
         return {
             id: JSON.parse(data).id,
             body: JSON.parse(data).body,
@@ -147,9 +146,10 @@ export class JournalsFileRepository implements JournalRepository {
 
     private getJournalEntriesKeysFromJournalEntryKeyFiles(journalEntryKeyFiles: string[]): Promise<JournalEntryKey[]> {
         return new Promise<JournalEntryKey[]>((resolve) => {
-            const journalEntryKeysData: string[] = journalEntryKeyFiles.map(filePath => {
-                return readFileSync(this.journalEntryKeysPath+filePath).toString();
-            });
+            const journalEntryKeysData: string[] = journalEntryKeyFiles
+                .map(filePath => {
+                    return fs.readFileSync(this.journalEntryKeysPath+filePath).toString();
+                });
 
             const keys: JournalEntryKey[] = journalEntryKeysData.map(data => {
                 return {
@@ -158,7 +158,6 @@ export class JournalsFileRepository implements JournalRepository {
                     journalid: JSON.parse(data).journalid,
                 }
             });
-
             resolve(keys);
         });
     }
