@@ -1,5 +1,5 @@
-import { Journal } from "../journal/journal";
-import {JournalEntry} from "../journal/journal-entry";
+import { Journal } from "../entities/journal/journal";
+import {JournalEntry} from "../entities/journal/journal-entry";
 
 export interface JournalRepository {
     getJournals(): Promise<Journal[]>;

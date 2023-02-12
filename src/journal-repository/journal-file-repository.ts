@@ -1,8 +1,8 @@
-import {Journal} from "../journal/journal";
-import {JournalEntry} from "../journal/journal-entry";
+import {Journal} from "../entities/journal/journal";
+import {JournalEntry} from "../entities/journal/journal-entry";
 import {JournalRepository} from "./journal-repository";
 import {v4 as uuid} from "uuid";
-import {JournalEntryKey} from "../journal/journal-entry-key";
+import {JournalEntryKey} from "../entities/journal/journal-entry-key";
 import * as fs from "fs";
 
 export class JournalsFileRepository implements JournalRepository {
@@ -14,16 +14,30 @@ export class JournalsFileRepository implements JournalRepository {
         return this.getJournalsFromJournalFiles(await this.getFilesFromDirectory(this.journalsPath));
     };
 
-    private getJournalsFromJournalFiles(journalFilePaths: string[]): Promise<Journal[]> {
-        return new Promise<Journal[]>((resolve) => {
-            const journalsData: string[] = journalFilePaths.map(journalFilePath => {
-                return fs.readFileSync(this.journalsPath+journalFilePath).toString();
-            });
-            const journals: Journal[] = journalsData.map(data => {
-                return {id: JSON.parse(data).id, name: JSON.parse(data).name};
-            });
-            resolve(journals);
-        });
+    private async getJournalsFromJournalFiles(journalFilePaths: string[]): Promise<Journal[]> {
+        return new Promise<Journal[]>(async (resolve, reject) => {
+            try {
+                const journalsData: string[] = await this.getJournalsDataFromJournalsFiles(journalFilePaths);
+                const journals: Journal[] = journalsData
+                    .map(data => {
+                        return {id: JSON.parse(data).id, name: JSON.parse(data).name};
+                    });
+                resolve(journals);
+            } catch (e) {
+                reject(e);
+            }
+        })
+    }
+
+    private getJournalsDataFromJournalsFiles(journalFilePaths: string[]): Promise<string[]> {
+        return new Promise<string[]>((resolve, reject) => {
+            try {
+                const journalsData: string[] = journalFilePaths.map(journalFilePath => {
+                    return fs.readFileSync(this.journalsPath+journalFilePath).toString();
+                });
+                resolve(journalsData);
+            } catch (e) { reject(e); }
+        })
     }
 
     async getJournal(id: string): Promise<Journal[]> {
@@ -217,6 +231,12 @@ export class JournalsFileRepository implements JournalRepository {
                 reject();
             }
         });
+    }
+
+    deleteEntry(journalID: string, entryID: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+
+        })
     }
 }
 
