@@ -41,14 +41,14 @@ export class CleoAPI {
             });
         });
 
-        this.app.delete('/journals/', (req, res) => {
-            const id = req.query.id.toString();
-            journalsRepository.deleteJournal(id)
-                .then(() => {
-                    res.sendStatus(200);
-                }).catch(() => {
-                    res.sendStatus(400);
-            });
+        this.app.delete('/journals/', async (req, res) => {
+            try {
+                const id = req.query.id.toString();
+                await journalsRepository.deleteJournal(id);
+                res.sendStatus(200);
+            } catch (e) {
+                res.sendStatus(400);
+            }
         });
 
         this.app.get('/entries/', async (req, res) => {
