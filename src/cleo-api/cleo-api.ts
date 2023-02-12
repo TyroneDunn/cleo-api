@@ -33,12 +33,17 @@ export class CleoAPI {
         });
 
         this.app.post('/journals/', async (req, res) => {
-            const name = req.body.name.toString();
-            journalsRepository.createJournal(name).then(() => {
-                res.sendStatus(200);
-            }).catch(() => {
-                res.sendStatus(500);
-            });
+            try {
+                const name = req.body.name.toString();
+                try {
+                    await journalsRepository.createJournal(name);
+                    res.sendStatus(200);
+                } catch (e) {
+                    res.sendStatus(500);
+                }
+            } catch (e) {
+                res.sendStatus(400);
+            }
         });
 
         this.app.delete('/journals/', async (req, res) => {
