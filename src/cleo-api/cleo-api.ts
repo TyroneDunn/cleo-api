@@ -77,6 +77,17 @@ export class CleoAPI {
                 res.sendStatus(400);
             });
         });
+
+        this.app.delete('/entries/', async (req, res) => {
+            try {
+                const journalID = req.query.journalid.toString();
+                const entryID = req.query.entryid.toString();
+                await journalsRepository.deleteEntry(journalID, entryID);
+                res.sendStatus(200);
+            } catch (e) {
+                res.sendStatus(400);
+            }
+        })
     };
 
     run() {
