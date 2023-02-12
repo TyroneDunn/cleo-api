@@ -104,8 +104,12 @@ export class CleoAPI {
             try {
                 const journalID = req.query.journalid.toString();
                 const entryID = req.query.entryid.toString();
-                await journalsRepository.deleteEntry(journalID, entryID);
-                res.sendStatus(200);
+                try {
+                    await journalsRepository.deleteEntry(journalID, entryID);
+                    res.sendStatus(200);
+                } catch (e) {
+                    res.sendStatus(500);
+                }
             } catch (e) {
                 res.sendStatus(400);
             }
