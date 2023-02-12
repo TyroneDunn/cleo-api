@@ -9,4 +9,5 @@ export interface JournalRepository {
     getEntry(journalid: string, entryID: string): Promise<JournalEntry[]>;
     getEntries(journalID: string): Promise<JournalEntry[]>;
     createEntry(journalID: string, body: string): Promise<void>;
+    deleteEntry(journalID: string, entryID: string): Promise<void>;
 }
