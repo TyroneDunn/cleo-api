@@ -85,14 +85,19 @@ export class CleoAPI {
             }
         });
 
-        this.app.post('/entries/', (req, res) => {
-            const body = req.body.body.toString();
-            const journalID = req.body.journalid.toString();
-            journalsRepository.createEntry(journalID, body).then(() => {
-                res.sendStatus(200);
-            }).catch(() => {
+        this.app.post('/entries/', async (req, res) => {
+            try {
+                const body = req.body.body.toString();
+                const journalID = req.body.journalid.toString();
+                try {
+                    await journalsRepository.createEntry(journalID, body);
+                    res.sendStatus(200);
+                } catch (e) {
+                    res.sendStatus(500);
+                }
+            } catch (e) {
                 res.sendStatus(400);
-            });
+            }
         });
 
         this.app.delete('/entries/', async (req, res) => {
