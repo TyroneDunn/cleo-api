@@ -16,19 +16,19 @@ export class CleoAPI {
         this.app.get('/journals/', async (req, res) => {
             try {
                 const id = req.query.id.toString();
-                journalsRepository.getJournal(id).then((journal) => {
+                try {
+                    const journal = await journalsRepository.getJournal(id);
                     res.json(journal);
-                }).catch(() => {
+                } catch (e) {
                     res.sendStatus(400);
-                });
-            }
-            catch (e) {
-                journalsRepository.getJournals()
-                    .then(journals => {
-                        res.json(journals);
-                    }).catch(() => {
-                        res.sendStatus(500);
-                });
+                }
+            } catch (e) {
+                try {
+                    const journals = await journalsRepository.getJournals();
+                    res.json(journals);
+                } catch (e) {
+                    res.sendStatus(400);
+                }
             }
         });
 
