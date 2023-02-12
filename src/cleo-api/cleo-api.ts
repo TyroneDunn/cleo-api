@@ -49,8 +49,12 @@ export class CleoAPI {
         this.app.delete('/journals/', async (req, res) => {
             try {
                 const id = req.query.id.toString();
-                await journalsRepository.deleteJournal(id);
-                res.sendStatus(200);
+                try {
+                    await journalsRepository.deleteJournal(id);
+                    res.sendStatus(200);
+                } catch (e) {
+                    res.sendStatus(500);
+                }
             } catch (e) {
                 res.sendStatus(400);
             }
