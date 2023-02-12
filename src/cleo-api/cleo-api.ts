@@ -20,14 +20,14 @@ export class CleoAPI {
                     const journal = await journalsRepository.getJournal(id);
                     res.json(journal);
                 } catch (e) {
-                    res.sendStatus(400);
+                    res.sendStatus(404);
                 }
             } catch (e) {
                 try {
                     const journals = await journalsRepository.getJournals();
                     res.json(journals);
                 } catch (e) {
-                    res.sendStatus(400);
+                    res.sendStatus(500);
                 }
             }
         });
