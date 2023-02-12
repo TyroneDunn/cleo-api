@@ -64,13 +64,21 @@ export class CleoAPI {
             try {
                 const entryid = req.query.entryid.toString();
                 const journalid = req.query.journalid.toString();
-                const entry = await journalsRepository.getEntry(journalid, entryid);
-                res.json(entry);
+                try {
+                    const entry = await journalsRepository.getEntry(journalid, entryid);
+                    res.json(entry);
+                } catch (e) {
+                    res.sendStatus(500);
+                }
             } catch (e) {
                 try {
                     const journalid = req.query.journalid.toString();
-                    const entries = await journalsRepository.getEntries(journalid);
-                    res.json(entries);
+                    try {
+                        const entries = await journalsRepository.getEntries(journalid);
+                        res.json(entries);
+                    } catch (e) {
+                        res.sendStatus(500);
+                    }
                 } catch (e) {
                     res.sendStatus(400);
                 }
