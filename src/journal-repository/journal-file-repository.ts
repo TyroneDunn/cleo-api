@@ -6,19 +6,18 @@ import {JournalEntryKey} from "../journal/journal-entry-key";
 import * as fs from "fs";
 
 export class JournalsFileRepository implements JournalRepository {
-    private journalPath = '/home/dunnt/Documents/cleo-data/journals/';
+    private journalsPath = '/home/dunnt/Documents/cleo-data/journals/';
     private journalEntriesPath = '/home/dunnt/Documents/cleo-data/journal-entries/';
     private journalEntryKeysPath = '/home/dunnt/Documents/cleo-data/journal-entry-keys/';
 
     async getJournals(): Promise<Journal[]> {
-        const filePaths = await this.getFilesFromDirectory(this.journalPath);
-        return this.getJournalsFromJournalFiles(filePaths);
+        return this.getJournalsFromJournalFiles(await this.getFilesFromDirectory(this.journalsPath));
     };
 
     private getJournalsFromJournalFiles(journalFilePaths: string[]): Promise<Journal[]> {
         return new Promise<Journal[]>((resolve) => {
             const journalsData: string[] = journalFilePaths.map(journalFilePath => {
-                return fs.readFileSync(this.journalPath+journalFilePath).toString();
+                return fs.readFileSync(this.journalsPath+journalFilePath).toString();
             });
             const journals: Journal[] = journalsData.map(data => {
                 return {id: JSON.parse(data).id, name: JSON.parse(data).name};
@@ -52,7 +51,7 @@ export class JournalsFileRepository implements JournalRepository {
 
     private writeJournalToFile(journal: Journal): Promise<void> {
         try {
-            const ws = fs.createWriteStream(this.journalPath + journal.id + '.cleo');
+            const ws = fs.createWriteStream(this.journalsPath + journal.id + '.cleo');
             ws.write(JSON.stringify(journal));
             ws.end();
             return Promise.resolve();
@@ -65,7 +64,7 @@ export class JournalsFileRepository implements JournalRepository {
     }
 
     async deleteJournal(id: string): Promise<void> {
-        fs.unlink(this.journalPath+id+'.cleo', (err) => {
+        fs.unlink(this.journalsPath+id+'.cleo', (err) => {
         if (err)
             return Promise.reject(err);
         else
