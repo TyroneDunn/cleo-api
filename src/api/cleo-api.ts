@@ -21,7 +21,7 @@ export class CleoAPI {
         else
             res.status(HTTP_STATUS_UNAUTHORIZED).json('Not logged in.');
     };
-    private readonly authRouter: RequestHandler = new AuthRoute(this.userRepository, this.authenticateUserMiddleware, this.authGuard).router;
+    private readonly authRouter: RequestHandler;
     private readonly journalsRouter: RequestHandler = new JournalRoute(this.journalRepository).router;
     private readonly journalEntriesRouter: RequestHandler = new JournalEntriesRoute(this.journalEntryRepository, this.journalRepository).router;
     public constructor(
@@ -38,6 +38,12 @@ export class CleoAPI {
         this.app.use(sessionMiddleware);
         this.app.use(passport.initialize());
         this.app.use(passport.session());
+
+        this.authRouter = new AuthRoute(
+            this.userRepository,
+            this.authenticateUserMiddleware,
+            this.authGuard)
+            .router;
 
         this.app.get('/', this.homeRoute);
         this.app.use('/auth/', this.authRouter);
