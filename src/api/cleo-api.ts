@@ -29,9 +29,7 @@ export class CleoAPI {
         private readonly journalRepository: JournalRepository,
         private readonly journalEntryRepository: JournalEntryRepository
     ) {
-        this.configureServerApplication(corsOptions);
-
-        this.authenticateUserMiddleware = passport.authenticate('local')
+        this.authenticateUserMiddleware = passport.authenticate('local');
         this.authRouter =
             new AuthRoute(
                 this.userRepository,
@@ -44,7 +42,8 @@ export class CleoAPI {
                 this.journalEntryRepository,
                 this.journalRepository
             ).router;
-        this.configureRoutes();
+        
+        this.configureServerApplication(corsOptions);
     };
 
     private configureServerApplication(corsOptions) {
@@ -54,6 +53,7 @@ export class CleoAPI {
         this.app.use(this.sessionMiddleware);
         this.app.use(passport.initialize());
         this.app.use(passport.session());
+        this.configureRoutes();
     }
 
     private configureRoutes() {
