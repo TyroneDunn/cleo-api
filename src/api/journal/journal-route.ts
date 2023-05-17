@@ -13,7 +13,6 @@ import {Journal} from "./journal.type"
 
 export class JournalRoute {
     public readonly router: Router = Router();
-    private readonly subSink: SubSink = new SubSink();
     constructor(private journalRepository: JournalRepository) {
         this.router.get('/:id', this.journal$);
         this.router.get('/', this.journals$);
@@ -35,16 +34,14 @@ export class JournalRoute {
             return;
         }
         
-        this.subSink.collect(
-            this.journalRepository.journal$(id).subscribe((journal: Journal) => {
-                if (!journal) {
-                    res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${id} not found.`);
-                    return;
-                }
+        this.journalRepository.journal$(id).subscribe((journal: Journal) => {
+            if (!journal) {
+                res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${id} not found.`);
+                return;
+            }
 
-                res.json(journal);
-            })
-        );
+            res.json(journal);
+        })
     }
 
     private journals$: RequestHandler = async (req, res) => {
