@@ -34,9 +34,17 @@ export class JournalRoute {
             res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${id} not found.`);
             return;
         }
+        
+        this.subSink.collect(
+            this.journalRepository.journal$(id).subscribe((journal: Journal) => {
+                if (!journal) {
+                    res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${id} not found.`);
+                    return;
+                }
 
-        const journal = await this.journalRepository.getJournal(id);
-        res.json(journal);
+                res.json(journal);
+            })
+        );
     }
 
     private journals$: RequestHandler = async (req, res) => {
