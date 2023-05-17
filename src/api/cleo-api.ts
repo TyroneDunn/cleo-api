@@ -18,7 +18,7 @@ export class CleoAPI {
     private readonly authenticateUserMiddleware: RequestHandler;
     private readonly authRouter: RequestHandler;
     private readonly authGuard = authGuard
-    private readonly journalsRouter: RequestHandler = new JournalRoute(this.journalRepository).router;
+    private readonly journalsRouter: RequestHandler;
     private readonly journalEntriesRouter: RequestHandler = new JournalEntriesRoute(this.journalEntryRepository, this.journalRepository).router;
     public constructor(
         private port: number,
@@ -41,6 +41,7 @@ export class CleoAPI {
             this.authenticateUserMiddleware,
             this.authGuard)
             .router;
+        this.journalsRouter = new JournalRoute(this.journalRepository).router;
 
         this.app.get('/', this.homeRoute);
         this.app.use('/auth/', this.authRouter);
