@@ -1,4 +1,4 @@
-import {API_TITLE, HTTP_STATUS_UNAUTHORIZED} from "../utils/environment";
+import {API_TITLE} from "../utils/environment";
 import {Application, RequestHandler} from "express";
 import {AuthRoute} from "./user/auth-route";
 import {UserRepository} from "./user/user-repository.type";
@@ -11,17 +11,13 @@ import passport = require("passport");
 import {CorsOptions} from "cors";
 require("./passport/passport-config");
 const cors = require('cors');
+import authGuard from './user/auth-guard'
 
 export class CleoAPI {
     private readonly app: Application;
     private readonly authenticateUserMiddleware: RequestHandler;
-    private readonly authGuard: RequestHandler = (req, res, next) => {
-        if (req.isAuthenticated())
-            next();
-        else
-            res.status(HTTP_STATUS_UNAUTHORIZED).json('Unauthorized.');
-    };
     private readonly authRouter: RequestHandler;
+    private readonly authGuard = authGuard
     private readonly journalsRouter: RequestHandler = new JournalRoute(this.journalRepository).router;
     private readonly journalEntriesRouter: RequestHandler = new JournalEntriesRoute(this.journalEntryRepository, this.journalRepository).router;
     public constructor(
