@@ -22,7 +22,7 @@ export class JournalRoute {
     private journal$: RequestHandler = async (req, res) => {
         const id = req.params.id;
         if (!id) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Id required.`);
+            res.status(HTTP_STATUS_BAD_REQUEST).json(`ID required.`);
             return;
         }
 
