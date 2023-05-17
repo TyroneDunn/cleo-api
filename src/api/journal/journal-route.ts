@@ -9,6 +9,7 @@ import {RequestHandler, Router} from "express";
 import {JournalRepository} from "./journal-repository.type";
 import {User} from "../user/user.type";
 import {SubSink} from "../../utils/sub-sink"
+import {Journal} from "./journal.type"
 
 export class JournalRoute {
     public readonly router: Router = Router();
