@@ -19,7 +19,7 @@ export class CleoAPI {
     private readonly authRouter: RequestHandler;
     private readonly authGuard = authGuard
     private readonly journalsRouter: RequestHandler;
-    private readonly journalEntriesRouter: RequestHandler = new JournalEntriesRoute(this.journalEntryRepository, this.journalRepository).router;
+    private readonly journalEntriesRouter: RequestHandler;
     public constructor(
         private port: number,
         private sessionMiddleware: RequestHandler,
@@ -42,6 +42,9 @@ export class CleoAPI {
             this.authGuard)
             .router;
         this.journalsRouter = new JournalRoute(this.journalRepository).router;
+        this.journalEntriesRouter = 
+            new JournalEntriesRoute(this.journalEntryRepository, this.journalRepository)
+                .router;
 
         this.app.get('/', this.homeRoute);
         this.app.use('/auth/', this.authRouter);
