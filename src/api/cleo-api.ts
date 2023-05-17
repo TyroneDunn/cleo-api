@@ -24,7 +24,14 @@ export class CleoAPI {
     private readonly authRouter: RequestHandler = new AuthRoute(this.userRepository, this.authenticateUserMiddleware, this.authGuard).router;
     private readonly journalsRouter: RequestHandler = new JournalRoute(this.journalRepository).router;
     private readonly journalEntriesRouter: RequestHandler = new JournalEntriesRoute(this.journalEntryRepository, this.journalRepository).router;
-    constructor(private port: number, private sessionMiddleware: RequestHandler, corsOptions: CorsOptions, private userRepository: UserRepository, private journalRepository: JournalRepository, private journalEntryRepository: JournalEntryRepository) {
+    public constructor(
+        private port: number,
+        private sessionMiddleware: RequestHandler,
+        corsOptions: CorsOptions,
+        private userRepository: UserRepository,
+        private journalRepository: JournalRepository,
+        private journalEntryRepository: JournalEntryRepository
+    ) {
         this.app = express();
         this.app.use(express.json());
         this.app.use(cors(corsOptions));
