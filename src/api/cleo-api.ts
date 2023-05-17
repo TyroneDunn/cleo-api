@@ -14,12 +14,12 @@ const cors = require('cors');
 
 export class CleoAPI {
     private readonly app: Application;
-    private readonly authenticateUserMiddleware: RequestHandler = passport.authenticate('local');
+    private readonly authenticateUserMiddleware: RequestHandler;
     private readonly authGuard: RequestHandler = (req, res, next) => {
         if (req.isAuthenticated())
             next();
         else
-            res.status(HTTP_STATUS_UNAUTHORIZED).json('Not logged in.');
+            res.status(HTTP_STATUS_UNAUTHORIZED).json('Unauthorized.');
     };
     private readonly authRouter: RequestHandler;
     private readonly journalsRouter: RequestHandler = new JournalRoute(this.journalRepository).router;
@@ -39,6 +39,7 @@ export class CleoAPI {
         this.app.use(passport.initialize());
         this.app.use(passport.session());
 
+        this.authenticateUserMiddleware = passport.authenticate('local')
         this.authRouter = new AuthRoute(
             this.userRepository,
             this.authenticateUserMiddleware,
