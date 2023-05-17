@@ -49,7 +49,9 @@ export class CleoAPI {
         return res.send(API_TITLE || 'Cleo-Server:v.0.0.1');
     };
 
-    run() {
-        this.app.listen(this.port, () => { console.log(`${API_TITLE} \n\tport: ${this.port}`); });
+    public run() {
+        this.app.listen(this.port, () => {
+            console.log(`${API_TITLE} \n\tport: ${this.port}`);
+        });
     };
 }
