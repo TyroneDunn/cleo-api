@@ -14,7 +14,7 @@ export class JournalRoute {
     constructor(private journalRepository: JournalRepository) {
         this.router.get('/:id', this.journal$);
         this.router.get('/', this.journals$);
-        this.router.post('/', this.createJournal);
+        this.router.post('/', this.createJournal$);
         this.router.delete('/:id', this.deleteJournal);
         this.router.patch('/:id', this.updateJournal);
     }
@@ -41,7 +41,7 @@ export class JournalRoute {
         res.json(journals);
     };
 
-    private createJournal: RequestHandler = async (req, res) => {
+    private createJournal$: RequestHandler = async (req, res) => {
         const user = req.user as User;
         const journalName = req.body.name;
 
