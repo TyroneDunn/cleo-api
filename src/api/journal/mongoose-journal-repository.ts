@@ -2,8 +2,18 @@ import {JournalRepository} from "./journal-repository.type";
 import JournalModel, {JournalDocument} from './journal-model'
 import JournalEntryModel from "../journal-entry/journal-entry-model";
 import {now} from "mongoose";
+import {Observable, of} from "rxjs";
+import {Journal} from "./journal.type";
 
 export class MongooseJournalRepository implements JournalRepository {
+    journal$(id: string): Observable<Journal> {
+        return new Observable((subscriber) => {
+            JournalModel.findById(id).then((journal: Journal) => {
+                subscriber.next(journal);
+                subscriber.complete();
+            });
+        });
+    }
 
     async getJournal(id: string): Promise<JournalDocument> {
         return JournalModel.findById(id);
