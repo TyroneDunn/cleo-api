@@ -8,9 +8,11 @@ import {
 import {RequestHandler, Router} from "express";
 import {JournalRepository} from "./journal-repository.type";
 import {User} from "../user/user.type";
+import {SubSink} from "../../utils/sub-sink"
 
 export class JournalRoute {
     public readonly router: Router = Router();
+    private readonly subSink: SubSink = new SubSink();
     constructor(private journalRepository: JournalRepository) {
         this.router.get('/:id', this.journal$);
         this.router.get('/', this.journals$);
