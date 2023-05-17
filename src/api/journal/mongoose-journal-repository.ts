@@ -15,10 +15,6 @@ export class MongooseJournalRepository implements JournalRepository {
         });
     }
 
-    async getJournal(id: string): Promise<JournalDocument> {
-        return JournalModel.findById(id);
-    }
-
     async getJournals(userId: string): Promise<JournalDocument[]> {
         return JournalModel.find({author: userId});
     }
