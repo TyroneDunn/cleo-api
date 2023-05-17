@@ -15,7 +15,7 @@ export class JournalRoute {
         this.router.get('/:id', this.journal$);
         this.router.get('/', this.journals$);
         this.router.post('/', this.createJournal$);
-        this.router.delete('/:id', this.deleteJournal);
+        this.router.delete('/:id', this.deleteJournal$);
         this.router.patch('/:id', this.updateJournal);
     }
 
@@ -54,7 +54,7 @@ export class JournalRoute {
         res.status(HTTP_STATUS_CREATED).json(journal);
     };
 
-    private deleteJournal: RequestHandler = async (req, res) => {
+    private deleteJournal$: RequestHandler = async (req, res) => {
         const user = req.user as User;
         const journalId = req.params.id;
         const journalExists = await this.journalRepository.journalExists(journalId);
