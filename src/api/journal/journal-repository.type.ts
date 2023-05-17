@@ -2,7 +2,7 @@ import {Journal} from "./journal.type";
 import {Observable} from "rxjs";
 
 export interface JournalRepository {
-    getJournals(userId: string): Promise<Journal[]>;
+    journals$(userId: string): Observable<Journal[]>;
     journal$(id: string): Observable<Journal | undefined>;
     createJournal(userId: string, name: string): Promise<Journal>;
     deleteJournal(id: string): Promise<void>;
