@@ -12,14 +12,14 @@ import {User} from "../user/user.type";
 export class JournalRoute {
     public readonly router: Router = Router();
     constructor(private journalRepository: JournalRepository) {
-        this.router.get('/:id', this.getJournal);
+        this.router.get('/:id', this.journal$);
         this.router.get('/', this.getJournals);
         this.router.post('/', this.createJournal);
         this.router.delete('/:id', this.deleteJournal);
         this.router.patch('/:id', this.updateJournal);
     }
 
-    private getJournal: RequestHandler = async (req, res) => {
+    private journal$: RequestHandler = async (req, res) => {
         const id = req.params.id;
         if (!id) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Id required.`);
