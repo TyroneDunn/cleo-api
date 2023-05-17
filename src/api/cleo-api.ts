@@ -49,7 +49,10 @@ export class CleoAPI {
                 this.journalEntryRepository,
                 this.journalRepository
             ).router;
+        this.configureRoutes();
+    };
 
+    private configureRoutes() {
         this.app.get('/', this.homeRoute);
         this.app.use('/auth/', this.authRouter);
         this.app.use('/journals/', this.authGuard, this.journalsRouter);
@@ -58,7 +61,7 @@ export class CleoAPI {
             this.authGuard,
             this.journalEntriesRouter
         );
-    };
+    }
 
     private homeRoute(req, res): RequestHandler {
         return res.send(API_TITLE || 'Cleo-Server:v.1.2.0');
