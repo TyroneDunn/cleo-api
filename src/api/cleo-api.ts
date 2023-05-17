@@ -45,8 +45,8 @@ export class CleoAPI {
         this.app.use('/journal-entries/', this.authGuard, this.journalEntriesRouter);
     };
 
-    private readonly homeRoute: RequestHandler = (req, res) => {
-        res.send(API_TITLE || 'Cleo-Server:v.0.0.1');
+    private homeRoute(req, res): RequestHandler {
+        return res.send(API_TITLE || 'Cleo-Server:v.0.0.1');
     };
 
     run() {
