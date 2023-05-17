@@ -13,7 +13,7 @@ export class JournalRoute {
     public readonly router: Router = Router();
     constructor(private journalRepository: JournalRepository) {
         this.router.get('/:id', this.journal$);
-        this.router.get('/', this.getJournals);
+        this.router.get('/', this.journals$);
         this.router.post('/', this.createJournal);
         this.router.delete('/:id', this.deleteJournal);
         this.router.patch('/:id', this.updateJournal);
@@ -36,7 +36,7 @@ export class JournalRoute {
         res.json(journal);
     }
 
-    private getJournals: RequestHandler = async (req, res) => {
+    private journals$: RequestHandler = async (req, res) => {
         const journals = await this.journalRepository.getJournals((req.user as User).id);
         res.json(journals);
     };
