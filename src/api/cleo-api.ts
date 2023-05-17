@@ -21,12 +21,12 @@ export class CleoAPI {
     private readonly journalsRouter: RequestHandler;
     private readonly journalEntriesRouter: RequestHandler;
     public constructor(
-        private port: number,
-        private sessionMiddleware: RequestHandler,
+        private readonly port: number,
+        private readonly sessionMiddleware: RequestHandler,
         corsOptions: CorsOptions,
-        private userRepository: UserRepository,
-        private journalRepository: JournalRepository,
-        private journalEntryRepository: JournalEntryRepository
+        private readonly userRepository: UserRepository,
+        private readonly journalRepository: JournalRepository,
+        private readonly journalEntryRepository: JournalEntryRepository
     ) {
         this.app = express();
         this.app.use(express.json());
