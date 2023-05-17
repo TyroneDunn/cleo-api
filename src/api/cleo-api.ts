@@ -5,7 +5,8 @@ import {UserRepository} from "./user/user-repository.type";
 import {JournalRoute} from "./journal/journal-route";
 import {JournalRepository} from "./journal/journal-repository.type";
 import {JournalEntriesRoute} from "./journal-entry/journal-entries-route";
-import {JournalEntryRepository} from "./journal-entry/journal-entry-repository.type";
+import {JournalEntryRepository}
+    from "./journal-entry/journal-entry-repository.type";
 const express = require("express");
 import passport = require("passport");
 import {CorsOptions} from "cors";
@@ -36,20 +37,27 @@ export class CleoAPI {
         this.app.use(passport.session());
 
         this.authenticateUserMiddleware = passport.authenticate('local')
-        this.authRouter = new AuthRoute(
-            this.userRepository,
-            this.authenticateUserMiddleware,
-            this.authGuard)
-            .router;
+        this.authRouter =
+            new AuthRoute(
+                this.userRepository,
+                this.authenticateUserMiddleware,
+                this.authGuard
+            ).router;
         this.journalsRouter = new JournalRoute(this.journalRepository).router;
         this.journalEntriesRouter = 
-            new JournalEntriesRoute(this.journalEntryRepository, this.journalRepository)
-                .router;
+            new JournalEntriesRoute(
+                this.journalEntryRepository,
+                this.journalRepository
+            ).router;
 
         this.app.get('/', this.homeRoute);
         this.app.use('/auth/', this.authRouter);
         this.app.use('/journals/', this.authGuard, this.journalsRouter);
-        this.app.use('/journal-entries/', this.authGuard, this.journalEntriesRouter);
+        this.app.use(
+            '/journal-entries/',
+            this.authGuard,
+            this.journalEntriesRouter
+        );
     };
 
     private homeRoute(req, res): RequestHandler {
