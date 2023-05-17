@@ -16,7 +16,7 @@ export class JournalRoute {
         this.router.get('/', this.journals$);
         this.router.post('/', this.createJournal$);
         this.router.delete('/:id', this.deleteJournal$);
-        this.router.patch('/:id', this.updateJournal);
+        this.router.patch('/:id', this.updateJournal$);
     }
 
     private journal$: RequestHandler = async (req, res) => {
@@ -79,7 +79,7 @@ export class JournalRoute {
         res.status(HTTP_STATUS_OK).json(`Journal ${journalId} deleted.`);
     };
 
-    private updateJournal: RequestHandler = async (req, res) => {
+    private updateJournal$: RequestHandler = async (req, res) => {
         const user = req.user as User;
         const journalId = req.params.id;
         const journalName = req.body.name;
