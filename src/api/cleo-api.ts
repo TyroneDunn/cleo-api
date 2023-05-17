@@ -46,7 +46,7 @@ export class CleoAPI {
     };
 
     private homeRoute(req, res): RequestHandler {
-        return res.send(API_TITLE || 'Cleo-Server:v.0.0.1');
+        return res.send(API_TITLE || 'Cleo-Server:v.1.2.0');
     };
 
     public run() {
