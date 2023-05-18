@@ -8,7 +8,6 @@ import {
 import {RequestHandler, Router} from "express";
 import {JournalRepository} from "./journal-repository.type";
 import {User} from "../user/user.type";
-import {SubSink} from "../../utils/sub-sink"
 import {Journal} from "./journal.type"
 
 export class JournalRoute {
@@ -41,12 +40,14 @@ export class JournalRoute {
             }
 
             res.json(journal);
-        })
+        });
     }
 
     private journals$: RequestHandler = async (req, res) => {
-        const journals = await this.journalRepository.getJournals((req.user as User).id);
-        res.json(journals);
+        this.journalRepository.journals$((req.user as User).id)
+            .subscribe((journals: Journal[]) => {
+                res.json(journals);
+            });
     };
 
     private createJournal$: RequestHandler = async (req, res) => {
