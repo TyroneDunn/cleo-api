@@ -123,13 +123,21 @@ export class JournalRoute {
     }
 
      private async assertJournalOwnership(user: User, journalId: string): Promise<boolean> {
-        if (!journalId)
-            return false;
+        return new Promise<boolean>(async resolve => {
+            if (!journalId) {
+                resolve(false);
+                return;
+            }
 
-        if (!await this.journalRepository.journalExists(journalId))
-            return false;
+            if (!await this.journalRepository.journalExists(journalId)) {
+                resolve(false);
+                return;
+            }
 
-        const journal = await this.journalRepository.getJournal(journalId);
-        return (journal.author.toString() === user.id);
+            this.journalRepository.journal$(journalId)
+                .subscribe((journal) => {
+                    resolve(journal.author.toString() === user.id);
+                });
+        });
     }
 }
