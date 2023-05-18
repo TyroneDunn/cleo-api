@@ -32,10 +32,6 @@ export class MongooseJournalRepository implements JournalRepository {
         });
     }
 
-    async getJournals(userId: string): Promise<JournalDocument[]> {
-        return JournalModel.find({author: userId});
-    }
-
     async createJournal(userId: string, name: string): Promise<JournalDocument> {
         const journal = new JournalModel({
             name: name,
