@@ -15,6 +15,15 @@ export class MongooseJournalRepository implements JournalRepository {
         });
     }
 
+    public journals$(userId: string): Observable<Journal[]> {
+        return new Observable((subscriber) => {
+            JournalModel.find({author: userId}).then((journals: Journal[]) => {
+                subscriber.next(journals);
+                subscriber.complete();
+            });
+        });
+    }
+
     async getJournals(userId: string): Promise<JournalDocument[]> {
         return JournalModel.find({author: userId});
     }
