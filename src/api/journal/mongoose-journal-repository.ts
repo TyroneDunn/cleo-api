@@ -1,13 +1,21 @@
 import {JournalRepository} from "./journal-repository.type";
 import JournalModel, {JournalDocument} from './journal-model'
 import JournalEntryModel from "../journal-entry/journal-entry-model";
+const ObjectId = require('mongoose').Types.ObjectId;
 import {now} from "mongoose";
 import {Observable, of} from "rxjs";
 import {Journal} from "./journal.type";
+import {BadRequestError} from "../../utils/BadRequestError"
 
 export class MongooseJournalRepository implements JournalRepository {
-    public journal$(id: string): Observable<Journal> {
+    public journal$(id: string): Observable<Journal | undefined> {
         return new Observable((subscriber) => {
+            if (!ObjectId.isValid(id)) {
+                subscriber.next(undefined);
+                subscriber.complete();
+                return;
+            }
+            
             JournalModel.findById(id).then((journal: Journal) => {
                 subscriber.next(journal);
                 subscriber.complete();
