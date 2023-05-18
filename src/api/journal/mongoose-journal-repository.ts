@@ -47,10 +47,20 @@ export class MongooseJournalRepository implements JournalRepository {
         });
     }
 
-    async deleteJournal(id: string): Promise<void> {
-        const journal = await JournalModel.findById(id);
-        await this.deleteJournalEntries(id);
-        await journal.delete();
+    public deleteJournal$(id: string): Observable<boolean> {
+        return new Observable((subscriber) => {
+            JournalModel.findById(id).then((journal) => {
+                this.deleteJournalEntries(id).then(() => {
+                    journal.delete().then(() => {
+                        subscriber.next(true);
+                        subscriber.complete();
+                        return;
+                    });
+                });
+            });
+            subscriber.next(false);
+            subscriber.complete();
+        });
     }
 
     private async deleteJournalEntries(journalID: string): Promise<void> {
