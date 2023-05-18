@@ -31,6 +31,21 @@ export class MongooseJournalRepository implements JournalRepository {
             });
         });
     }
+    
+    public createJournal$(userId: string, name: string): Observable<Journal> {
+        return new Observable<Journal>((subscriber) => {
+            const journal = new JournalModel({
+                name: name,
+                author: userId,
+                dateOfCreation: now(),
+                lastUpdated: now(),
+            });
+            journal.save().then(() => {
+                subscriber.next(journal)
+                subscriber.complete();
+            });
+        });
+    }
 
     async createJournal(userId: string, name: string): Promise<JournalDocument> {
         const journal = new JournalModel({
