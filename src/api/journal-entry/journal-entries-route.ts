@@ -10,6 +10,7 @@ import {
     HTTP_STATUS_UNAUTHORIZED
 } from "../../utils/environment";
 import {Journal} from "../journal/journal.type"
+import {BadRequestError} from "../../utils/BadRequestError";
 
 export class JournalEntriesRoute {
 
@@ -174,9 +175,14 @@ export class JournalEntriesRoute {
                 return;
             }
 
-           this.journalRepository.journal$(journalId).subscribe((journal: Journal) => {
-               resolve(journal.author.toString() === user.id);
-           }) 
+            this.journalRepository.journal$(journalId)
+                .subscribe((journal: Journal | undefined) => {
+                    if (!journal) {
+                        resolve(false);
+                        return;
+                    }
+                    resolve(journal.author.toString() === user.id);
+                })
         });
     }
 }
