@@ -59,8 +59,10 @@ export class JournalRoute {
             return;
         }
 
-        const journal = await this.journalRepository.createJournal(user.id, journalName);
-        res.status(HTTP_STATUS_CREATED).json(journal);
+        this.journalRepository.createJournal$(user.id, journalName)
+            .subscribe((journal: Journal) => {
+                res.status(HTTP_STATUS_CREATED).json(journal);
+            });
     };
 
     private deleteJournal$: RequestHandler = async (req, res) => {
