@@ -47,17 +47,6 @@ export class MongooseJournalRepository implements JournalRepository {
         });
     }
 
-    async createJournal(userId: string, name: string): Promise<JournalDocument> {
-        const journal = new JournalModel({
-            name: name,
-            author: userId,
-            dateOfCreation: now(),
-            lastUpdated: now(),
-        });
-        await journal.save();
-        return journal;
-    }
-
     async deleteJournal(id: string): Promise<void> {
         const journal = await JournalModel.findById(id);
         await this.deleteJournalEntries(id);
