@@ -9,6 +9,7 @@ import {
     HTTP_STATUS_OK,
     HTTP_STATUS_UNAUTHORIZED
 } from "../../utils/environment";
+import {Journal} from "../journal/journal.type"
 
 export class JournalEntriesRoute {
 
@@ -167,13 +168,15 @@ export class JournalEntriesRoute {
     }
 
     private async assertJournalOwnership(user: User, journalId: string): Promise<boolean> {
-        if (!journalId)
-            return false;
+        return new Promise(async resolve => {
+            if (!journalId) {
+                resolve(false);
+                return;
+            }
 
-        if (!await this.journalRepository.journalExists(journalId))
-            return false;
-
-        const journal = await this.journalRepository.getJournal(journalId);
-        return (journal.author.toString() === user.id);
+           this.journalRepository.journal$(journalId).subscribe((journal: Journal) => {
+               resolve(journal.author.toString() === user.id);
+           }) 
+        });
     }
 }
