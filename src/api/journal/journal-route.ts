@@ -52,7 +52,7 @@ export class JournalRoute {
 
     private createJournal$: RequestHandler = async (req, res) => {
         const user = req.user as User;
-        const journalName = req.body.name;
+        const journalName = req.body.name as string;
 
         if (!journalName){
             res.status(HTTP_STATUS_BAD_REQUEST).json('Journal name required.');
