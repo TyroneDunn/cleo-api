@@ -87,9 +87,9 @@ export class JournalRoute {
             return;
         }
 
-        this.journalRepository.deleteJournal$(journalId).subscribe((success) => {
-            if (!success) {
-                res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json(`Journal ${journalId} deleted.`);
+        this.journalRepository.deleteJournal$(journalId).subscribe((journal) => {
+            if (!journal) {
+                res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json(`Could not delete journal ${journalId}.`);
                 return;
             }
             res.status(HTTP_STATUS_OK).json(`Journal ${journalId} deleted.`);
@@ -122,6 +122,7 @@ export class JournalRoute {
         res.status(HTTP_STATUS_OK).json(journal);
     }
 
+     // todo encapsulate with 'validation'
      private async assertJournalOwnership(user: User, journalId: string): Promise<boolean> {
         return new Promise<boolean>(async resolve => {
             if (!journalId) {
