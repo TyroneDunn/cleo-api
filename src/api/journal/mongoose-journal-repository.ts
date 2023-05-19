@@ -64,12 +64,6 @@ export class MongooseJournalRepository implements JournalRepository {
         await journalEntries.map(entry => entry.delete());
     }
 
-    async updateJournal(id: string, name: string): Promise<JournalDocument> {
-        const journal = await JournalModel.findById(id);
-        await journal.updateOne({name: name, lastUpdated: now()});
-        return JournalModel.findById(id);
-    }
-
     public updateJournal$(id: string, name: string): Observable<Journal> {
         return new Observable((subscriber) => {
             JournalModel.findByIdAndUpdate(id, {name: name, lastUpdated: now()}).then((journal) => {
