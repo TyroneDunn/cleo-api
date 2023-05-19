@@ -15,14 +15,13 @@ export class MongooseJournalRepository implements JournalRepository {
                 subscriber.complete();
                 return;
             }
-            
+
             JournalModel.findById(id).then((journal: Journal) => {
                 subscriber.next(journal);
                 subscriber.complete();
             });
         });
     }
-
     public journals$(userId: string): Observable<Journal[]> {
         return new Observable((subscriber) => {
             JournalModel.find({author: userId}).then((journals: Journal[]) => {
@@ -31,7 +30,7 @@ export class MongooseJournalRepository implements JournalRepository {
             });
         });
     }
-    
+
     public createJournal$(userId: string, name: string): Observable<Journal> {
         return new Observable<Journal>((subscriber) => {
             const journal = new JournalModel({
@@ -69,6 +68,18 @@ export class MongooseJournalRepository implements JournalRepository {
         const journal = await JournalModel.findById(id);
         await journal.updateOne({name: name, lastUpdated: now()});
         return JournalModel.findById(id);
+    }
+
+    updateJournal$(id: string, name: string): Observable<Journal> {
+        return new Observable((subscriber) => {
+            JournalModel.findById(id).then((journal) => {
+                journal.updateOne({name: name, lastUpdated: now()});
+                JournalModel.findById(id).then((journal) => {
+                    subscriber.next(journal);
+                    subscriber.complete();
+                });
+            });
+        })
     }
 
     async journalExists(id: string): Promise<boolean> {
