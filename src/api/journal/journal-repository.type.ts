@@ -1,5 +1,5 @@
 import {Journal} from "./journal.type";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 
 export interface JournalRepository {
     journal$(id: string): Observable<Journal | undefined>;
@@ -7,5 +7,5 @@ export interface JournalRepository {
     createJournal$(userId: string, name: string): Observable<Journal>;
     deleteJournal$(id: string): Observable<Journal>;
     updateJournal$(id: string, name: string): Observable<Journal>;
-    journalExists(id: string): Promise<boolean>;
+    journalExists(id: string): BehaviorSubject<boolean>;
 }
