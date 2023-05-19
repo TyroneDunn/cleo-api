@@ -118,8 +118,10 @@ export class JournalRoute {
             return;
         }
 
-        const journal = await this.journalRepository.updateJournal(journalId, journalName)
-        res.status(HTTP_STATUS_OK).json(journal);
+        this.journalRepository.updateJournal$(journalId, journalName)
+            .subscribe((journal) => {
+                res.status(HTTP_STATUS_OK).json(journal);
+            });
     }
 
      // todo encapsulate with 'validation'
