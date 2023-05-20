@@ -40,15 +40,6 @@ export class JournalRoute {
                 res.json(journal);
             });
         })
-
-        this.journalRepository.journal$(id).subscribe((journal: Journal) => {
-            if (!journal) {
-                res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${id} not found.`);
-                return;
-            }
-
-            res.json(journal);
-        });
     }
 
     private journals$: RequestHandler = async (req, res) => {
