@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 
 export interface JournalEntryRepository {
     entry$(id: string): Observable<JournalEntry>;
+    entries$(journalId: string): Observable<JournalEntry[]>;
     getEntry(id: string): Promise<JournalEntry>;
     getEntries(journalId: string): Promise<JournalEntry[]>;
     createEntry(journalId: string, body: string): Promise<JournalEntry>;
