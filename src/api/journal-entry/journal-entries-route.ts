@@ -71,7 +71,7 @@ export class JournalEntriesRoute {
 
                     res.json(entry);
                 })
-        }));
+        })).subscribe();
     };
 
     private getEntries: RequestHandler = async (req, res) => {
@@ -101,7 +101,7 @@ export class JournalEntriesRoute {
                 .subscribe((entries) => {
                     res.json(entries);
                 })
-        }));
+        })).subscribe();
     }
 
     private createEntry: RequestHandler = async (req, res) => {
