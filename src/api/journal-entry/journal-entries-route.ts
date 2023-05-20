@@ -39,7 +39,7 @@ export class JournalEntriesRoute {
 
             if (!req.params.entryid) {
                 res.status(HTTP_STATUS_BAD_REQUEST)
-                    .json(`ID required.`);
+                    .json(`Entry Id required.`);
                 return;
             }
 
