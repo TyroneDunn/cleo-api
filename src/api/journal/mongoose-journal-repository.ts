@@ -38,13 +38,12 @@ export class MongooseJournalRepository implements JournalRepository {
 
     public createJournal$(userId: string, name: string): Observable<Journal> {
         return new Observable<Journal>((subscriber) => {
-            const journal = new JournalModel({
+            new JournalModel({
                 name: name,
                 author: userId,
                 dateOfCreation: now(),
                 lastUpdated: now(),
-            });
-            journal.save().then(() => {
+            }).save().then((journal) => {
                 subscriber.next(journal)
                 subscriber.complete();
             });
