@@ -23,19 +23,22 @@ export class JournalRoute {
     }
 
     private journal$: RequestHandler = async (req, res) => {
-        const id = req.params.id;
-        if (!id) {
+        if (!req.params.id) {
             res.status(HTTP_STATUS_BAD_REQUEST)
                 .json(`ID required.`);
             return;
         }
 
-        this.journalRepository.journalExists$(id).subscribe((journalExists) => {
+        this.journalRepository.journalExists$(req.params.id).subscribe((journalExists) => {
             if (!journalExists) {
                 res.status(HTTP_STATUS_NOT_FOUND)
-                    .json(`Journal ${id} not found.`);
+                    .json(`Journal ${(req.params.id)} not found.`);
                 return;
             }
+
+            this.journalRepository.journal$(req.params.id).subscribe((journal: Journal) => {
+                res.json(journal);
+            });
         })
 
         this.journalRepository.journal$(id).subscribe((journal: Journal) => {
