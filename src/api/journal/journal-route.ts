@@ -56,16 +56,13 @@ export class JournalRoute {
     };
 
     private createJournal$: RequestHandler = async (req, res) => {
-        const user = req.user as User;
-        const journalName = req.body.name as string;
-
-        if (!journalName){
+        if (!(req.body.name as string)){
             res.status(HTTP_STATUS_BAD_REQUEST)
                 .json('Journal name required.');
             return;
         }
 
-        this.journalRepository.createJournal$(user._id, journalName)
+        this.journalRepository.createJournal$((req.user as User)._id, req.body.name)
             .subscribe((journal: Journal) => {
                 res.status(HTTP_STATUS_CREATED)
                     .json(journal);
