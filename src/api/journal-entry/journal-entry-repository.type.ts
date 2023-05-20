@@ -7,6 +7,7 @@ export interface JournalEntryRepository {
     createEntry$(journalId: string, body: string): Observable<JournalEntry>;
     deleteEntry$(journalId: string, entryId: string): Observable<void>;
     updateEntry$(id: string, content: string): Observable<JournalEntry>;
+    journalEntryExists$(id: string): Observable<boolean>;
     getEntry(id: string): Promise<JournalEntry>;
     getEntries(journalId: string): Promise<JournalEntry[]>;
     createEntry(journalId: string, body: string): Promise<JournalEntry>;
