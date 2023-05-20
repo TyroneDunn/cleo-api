@@ -1,11 +1,11 @@
 import {JournalRepository} from "./journal-repository.type";
-import JournalModel, {JournalDocument} from './journal-model'
+import JournalModel from './journal-model'
 import JournalEntryModel from "../journal-entry/journal-entry-model";
-const ObjectId = require('mongoose').Types.ObjectId;
 import {now, ObjectId} from "mongoose";
-import {BehaviorSubject, Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {Journal} from "./journal.type";
-import {BadRequestError} from "../../utils/BadRequestError"
+
+const ObjectId = require('mongoose').Types.ObjectId;
 
 export class MongooseJournalRepository implements JournalRepository {
     public journal$(id: string): Observable<Journal | undefined> {
