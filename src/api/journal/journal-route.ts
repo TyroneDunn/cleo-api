@@ -29,17 +29,15 @@ export class JournalRoute {
             return;
         }
 
-        this.journalRepository.journalExists$(req.params.id).subscribe((journalExists) => {
-            if (!journalExists) {
+        this.journalRepository.journal$(req.params.id).subscribe((journal: Journal | undefined) => {
+            if (!journal) {
                 res.status(HTTP_STATUS_NOT_FOUND)
                     .json(`Journal ${(req.params.id)} not found.`);
                 return;
             }
-
-            this.journalRepository.journal$(req.params.id).subscribe((journal: Journal) => {
-                res.json(journal);
-            });
-        })
+            
+            res.json(journal);
+        });
     }
 
     private journals$: RequestHandler = async (req, res) => {
