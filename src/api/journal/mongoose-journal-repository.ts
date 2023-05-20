@@ -16,7 +16,7 @@ export class MongooseJournalRepository implements JournalRepository {
                 return;
             }
 
-            JournalModel.findById(id).then((journal: Journal) => {
+            JournalModel.findById(id).then((journal: Journal | undefined) => {
                 subscriber.next(journal);
                 subscriber.complete();
             });
