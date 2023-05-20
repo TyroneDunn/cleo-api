@@ -82,19 +82,21 @@ export class MongooseJournalRepository implements JournalRepository {
 
     public journalExists$(id: string): Observable<boolean> {
         return new Observable<boolean>((subscriber) => {
-            try {
-                JournalModel.exists({_id: id}).then((result) => {
-                    if (!result) {
-                        subscriber.next(false);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(true);
-                    subscriber.complete();
-                });
-            } catch (e) {
-                subscriber.error(e);
+            if (!this.isValidObjectId(id)){
+                subscriber.next(false);
+                subscriber.complete();
+                return;
             }
+
+            JournalModel.exists({_id: new ObjectId(id)}).then((result) => {
+                if (!result) {
+                    subscriber.next(false);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(true);
+                subscriber.complete();
+            });
         });
     }
 }
