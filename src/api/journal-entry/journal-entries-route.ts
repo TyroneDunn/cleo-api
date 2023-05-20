@@ -15,7 +15,10 @@ import {BadRequestError} from "../../utils/BadRequestError";
 export class JournalEntriesRoute {
 
     public readonly router: Router = Router();
-    constructor(private journalEntryRepository: JournalEntryRepository, private journalRepository: JournalRepository) {
+    constructor(
+        private journalEntryRepository: JournalEntryRepository,
+        private journalRepository: JournalRepository
+    ) {
         this.router.get('/:journalid/:entryid', this.getEntry)
         this.router.get('/:id', this.getEntries);
         this.router.post('/:id', this.createEntry);
