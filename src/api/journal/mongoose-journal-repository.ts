@@ -1,26 +1,30 @@
 import {JournalRepository} from "./journal-repository.type";
-import JournalModel, {JournalDocument} from './journal-model'
+import JournalModel from './journal-model'
 import JournalEntryModel from "../journal-entry/journal-entry-model";
-const ObjectId = require('mongoose').Types.ObjectId;
-import {now} from "mongoose";
-import {Observable, of} from "rxjs";
+import {now, ObjectId} from "mongoose";
+import {Observable} from "rxjs";
 import {Journal} from "./journal.type";
-import {BadRequestError} from "../../utils/BadRequestError"
+
+const ObjectId = require('mongoose').Types.ObjectId;
 
 export class MongooseJournalRepository implements JournalRepository {
     public journal$(id: string): Observable<Journal | undefined> {
         return new Observable((subscriber) => {
-            if (!ObjectId.isValid(id)) {
+            if (!this.isValidObjectId(id)) {
                 subscriber.next(undefined);
                 subscriber.complete();
                 return;
             }
-            
-            JournalModel.findById(id).then((journal: Journal) => {
+
+            JournalModel.findById(id).then((journal: Journal | undefined) => {
                 subscriber.next(journal);
                 subscriber.complete();
             });
         });
+    }
+
+    private isValidObjectId(id: string): boolean {
+        return ObjectId.isValid(id);
     }
 
     public journals$(userId: string): Observable<Journal[]> {
@@ -31,7 +35,7 @@ export class MongooseJournalRepository implements JournalRepository {
             });
         });
     }
-    
+
     public createJournal$(userId: string, name: string): Observable<Journal> {
         return new Observable<Journal>((subscriber) => {
             const journal = new JournalModel({
@@ -65,18 +69,34 @@ export class MongooseJournalRepository implements JournalRepository {
         await journalEntries.map(entry => entry.delete());
     }
 
-    async updateJournal(id: string, name: string): Promise<JournalDocument> {
-        const journal = await JournalModel.findById(id);
-        await journal.updateOne({name: name, lastUpdated: now()});
-        return JournalModel.findById(id);
+    public updateJournal$(id: string, name: string): Observable<Journal> {
+        return new Observable((subscriber) => {
+            JournalModel.findByIdAndUpdate(id, {name: name, lastUpdated: now()}).then((journal) => {
+                JournalModel.findById(id).then((journal) => {
+                    subscriber.next(journal);
+                    subscriber.complete();
+                });
+            });
+        })
     }
 
-    async journalExists(id: string): Promise<boolean> {
-        try {
-            const journal = await JournalModel.findById(id);
-            return journal !== null;
-        } catch (e) {
-            return false;
-        }
+    public journalExists$(id: string): Observable<boolean> {
+        return new Observable<boolean>((subscriber) => {
+            if (!this.isValidObjectId(id)){
+                subscriber.next(false);
+                subscriber.complete();
+                return;
+            }
+
+            JournalModel.exists({_id: new ObjectId(id)}).then((result) => {
+                if (!result) {
+                    subscriber.next(false);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(true);
+                subscriber.complete();
+            });
+        });
     }
 }

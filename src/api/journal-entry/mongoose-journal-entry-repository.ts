@@ -1,8 +1,59 @@
 import {JournalEntryRepository} from "./journal-entry-repository.type";
 import JournalEntryModel, {JournalEntryDocument} from "./journal-entry-model";
-import {now} from "mongoose";
+import {now, ObjectId} from "mongoose";
+const ObjectId = require('mongoose').Types.ObjectId;
+import {Observable, of} from "rxjs";
+import {JournalEntry} from "./journal-entry.type";
 
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
+    public entry$(id: string): Observable<JournalEntry | undefined> {
+        return new Observable((subscriber) => {
+            if (!this.isValidObjectId(id)) {
+               subscriber.next(undefined);
+               subscriber.complete();
+               return;
+            }
+            JournalEntryModel.findById(id).then((entry: JournalEntry | undefined) => {
+                subscriber.next(entry);
+                subscriber.complete();
+            })
+        });
+    }
+
+    entries$(journalId: string): Observable<JournalEntry[]> {
+        return new Observable((subscriber) => {
+            JournalEntryModel.find({journal: journalId})
+                .then((entries: JournalEntry[]) => {
+                    subscriber.next(entries);
+                    subscriber.complete();
+                });
+        })
+    }
+
+    private isValidObjectId(id: string): boolean {
+        return ObjectId.isValid(id);
+    }
+
+    public journalEntryExists$(id: string): Observable<boolean> {
+        return new Observable((subscriber) => {
+            let objectId: ObjectId;
+            try {
+                objectId = new ObjectId(id);
+                JournalEntryModel.exists({_id: objectId}).then((result) => {
+                    if (!result) {
+                        subscriber.next(false);
+                        subscriber.complete();
+                        return;
+                    }
+                    subscriber.next(true);
+                    subscriber.complete();
+                })
+            } catch (e) {
+                subscriber.next(false);
+                subscriber.complete();
+            }
+        });
+    }
     async getEntry(id: string): Promise<JournalEntryDocument> {
         return JournalEntryModel.findById(id);
     }

@@ -10,6 +10,7 @@ import {RequestHandler, Router} from "express";
 import {JournalRepository} from "./journal-repository.type";
 import {User} from "../user/user.type";
 import {Journal} from "./journal.type"
+import {combineLatest, map, Observable} from "rxjs";
 
 export class JournalRoute {
     public readonly router: Router = Router();
@@ -22,122 +23,118 @@ export class JournalRoute {
     }
 
     private journal$: RequestHandler = async (req, res) => {
-        const id = req.params.id;
-        if (!id) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`ID required.`);
+        if (!req.params.id) {
+            res.status(HTTP_STATUS_BAD_REQUEST)
+                .json(`ID required.`);
             return;
         }
 
-        const journalExists = await this.journalRepository.journalExists(id);
-        if (!journalExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${id} not found.`);
-            return;
-        }
-        
-        this.journalRepository.journal$(id).subscribe((journal: Journal) => {
-            if (!journal) {
-                res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${id} not found.`);
-                return;
-            }
-
-            res.json(journal);
-        });
+        this.journalRepository.journal$(req.params.id)
+            .subscribe((journal: Journal | undefined) => {
+                if (!journal) {
+                    res.status(HTTP_STATUS_NOT_FOUND)
+                        .json(`Journal ${(req.params.id)} not found.`);
+                    return;
+                }
+            
+                res.json(journal);
+            });
     }
 
     private journals$: RequestHandler = async (req, res) => {
-        this.journalRepository.journals$((req.user as User).id)
+        this.journalRepository.journals$((req.user as User)._id)
             .subscribe((journals: Journal[]) => {
                 res.json(journals);
             });
     };
 
     private createJournal$: RequestHandler = async (req, res) => {
-        const user = req.user as User;
-        const journalName = req.body.name as string;
-
-        if (!journalName){
-            res.status(HTTP_STATUS_BAD_REQUEST).json('Journal name required.');
+        if (!(req.body.name as string)){
+            res.status(HTTP_STATUS_BAD_REQUEST)
+                .json('Journal name required.');
             return;
         }
 
-        this.journalRepository.createJournal$(user.id, journalName)
+        this.journalRepository.createJournal$((req.user as User)._id, req.body.name)
             .subscribe((journal: Journal) => {
-                res.status(HTTP_STATUS_CREATED).json(journal);
+                res.status(HTTP_STATUS_CREATED)
+                    .json(journal);
             });
     };
 
     private deleteJournal$: RequestHandler = async (req, res) => {
-        const user = req.user as User;
-        const journalId = req.params.id;
-        const journalExists = await this.journalRepository.journalExists(journalId);
-        const hasOwnershipOfJournal = await this.assertJournalOwnership(user, journalId);
-
-        if (!journalId) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
-            return;
-        }
-
-        if (!journalExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${journalId} not found.`);
-            return;
-        }
-
-        if (!hasOwnershipOfJournal) {
-            res.status(HTTP_STATUS_UNAUTHORIZED).json(`Cannot access journal ${journalId}.`);
-            return;
-        }
-
-        this.journalRepository.deleteJournal$(journalId).subscribe((success) => {
-            if (!success) {
-                res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json(`Journal ${journalId} deleted.`);
+        combineLatest([
+            this.journalRepository.journalExists$(req.params.id),
+            this.userOwnsJournal$((req.user as User), req.params.id)
+        ]).pipe(map(([journalExists, ownsJournal]) => {
+            if (!req.params.id) {
+                res.status(HTTP_STATUS_BAD_REQUEST)
+                    .json(`Journal id required.`);
                 return;
             }
-            res.status(HTTP_STATUS_OK).json(`Journal ${journalId} deleted.`);
-        });
+
+            if (!journalExists) {
+                res.status(HTTP_STATUS_NOT_FOUND)
+                    .json(`Journal ${(req.params.id)} not found.`);
+                return;
+            }
+
+            if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${(req.params.id)}.`);
+                return;
+            }
+
+            this.journalRepository.deleteJournal$(req.params.id).subscribe((journal) => {
+                if (!journal) {
+                    res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR)
+                        .json(`Journal ${(req.params.id)} not deleted.`);
+                    return;
+                }
+                res.status(HTTP_STATUS_OK).json(`Journal ${(req.params.id)} deleted.`);
+            });
+        })).subscribe();
     };
 
     private updateJournal$: RequestHandler = async (req, res) => {
-        const user = req.user as User;
-        const journalId = req.params.id;
-        const journalName = req.body.name;
-        const journalExists = this.journalRepository.journalExists(journalId);
-        const hasOwnershipOfJournal = await this.assertJournalOwnership(user, journalId);
+        combineLatest([
+            this.journalRepository.journalExists$(req.params.id),
+            this.userOwnsJournal$((req.user as User), req.params.id)
+        ]).pipe(map(([journalExists, ownsJournal]) => {
+            if (!req.params.id) {
+                res.status(HTTP_STATUS_BAD_REQUEST)
+                    .json(`Journal id required.`);
+                return;
+            }
 
-        if (!journalId) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
-            return;
-        }
+            if (!journalExists) {
+                res.status(HTTP_STATUS_NOT_FOUND)
+                    .json(`Journal ${(req.params.id)} not found.`);
+                return;
+            }
 
-        if (!journalExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${journalId} not found.`);
-            return;
-        }
+            if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${(req.params.id)}.`);
+                return;
+            }
 
-        if (!hasOwnershipOfJournal) {
-            res.status(HTTP_STATUS_UNAUTHORIZED).json(`Cannot access journal ${journalId}.`);
-            return;
-        }
-
-        const journal = await this.journalRepository.updateJournal(journalId, journalName)
-        res.status(HTTP_STATUS_OK).json(journal);
+            this.journalRepository.updateJournal$(req.params.id, req.body.name)
+                .subscribe((journal) => {
+                    res.status(HTTP_STATUS_OK)
+                        .json(journal);
+                });
+        })).subscribe();
     }
 
-     private async assertJournalOwnership(user: User, journalId: string): Promise<boolean> {
-        return new Promise<boolean>(async resolve => {
-            if (!journalId) {
-                resolve(false);
-                return;
-            }
+     private userOwnsJournal$(user: User, journalId: string): Observable<boolean> {
+        return this.journalRepository.journal$(journalId).pipe(
+            map((journal: Journal | undefined): boolean => {
+                if (!journal)
+                    return false;
 
-            if (!await this.journalRepository.journalExists(journalId)) {
-                resolve(false);
-                return;
-            }
-
-            this.journalRepository.journal$(journalId)
-                .subscribe((journal) => {
-                    resolve(journal.author.toString() === user.id);
-                });
-        });
+                return(journal.author.toString() === user._id.toString());
+            })
+        );
     }
 }
