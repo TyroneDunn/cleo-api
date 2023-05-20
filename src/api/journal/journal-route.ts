@@ -10,6 +10,7 @@ import {RequestHandler, Router} from "express";
 import {JournalRepository} from "./journal-repository.type";
 import {User} from "../user/user.type";
 import {Journal} from "./journal.type"
+import {combineLatest, map, Observable} from "rxjs";
 
 export class JournalRoute {
     public readonly router: Router = Router();
@@ -124,23 +125,14 @@ export class JournalRoute {
             });
     }
 
-     // todo encapsulate with 'validation'
-     private async assertJournalOwnership(user: User, journalId: string): Promise<boolean> {
-        return new Promise<boolean>(async resolve => {
-            if (!journalId) {
-                resolve(false);
-                return;
-            }
+     private userOwnsJournal$(user: User, journalId: string): Observable<boolean> {
+        return this.journalRepository.journal$(journalId).pipe(
+            map((journal: Journal | undefined): boolean => {
+                if (!journal)
+                    return false;
 
-            if (!await this.journalRepository.journalExists(journalId)) {
-                resolve(false);
-                return;
-            }
-
-            this.journalRepository.journal$(journalId)
-                .subscribe((journal) => {
-                    resolve(journal.author.toString() === user.id);
-                });
-        });
+                return(journal.author.toString() === user._id.toString());
+            })
+        );
     }
 }
