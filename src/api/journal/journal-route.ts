@@ -25,16 +25,19 @@ export class JournalRoute {
     private journal$: RequestHandler = async (req, res) => {
         const id = req.params.id;
         if (!id) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`ID required.`);
+            res.status(HTTP_STATUS_BAD_REQUEST)
+                .json(`ID required.`);
             return;
         }
 
-        const journalExists = await this.journalRepository.journalExists(id);
-        if (!journalExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${id} not found.`);
-            return;
-        }
-        
+        this.journalRepository.journalExists$(id).subscribe((journalExists) => {
+            if (!journalExists) {
+                res.status(HTTP_STATUS_NOT_FOUND)
+                    .json(`Journal ${id} not found.`);
+                return;
+            }
+        })
+
         this.journalRepository.journal$(id).subscribe((journal: Journal) => {
             if (!journal) {
                 res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${id} not found.`);
@@ -57,13 +60,15 @@ export class JournalRoute {
         const journalName = req.body.name as string;
 
         if (!journalName){
-            res.status(HTTP_STATUS_BAD_REQUEST).json('Journal name required.');
+            res.status(HTTP_STATUS_BAD_REQUEST)
+                .json('Journal name required.');
             return;
         }
 
         this.journalRepository.createJournal$(user._id, journalName)
             .subscribe((journal: Journal) => {
-                res.status(HTTP_STATUS_CREATED).json(journal);
+                res.status(HTTP_STATUS_CREATED)
+                    .json(journal);
             });
     };
 
@@ -73,12 +78,14 @@ export class JournalRoute {
             this.userOwnsJournal$((req.user as User), req.params.id)
         ]).pipe(map(([journalExists, ownsJournal]) => {
             if (!req.params.id) {
-                res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
+                res.status(HTTP_STATUS_BAD_REQUEST)
+                    .json(`Journal id required.`);
                 return;
             }
 
             if (!journalExists) {
-                res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${(req.params.id)} not found.`);
+                res.status(HTTP_STATUS_NOT_FOUND)
+                    .json(`Journal ${(req.params.id)} not found.`);
                 return;
             }
 
@@ -105,23 +112,27 @@ export class JournalRoute {
             this.userOwnsJournal$((req.user as User), req.params.id)
         ]).pipe(map(([journalExists, ownsJournal]) => {
             if (!req.params.id) {
-                res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
+                res.status(HTTP_STATUS_BAD_REQUEST)
+                    .json(`Journal id required.`);
                 return;
             }
 
             if (!journalExists) {
-                res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${(req.params.id)} not found.`);
+                res.status(HTTP_STATUS_NOT_FOUND)
+                    .json(`Journal ${(req.params.id)} not found.`);
                 return;
             }
 
             if (!ownsJournal) {
-                res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${(req.params.id)}.`);
+                res.status(HTTP_STATUS_UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${(req.params.id)}.`);
                 return;
             }
 
             this.journalRepository.updateJournal$(req.params.id, req.body.name)
                 .subscribe((journal) => {
-                    res.status(HTTP_STATUS_OK).json(journal);
+                    res.status(HTTP_STATUS_OK)
+                        .json(journal);
                 });
         })).subscribe();
     }
