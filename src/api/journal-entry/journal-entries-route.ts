@@ -148,14 +148,11 @@ export class JournalEntriesRoute {
             return;
         }
 
-        const entryExists = await this.journalEntryRepository.journalEntryExists(entryId);
-        if (!entryExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal entry ${entryId} not found.`);
-            return;
-        }
-
-        await this.journalEntryRepository.deleteEntry(journalId, entryId);
-        res.status(HTTP_STATUS_OK).json(`Journal entry ${entryId} deleted.`);
+        this.journalEntryRepository.deleteEntry$(journalId, entryId)
+            .subscribe((entry) => {
+                res.status(HTTP_STATUS_OK)
+                    .json(entry);
+            })
     };
 
     private updateEntry: RequestHandler = async (req, res) => {
