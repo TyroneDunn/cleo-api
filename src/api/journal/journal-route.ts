@@ -68,33 +68,35 @@ export class JournalRoute {
     };
 
     private deleteJournal$: RequestHandler = async (req, res) => {
-        const user = req.user as User;
-        const journalId = req.params.id;
-        const journalExists = await this.journalRepository.journalExists(journalId);
-        const hasOwnershipOfJournal = await this.assertJournalOwnership(user, journalId);
-
-        if (!journalId) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
-            return;
-        }
-
-        if (!journalExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${journalId} not found.`);
-            return;
-        }
-
-        if (!hasOwnershipOfJournal) {
-            res.status(HTTP_STATUS_UNAUTHORIZED).json(`Cannot access journal ${journalId}.`);
-            return;
-        }
-
-        this.journalRepository.deleteJournal$(journalId).subscribe((journal) => {
-            if (!journal) {
-                res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json(`Could not delete journal ${journalId}.`);
+        combineLatest([
+            this.journalRepository.journalExists$(req.params.id),
+            this.userOwnsJournal$((req.user as User), req.params.id)
+        ]).pipe(map(([journalExists, ownsJournal]) => {
+            if (!req.params.id) {
+                res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
                 return;
             }
-            res.status(HTTP_STATUS_OK).json(`Journal ${journalId} deleted.`);
-        });
+
+            if (!journalExists) {
+                res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${(req.params.id)} not found.`);
+                return;
+            }
+
+            if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${(req.params.id)}.`);
+                return;
+            }
+
+            this.journalRepository.deleteJournal$(req.params.id).subscribe((journal) => {
+                if (!journal) {
+                    res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR)
+                        .json(`Journal ${(req.params.id)} not deleted.`);
+                    return;
+                }
+                res.status(HTTP_STATUS_OK).json(`Journal ${(req.params.id)} deleted.`);
+            });
+        })).subscribe();
     };
 
     private updateJournal$: RequestHandler = async (req, res) => {
