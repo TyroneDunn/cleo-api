@@ -13,7 +13,6 @@ import {Journal} from "../journal/journal.type"
 import {combineLatest, map, Observable} from "rxjs";
 
 export class JournalEntriesRoute {
-
     public readonly router: Router = Router();
     constructor(
         private journalEntryRepository: JournalEntryRepository,
