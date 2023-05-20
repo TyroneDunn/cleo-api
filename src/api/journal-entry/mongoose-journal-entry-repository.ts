@@ -19,7 +19,7 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
             })
         });
     }
-
+    
     public entries$(journalId: string): Observable<JournalEntry[]> {
         return new Observable((subscriber) => {
             JournalEntryModel.find({journal: journalId})
@@ -28,6 +28,20 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
                     subscriber.complete();
                 });
         })
+    }
+
+    public createEntry$(journalId: string, body: string): Observable<JournalEntry> {
+        return new Observable<JournalEntry>((subscirber) => {
+            new JournalEntryModel({
+                body: body,
+                journal: journalId,
+                dateOfCreation: now(),
+                lastUpdated: now(),
+            }).save().then((entry) => {
+                subscirber.next(entry);
+                subscirber.complete();
+            })
+        });
     }
 
     private isValidObjectId(id: string): boolean {
