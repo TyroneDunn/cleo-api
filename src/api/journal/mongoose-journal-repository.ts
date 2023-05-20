@@ -2,7 +2,7 @@ import {JournalRepository} from "./journal-repository.type";
 import JournalModel, {JournalDocument} from './journal-model'
 import JournalEntryModel from "../journal-entry/journal-entry-model";
 const ObjectId = require('mongoose').Types.ObjectId;
-import {now} from "mongoose";
+import {now, ObjectId} from "mongoose";
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {Journal} from "./journal.type";
 import {BadRequestError} from "../../utils/BadRequestError"
@@ -10,7 +10,7 @@ import {BadRequestError} from "../../utils/BadRequestError"
 export class MongooseJournalRepository implements JournalRepository {
     public journal$(id: string): Observable<Journal | undefined> {
         return new Observable((subscriber) => {
-            if (!ObjectId.isValid(id)) {
+            if (!this.isValidObjectId(id)) {
                 subscriber.next(undefined);
                 subscriber.complete();
                 return;
@@ -22,6 +22,11 @@ export class MongooseJournalRepository implements JournalRepository {
             });
         });
     }
+
+    private isValidObjectId(id: string): boolean {
+        return ObjectId.isValid(id);
+    }
+
     public journals$(userId: string): Observable<Journal[]> {
         return new Observable((subscriber) => {
             JournalModel.find({author: userId}).then((journals: Journal[]) => {
