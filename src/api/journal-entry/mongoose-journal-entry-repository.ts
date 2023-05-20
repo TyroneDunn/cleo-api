@@ -1,9 +1,10 @@
 import {JournalEntryRepository} from "./journal-entry-repository.type";
 import JournalEntryModel, {JournalEntryDocument} from "./journal-entry-model";
-import {now, ObjectId} from "mongoose";
-const ObjectId = require('mongoose').Types.ObjectId;
-import {Observable, of} from "rxjs";
+import {now} from "mongoose";
+import {Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
+
+const ObjectId = require('mongoose').Types.ObjectId;
 
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
     public entry$(id: string): Observable<JournalEntry | undefined> {
@@ -50,22 +51,21 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
 
     public journalEntryExists$(id: string): Observable<boolean> {
         return new Observable((subscriber) => {
-            let objectId: ObjectId;
-            try {
-                objectId = new ObjectId(id);
-                JournalEntryModel.exists({_id: objectId}).then((result) => {
-                    if (!result) {
-                        subscriber.next(false);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(true);
-                    subscriber.complete();
-                })
-            } catch (e) {
+            if (!this.isValidObjectId(id)) {
                 subscriber.next(false);
                 subscriber.complete();
+                return;
             }
+
+            JournalEntryModel.exists({_id: new ObjectId(id)}).then((result) => {
+                if (!result) {
+                    subscriber.next(false);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(true);
+                subscriber.complete();
+            })
         });
     }
     async getEntry(id: string): Promise<JournalEntryDocument> {
