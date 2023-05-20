@@ -10,7 +10,7 @@ import {
     HTTP_STATUS_UNAUTHORIZED
 } from "../../utils/environment";
 import {Journal} from "../journal/journal.type"
-import {combineLatest, map, Observable } from "rxjs";
+import {combineLatest, map, Observable} from "rxjs";
 
 export class JournalEntriesRoute {
 
@@ -27,38 +27,51 @@ export class JournalEntriesRoute {
     }
 
     private getEntry: RequestHandler = async (req, res) => {
-        const journalId = req.params.journalid;
-        if (!journalId) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal Id required.`);
-            return;
-        }
+        combineLatest([
+            this.journalRepository.journalExists$(req.params.id),
+            this.userOwnsJournal$(req.user as User, req.params.id),
+            this.journalEntryRepository.journalEntryExists$(req.params.entryid),
+        ]).pipe(map(([journalExists, ownsJournal, journalEntryExists]) => {
+            if (!req.params.journalid) {
+                res.status(HTTP_STATUS_BAD_REQUEST)
+                    .json(`Journal Id required.`);
+                return;
+            }
 
-        const entryId = req.params.entryid;
-        if (!entryId) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Entry Id required.`);
-            return;
-        }
+            if (!req.params.entryid) {
+                res.status(HTTP_STATUS_BAD_REQUEST)
+                    .json(`ID required.`);
+                return;
+            }
 
-        const journalExists = await this.journalRepository.journalExists(journalId);
-        if (!journalExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${journalId} not found.`);
-            return;
-        }
+            if (!journalExists) {
+                res.status(HTTP_STATUS_NOT_FOUND)
+                    .json(`Journal ${(req.params.journalid)} not found.`);
+                return;
+            }
 
-        const hasOwnershipOfJournal = await this.userOwnsJournal$(req.user as User, journalId);
-        if (!hasOwnershipOfJournal) {
-            res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${journalId}.`);
-            return;
-        }
+            if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${(req.params.journalid)}.`);
+                return;
+            }
 
-        const journalEntryExists = await this.journalEntryRepository.journalEntryExists(entryId);
-        if (!journalEntryExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal entry ${entryId} not found.`);
-            return;
-        }
+            if (!journalEntryExists) {
+                res.status(HTTP_STATUS_NOT_FOUND).json(`Journal entry ${(req.params.entryid)} not found.`);
+                return;
+            }
 
-        const entry = await this.journalEntryRepository.getEntry(entryId);
-        res.json(entry);
+            this.journalEntryRepository.entry$(req.params.entryid)
+                .subscribe((entry) => {
+                    if (!entry) {
+                        res.status(HTTP_STATUS_NOT_FOUND)
+                            .json(`Journal entry ${req.params.entryid} not found.`);
+                        return;
+                    }
+
+                    res.json(entry);
+                })
+        }));
     };
 
     private getEntries: RequestHandler = async (req, res) => {
