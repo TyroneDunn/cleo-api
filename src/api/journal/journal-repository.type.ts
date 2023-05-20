@@ -7,5 +7,5 @@ export interface JournalRepository {
     createJournal$(userId: string, name: string): Observable<Journal>;
     deleteJournal$(id: string): Observable<Journal>;
     updateJournal$(id: string, name: string): Observable<Journal>;
-    journalExists(id: string): BehaviorSubject<boolean>;
+    journalExists$(id: string): Observable<boolean>;
 }
