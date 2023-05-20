@@ -100,31 +100,30 @@ export class JournalRoute {
     };
 
     private updateJournal$: RequestHandler = async (req, res) => {
-        const user = req.user as User;
-        const journalId = req.params.id;
-        const journalName = req.body.name;
-        const journalExists = this.journalRepository.journalExists(journalId);
-        const hasOwnershipOfJournal = await this.assertJournalOwnership(user, journalId);
+        combineLatest([
+            this.journalRepository.journalExists$(req.params.id),
+            this.userOwnsJournal$((req.user as User), req.params.id)
+        ]).pipe(map(([journalExists, ownsJournal]) => {
+            if (!req.params.id) {
+                res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
+                return;
+            }
 
-        if (!journalId) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
-            return;
-        }
+            if (!journalExists) {
+                res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${(req.params.id)} not found.`);
+                return;
+            }
 
-        if (!journalExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${journalId} not found.`);
-            return;
-        }
+            if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${(req.params.id)}.`);
+                return;
+            }
 
-        if (!hasOwnershipOfJournal) {
-            res.status(HTTP_STATUS_UNAUTHORIZED).json(`Cannot access journal ${journalId}.`);
-            return;
-        }
-
-        this.journalRepository.updateJournal$(journalId, journalName)
-            .subscribe((journal) => {
-                res.status(HTTP_STATUS_OK).json(journal);
-            });
+            this.journalRepository.updateJournal$(req.params.id, req.body.name)
+                .subscribe((journal) => {
+                    res.status(HTTP_STATUS_OK).json(journal);
+                });
+        })).subscribe();
     }
 
      private userOwnsJournal$(user: User, journalId: string): Observable<boolean> {
