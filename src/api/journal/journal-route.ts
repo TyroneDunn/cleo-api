@@ -46,7 +46,7 @@ export class JournalRoute {
     }
 
     private journals$: RequestHandler = async (req, res) => {
-        this.journalRepository.journals$((req.user as User).id)
+        this.journalRepository.journals$((req.user as User)._id)
             .subscribe((journals: Journal[]) => {
                 res.json(journals);
             });
@@ -61,7 +61,7 @@ export class JournalRoute {
             return;
         }
 
-        this.journalRepository.createJournal$(user.id, journalName)
+        this.journalRepository.createJournal$(user._id, journalName)
             .subscribe((journal: Journal) => {
                 res.status(HTTP_STATUS_CREATED).json(journal);
             });
