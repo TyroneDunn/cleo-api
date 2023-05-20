@@ -3,7 +3,7 @@ import JournalModel, {JournalDocument} from './journal-model'
 import JournalEntryModel from "../journal-entry/journal-entry-model";
 const ObjectId = require('mongoose').Types.ObjectId;
 import {now} from "mongoose";
-import {Observable, of} from "rxjs";
+import {BehaviorSubject, Observable, of} from "rxjs";
 import {Journal} from "./journal.type";
 import {BadRequestError} from "../../utils/BadRequestError"
 
@@ -75,12 +75,21 @@ export class MongooseJournalRepository implements JournalRepository {
         })
     }
 
-    async journalExists(id: string): Promise<boolean> {
-        try {
-            const journal = await JournalModel.findById(id);
-            return journal !== null;
-        } catch (e) {
-            return false;
-        }
+    public journalExists$(id: string): Observable<boolean> {
+        return new Observable<boolean>((subscriber) => {
+            try {
+                JournalModel.exists({_id: id}).then((result) => {
+                    if (!result) {
+                        subscriber.next(false);
+                        subscriber.complete();
+                        return;
+                    }
+                    subscriber.next(true);
+                    subscriber.complete();
+                });
+            } catch (e) {
+                subscriber.error(e);
+            }
+        });
     }
 }
