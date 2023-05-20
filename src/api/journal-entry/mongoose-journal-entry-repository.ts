@@ -45,6 +45,20 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
         });
     }
 
+    public deleteEntry$(journalId: string, entryId: string): Observable<JournalEntry> {
+        return new Observable((subscriber) => {
+            JournalEntryModel.findByIdAndDelete(entryId, (error, entry) => {
+                if (error) {
+                    subscriber.error(error)
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entry);
+                subscriber.complete();
+            })
+        });
+    }
+
     private isValidObjectId(id: string): boolean {
         return ObjectId.isValid(id);
     }
