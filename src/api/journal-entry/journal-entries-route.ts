@@ -62,26 +62,33 @@ export class JournalEntriesRoute {
     };
 
     private getEntries: RequestHandler = async (req, res) => {
-        const journalId = req.params.id;
-        if (!journalId) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`)
-            return;
-        }
+        combineLatest([
+            this.journalRepository.journalExists$(req.params.id),
+            this.userOwnsJournal$(req.user as User, req.params.id)
+        ]).pipe(map(([journalExists, ownsJournal]) => {
+            if (!req.params.id) {
+                res.status(HTTP_STATUS_BAD_REQUEST)
+                    .json(`Journal Id required.`);
+                return;
+            }
 
-        const journalExists = this.journalRepository.journalExists(journalId);
-        if (!journalExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal ${journalId} not found.`);
-            return;
-        }
+            if (!journalExists) {
+                res.status(HTTP_STATUS_NOT_FOUND)
+                    .json(`Journal ${(req.params.id)} not found.`);
+                return;
+            }
 
-        const hasOwnershipOfJournal = await this.assertJournalOwnership(req.user as User, journalId);
-        if (!hasOwnershipOfJournal) {
-            res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${journalId}.`);
-            return;
-        }
+            if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${(req.params.id)}.`);
+                return;
+            }
 
-        const entries = await this.journalEntryRepository.getEntries(journalId);
-        res.json(entries);
+            this.journalEntryRepository.entries$(req.params.id)
+                .subscribe((entries) => {
+                    res.json(entries);
+                })
+        }));
     }
 
     private createEntry: RequestHandler = async (req, res) => {
