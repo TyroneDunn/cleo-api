@@ -111,20 +111,22 @@ export class JournalEntriesRoute {
             return;
         }
 
-        const hasOwnershipOfJournal = await this.userOwnsJournal$(req.user as User, journalId);
-        if (!hasOwnershipOfJournal) {
-            res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${journalId}.`);
-            return;
-        }
-
-        const entryContent = req.body.content;
-        if (!entryContent) {
+        if (!req.body.content) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Content required.`);
             return;
         }
 
-        const journal = await this.journalEntryRepository.createEntry(journalId, entryContent);
-        res.status(HTTP_STATUS_CREATED).json(journal);
+        this.userOwnsJournal$(req.user as User, journalId).subscribe((ownsJournal) => {
+            if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${journalId}.`);
+                return;
+            }
+
+            this.journalEntryRepository.createEntry$(journalId, req.body.content)
+                .subscribe((entry) => {
+                    res.status(HTTP_STATUS_CREATED).json(entry);
+                })
+        })
     };
 
     private deleteEntry: RequestHandler = async (req, res) => {
