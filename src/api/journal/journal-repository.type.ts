@@ -1,5 +1,5 @@
 import {Journal} from "./journal.type";
-import {BehaviorSubject, Observable} from "rxjs";
+import {Observable} from "rxjs";
 
 export interface JournalRepository {
     journal$(id: string): Observable<Journal | undefined>;
