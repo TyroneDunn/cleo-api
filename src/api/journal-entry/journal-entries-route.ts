@@ -28,8 +28,8 @@ export class JournalEntriesRoute {
 
     private getEntry: RequestHandler = async (req, res) => {
         combineLatest([
-            this.journalRepository.journalExists$(req.params.id),
-            this.userOwnsJournal$(req.user as User, req.params.id),
+            this.journalRepository.journalExists$(req.params.journalid),
+            this.userOwnsJournal$(req.user as User, req.params.journalid),
             this.journalEntryRepository.journalEntryExists$(req.params.entryid),
         ]).pipe(map(([journalExists, ownsJournal, journalEntryExists]) => {
             if (!req.params.journalid) {
@@ -57,7 +57,8 @@ export class JournalEntriesRoute {
             }
 
             if (!journalEntryExists) {
-                res.status(HTTP_STATUS_NOT_FOUND).json(`Journal entry ${(req.params.entryid)} not found.`);
+                res.status(HTTP_STATUS_NOT_FOUND)
+                    .json(`Journal entry ${(req.params.entryid)} not found.`);
                 return;
             }
 
