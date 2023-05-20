@@ -31,15 +31,15 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
     }
 
     public createEntry$(journalId: string, body: string): Observable<JournalEntry> {
-        return new Observable<JournalEntry>((subscirber) => {
+        return new Observable<JournalEntry>((subscriber) => {
             new JournalEntryModel({
                 body: body,
                 journal: journalId,
                 dateOfCreation: now(),
                 lastUpdated: now(),
             }).save().then((entry) => {
-                subscirber.next(entry);
-                subscirber.complete();
+                subscriber.next(entry);
+                subscriber.complete();
             })
         });
     }
