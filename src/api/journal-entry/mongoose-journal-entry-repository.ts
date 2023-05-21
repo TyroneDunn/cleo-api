@@ -81,10 +81,6 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
         return ObjectId.isValid(id);
     }
 
-    async getEntries(journalID: string): Promise<JournalEntryDocument[]> {
-        return JournalEntryModel.find({journal: journalID});
-    }
-
     async createEntry(journalId: string, body: string): Promise<JournalEntryDocument> {
         const newEntry = new JournalEntryModel({
             body: body,
