@@ -59,6 +59,24 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
         });
     }
 
+    public updateEntry$(id: string, body: string): Observable<JournalEntry | undefined> {
+        return new Observable((subscriber) => {
+            JournalEntryModel.findByIdAndUpdate(
+                id,
+                {body: body, lastUpdated: now()},
+                {new: true},
+                (error, entry) => {
+                    if (error) {
+                        subscriber.error(error);
+                        subscriber.complete();
+                        return;
+                    }
+                    subscriber.next(entry);
+                    subscriber.complete();
+                })
+        });
+    }
+
     private isValidObjectId(id: string): boolean {
         return ObjectId.isValid(id);
     }
@@ -82,6 +100,7 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
             })
         });
     }
+    
     async getEntry(id: string): Promise<JournalEntryDocument> {
         return JournalEntryModel.findById(id);
     }
