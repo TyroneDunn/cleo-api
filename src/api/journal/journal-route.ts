@@ -62,38 +62,23 @@ export class JournalRoute {
             });
     };
 
-    private deleteJournal$: RequestHandler = async (req, res) => {
-        combineLatest([
-            this.journalRepository.journalExists$(req.params.id),
-            this.userOwnsJournal$((req.user as User), req.params.id)
-        ]).pipe(map(([journalExists, ownsJournal]) => {
-            if (!req.params.id) {
-                res.status(HTTP_STATUS_BAD_REQUEST)
-                    .json(`Journal id required.`);
-                return;
-            }
-
-            if (!journalExists) {
-                res.status(HTTP_STATUS_NOT_FOUND)
-                    .json(`Journal ${(req.params.id)} not found.`);
-                return;
-            }
-
+    private deleteJournal$: RequestHandler = (req, res) => {
+        if (!req.params.id) {
+            res.status(HTTP_STATUS_BAD_REQUEST)
+                .json(`Journal id required.`);
+            return;
+        }
+        
+        this.userOwnsJournal$((req.user as User), req.params.id).subscribe(ownsJournal => {
             if (!ownsJournal) {
-                res.status(HTTP_STATUS_UNAUTHORIZED)
-                    .json(`Unauthorized access to journal ${(req.params.id)}.`);
                 return;
             }
-
-            this.journalRepository.deleteJournal$(req.params.id).subscribe((journal) => {
-                if (!journal) {
-                    res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR)
-                        .json(`Journal ${(req.params.id)} not deleted.`);
-                    return;
-                }
-                res.status(HTTP_STATUS_OK).json(`Journal ${(req.params.id)} deleted.`);
-            });
-        })).subscribe();
+            this.journalRepository.deleteJournal$(req.params.id)
+                .subscribe((journal: Journal) => {
+                    res.status(HTTP_STATUS_OK)
+                        .json(`Journal ${journal} deleted.`);
+                })
+        })
     };
 
     private updateJournal$: RequestHandler = async (req, res) => {
