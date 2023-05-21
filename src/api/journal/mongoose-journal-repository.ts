@@ -104,24 +104,4 @@ export class MongooseJournalRepository implements JournalRepository {
             });
         })
     }
-
-    public journalExists$(id: string): Observable<boolean> {
-        return new Observable<boolean>((subscriber) => {
-            if (!this.isValidObjectId(id)){
-                subscriber.next(false);
-                subscriber.complete();
-                return;
-            }
-
-            JournalModel.exists({_id: new ObjectId(id)}).then((result) => {
-                if (!result) {
-                    subscriber.next(false);
-                    subscriber.complete();
-                    return;
-                }
-                subscriber.next(true);
-                subscriber.complete();
-            });
-        });
-    }
 }
