@@ -89,11 +89,18 @@ export class MongooseJournalRepository implements JournalRepository {
 
     public updateJournal$(id: string, name: string): Observable<Journal> {
         return new Observable((subscriber) => {
-            JournalModel.findByIdAndUpdate(id, {name: name, lastUpdated: now()}).then((journal) => {
-                JournalModel.findById(id).then((journal) => {
+            JournalModel.findByIdAndUpdate(
+                id,
+                {name: name, lastUpdated: now()},
+                {new: true},
+                (error, journal) => {
+                    if (error) {
+                        subscriber.error(error);
+                        subscriber.complete();
+                        return;
+                    }
                     subscriber.next(journal);
                     subscriber.complete();
-                });
             });
         })
     }
