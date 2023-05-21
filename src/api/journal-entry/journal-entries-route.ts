@@ -10,7 +10,7 @@ import {
     HTTP_STATUS_UNAUTHORIZED
 } from "../../utils/environment";
 import {Journal} from "../journal/journal.type"
-import {combineLatest, map, Observable} from "rxjs";
+import {combineLatest, filter, map, Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
 
 export class JournalEntriesRoute {
@@ -165,25 +165,23 @@ export class JournalEntriesRoute {
             return;
         }
 
-        this.userOwnsJournal$(req.user as User, req.params.journalid)
-            .pipe(map((userOwnsJournal: boolean) => {
-                if (!userOwnsJournal) {
-                    res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${(req.params.journalid)}.`);
-                    return;
-                }
+        combineLatest([
+            this.userOwnsJournal$(req.user as User, req.params.journalid),
+            this.journalEntryRepository.updateEntry$(req.params.entryid, req.body.body),
+        ]).pipe(
+            filter(([ownsJournal, _]) => {
+                return (ownsJournal === true);
+            }),
+        ).subscribe(([_, entry]) => {
+            if (!entry) {
+                res.status(HTTP_STATUS_NOT_FOUND)
+                    .json(`Journal entry ${(req.params.entryid)} not found.`);
+                return;
+            }
 
-                this.journalEntryRepository.updateEntry$(req.params.entryid, req.body.body)
-                    .subscribe((entry: JournalEntry | undefined) => {
-                        if (!entry) {
-                            res.status(HTTP_STATUS_NOT_FOUND)
-                                .json(`Journal entry ${(req.params.entryid)} not found.`);
-                            return;
-                        }
-
-                        res.status(HTTP_STATUS_OK)
-                            .json(entry);
-                    })
-        })).subscribe();
+            res.status(HTTP_STATUS_OK)
+                .json(entry);
+        });
     }
 
     private userOwnsJournal$(user: User, journalId: string): Observable<boolean> {
