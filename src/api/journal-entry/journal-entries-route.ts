@@ -11,6 +11,7 @@ import {
 } from "../../utils/environment";
 import {Journal} from "../journal/journal.type"
 import {combineLatest, map, Observable} from "rxjs";
+import {JournalEntry} from "./journal-entry.type";
 
 export class JournalEntriesRoute {
     public readonly router: Router = Router();
@@ -186,8 +187,11 @@ export class JournalEntriesRoute {
             return;
         }
 
-        const journalEntry = await this.journalEntryRepository.updateEntry(entryId, entryBody);
-        res.status(HTTP_STATUS_OK).json(journalEntry);
+        this.journalEntryRepository.updateEntry$(entryId, entryBody)
+            .subscribe((entry: JournalEntry) => {
+                res.status(HTTP_STATUS_OK)
+                    .json(entry);
+            })
     }
 
     private userOwnsJournal$(user: User, journalId: string): Observable<boolean> {
