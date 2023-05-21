@@ -53,7 +53,7 @@ export class MongooseJournalRepository implements JournalRepository {
                 author: userId,
                 dateOfCreation: now(),
                 lastUpdated: now(),
-            }).save().then((journal) => {
+            }).save((error, journal: Journal) => {
                 subscriber.next(journal)
                 subscriber.complete();
             });
