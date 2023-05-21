@@ -29,7 +29,12 @@ export class MongooseJournalRepository implements JournalRepository {
 
     public journals$(userId: string): Observable<Journal[]> {
         return new Observable((subscriber) => {
-            JournalModel.find({author: userId}).then((journals: Journal[]) => {
+            JournalModel.find({author: userId}, (error, journals) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
                 subscriber.next(journals);
                 subscriber.complete();
             });
