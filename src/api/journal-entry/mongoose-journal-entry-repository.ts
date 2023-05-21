@@ -81,17 +81,6 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
         return ObjectId.isValid(id);
     }
 
-    async createEntry(journalId: string, body: string): Promise<JournalEntryDocument> {
-        const newEntry = new JournalEntryModel({
-            body: body,
-            journal: journalId,
-            dateOfCreation: now(),
-            lastUpdated: now(),
-        });
-        await newEntry.save()
-        return newEntry;
-    }
-
     async deleteEntry(journalId: string, entryId: string): Promise<void> {
         const entry = await JournalEntryModel.findById(entryId);
         await entry.delete();
