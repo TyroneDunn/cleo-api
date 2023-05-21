@@ -62,8 +62,8 @@ export class MongooseJournalRepository implements JournalRepository {
     }
 
     public deleteJournal$(id: string): Observable<Journal> {
-        this.deleteJournalEntries$(id).subscribe();
         return new Observable<Journal>((subscriber) => {
+            this.deleteJournalEntries$(id).subscribe();
                 JournalModel.findByIdAndDelete(id, (error, journal: Journal) => {
                     if (error) {
                         subscriber.error(error);
