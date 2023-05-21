@@ -128,13 +128,4 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
         await JournalEntryModel.findOneAndUpdate({_id: id}, {body: body, lastUpdated: now()});
         return JournalEntryModel.findById(id);
     }
-
-    async journalEntryExists(id: string): Promise<boolean> {
-        try {
-            const entry = await JournalEntryModel.findById(id);
-            return entry !== null;
-        } catch (e) {
-            return false;
-        }
-    }
 }
