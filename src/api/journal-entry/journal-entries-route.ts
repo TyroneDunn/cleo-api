@@ -150,35 +150,40 @@ export class JournalEntriesRoute {
     };
 
     private updateEntry: RequestHandler = async (req, res) => {
-        const journalId = req.params.journalid;
-        if (!journalId) {
+        if (!req.params.journalid) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
             return;
         }
 
-        const hasOwnershipOfJournal = await this.userOwnsJournal$(req.user as User, journalId);
-        if (!hasOwnershipOfJournal) {
-            res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${journalId}.`);
-            return;
-        }
-
-        const entryId = req.params.entryid;
-        if (!entryId) {
+        if (!req.params.entryid) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Entry id required.`);
             return;
         }
 
-        const entryBody = req.body.body;
-        if (!entryBody) {
+        if (!req.body.body) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Entry body required.`);
             return;
         }
 
-        this.journalEntryRepository.updateEntry$(entryId, entryBody)
-            .subscribe((entry: JournalEntry) => {
-                res.status(HTTP_STATUS_OK)
-                    .json(entry);
-            })
+        this.userOwnsJournal$(req.user as User, req.params.journalid)
+            .pipe(map((userOwnsJournal: boolean) => {
+                if (!userOwnsJournal) {
+                    res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${(req.params.journalid)}.`);
+                    return;
+                }
+
+                this.journalEntryRepository.updateEntry$(req.params.entryid, req.body.body)
+                    .subscribe((entry: JournalEntry | undefined) => {
+                        if (!entry) {
+                            res.status(HTTP_STATUS_NOT_FOUND)
+                                .json(`Journal entry ${(req.params.entryid)} not found.`);
+                            return;
+                        }
+
+                        res.status(HTTP_STATUS_OK)
+                            .json(entry);
+                    })
+        })).subscribe();
     }
 
     private userOwnsJournal$(user: User, journalId: string): Observable<boolean> {
