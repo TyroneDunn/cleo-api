@@ -81,21 +81,16 @@ export class JournalRoute {
     };
 
     private updateJournal$: RequestHandler = async (req, res) => {
+        // todo: remove exists check, refer to delete method
         combineLatest([
-            this.journalRepository.journalExists$(req.params.id),
             this.userOwnsJournal$((req.user as User), req.params.id)
-        ]).pipe(map(([journalExists, ownsJournal]) => {
+        ]).pipe(map(([ownsJournal]) => {
             if (!req.params.id) {
                 res.status(HTTP_STATUS_BAD_REQUEST)
                     .json(`Journal id required.`);
                 return;
             }
 
-            if (!journalExists) {
-                res.status(HTTP_STATUS_NOT_FOUND)
-                    .json(`Journal ${(req.params.id)} not found.`);
-                return;
-            }
 
             if (!ownsJournal) {
                 res.status(HTTP_STATUS_UNAUTHORIZED)
