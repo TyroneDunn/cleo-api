@@ -1,9 +1,10 @@
 import {JournalRepository} from "./journal-repository.type";
 import JournalModel from './journal-model'
-import JournalEntryModel from "../journal-entry/journal-entry-model";
+import JournalEntryModel, {JournalEntryDocument} from "../journal-entry/journal-entry-model";
 import {now, ObjectId} from "mongoose";
 import {Observable} from "rxjs";
 import {Journal} from "./journal.type";
+import {JournalEntry} from "../journal-entry/journal-entry.type";
 
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -73,9 +74,14 @@ export class MongooseJournalRepository implements JournalRepository {
         });
     }
 
-    private async deleteJournalEntries(journalID: string): Promise<void> {
-        const journalEntries = await JournalEntryModel.find({journal: journalID});
-        await journalEntries.map(entry => entry.delete());
+    private deleteJournalEntries$(journalID: string): Observable<void> {
+        return new Observable((subscriber) => {
+            JournalEntryModel.deleteMany({journal: journalID}, (error, result) => {
+                if (error)
+                    subscriber.error(error);
+                subscriber.complete();
+            });
+        });
     }
 
     public updateJournal$(id: string, name: string): Observable<Journal> {
