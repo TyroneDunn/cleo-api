@@ -16,7 +16,12 @@ export class MongooseJournalRepository implements JournalRepository {
                 return;
             }
 
-            JournalModel.findById(id).then((journal: Journal | undefined) => {
+            JournalModel.findById(id, (error, journal: Journal) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
                 subscriber.next(journal);
                 subscriber.complete();
             });
@@ -29,7 +34,7 @@ export class MongooseJournalRepository implements JournalRepository {
 
     public journals$(userId: string): Observable<Journal[]> {
         return new Observable((subscriber) => {
-            JournalModel.find({author: userId}, (error, journals) => {
+            JournalModel.find({author: userId}, (error, journals: Journal[]) => {
                 if (error) {
                     subscriber.error(error);
                     subscriber.complete();
