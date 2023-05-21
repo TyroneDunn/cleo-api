@@ -75,7 +75,7 @@ export class JournalRoute {
             this.journalRepository.deleteJournal$(req.params.id)
                 .subscribe((journal: Journal) => {
                     res.status(HTTP_STATUS_OK)
-                        .json(`Journal ${journal} deleted.`);
+                        .json(journal);
                 })
         })
     };
