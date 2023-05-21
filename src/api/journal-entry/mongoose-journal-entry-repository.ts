@@ -3,7 +3,6 @@ import JournalEntryModel, {JournalEntryDocument} from "./journal-entry-model";
 import {now} from "mongoose";
 import {Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
-
 const ObjectId = require('mongoose').Types.ObjectId;
 
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
