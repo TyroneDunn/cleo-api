@@ -70,6 +70,8 @@ export class JournalRoute {
         
         this.userOwnsJournal$((req.user as User), req.params.id).subscribe(ownsJournal => {
             if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${req.params.id}`)
                 return;
             }
             this.journalRepository.deleteJournal$(req.params.id)
