@@ -80,9 +80,4 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
     private isValidObjectId(id: string): boolean {
         return ObjectId.isValid(id);
     }
-
-    async updateEntry(id: string, body: string): Promise<JournalEntryDocument> {
-        await JournalEntryModel.findOneAndUpdate({_id: id}, {body: body, lastUpdated: now()});
-        return JournalEntryModel.findById(id);
-    }
 }
