@@ -81,26 +81,6 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
         return ObjectId.isValid(id);
     }
 
-    public journalEntryExists$(id: string): Observable<boolean> {
-        return new Observable((subscriber) => {
-            if (!this.isValidObjectId(id)) {
-                subscriber.next(false);
-                subscriber.complete();
-                return;
-            }
-
-            JournalEntryModel.exists({_id: new ObjectId(id)}).then((result) => {
-                if (!result) {
-                    subscriber.next(false);
-                    subscriber.complete();
-                    return;
-                }
-                subscriber.next(true);
-                subscriber.complete();
-            })
-        });
-    }
-    
     async getEntry(id: string): Promise<JournalEntryDocument> {
         return JournalEntryModel.findById(id);
     }
