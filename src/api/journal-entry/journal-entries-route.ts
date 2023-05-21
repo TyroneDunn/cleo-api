@@ -56,7 +56,7 @@ export class JournalEntriesRoute {
             }
 
             this.journalEntryRepository.entry$(req.params.entryid)
-                .subscribe((entry) => {
+                .subscribe((entry: JournalEntry | undefined) => {
                     if (!entry) {
                         res.status(HTTP_STATUS_NOT_FOUND)
                             .json(`Journal entry ${req.params.entryid} not found.`);
