@@ -30,8 +30,7 @@ export class JournalEntriesRoute {
         combineLatest([
             this.journalRepository.journalExists$(req.params.journalid),
             this.userOwnsJournal$(req.user as User, req.params.journalid),
-            this.journalEntryRepository.journalEntryExists$(req.params.entryid),
-        ]).pipe(map(([journalExists, ownsJournal, journalEntryExists]) => {
+        ]).pipe(map(([journalExists, ownsJournal]) => {
             if (!req.params.journalid) {
                 res.status(HTTP_STATUS_BAD_REQUEST)
                     .json(`Journal Id required.`);
@@ -53,12 +52,6 @@ export class JournalEntriesRoute {
             if (!ownsJournal) {
                 res.status(HTTP_STATUS_UNAUTHORIZED)
                     .json(`Unauthorized access to journal ${(req.params.journalid)}.`);
-                return;
-            }
-
-            if (!journalEntryExists) {
-                res.status(HTTP_STATUS_NOT_FOUND)
-                    .json(`Journal entry ${(req.params.entryid)} not found.`);
                 return;
             }
 
@@ -172,12 +165,6 @@ export class JournalEntriesRoute {
         const entryId = req.params.entryid;
         if (!entryId) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Entry id required.`);
-            return;
-        }
-
-        const entryExists = await this.journalEntryRepository.journalEntryExists(entryId);
-        if (!entryExists) {
-            res.status(HTTP_STATUS_NOT_FOUND).json(`Journal entry ${entryId} not found.`);
             return;
         }
 
