@@ -42,9 +42,7 @@ export class JournalRoute {
 
     private getJournals: RequestHandler = async (req, res) => {
         const sort: string | undefined = req.query.sort as string;
-        console.log(sort)
         if (sort === undefined) {
-            console.log('waypoint')
             this.journalRepository.journals$((req.user as User)._id)
                 .subscribe((journals: Journal[]) => {
                     if (journals.length === 0) {
