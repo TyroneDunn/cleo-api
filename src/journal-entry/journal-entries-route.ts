@@ -144,7 +144,6 @@ export class JournalEntriesRoute {
                     }
 
                     this.journalEntryRepository.deleteEntry$(
-                        entry.journal,
                         req.params.id
                     ).subscribe((entry) => {
                         res.status(HTTP_STATUS_OK).json(entry);
