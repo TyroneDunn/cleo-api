@@ -1,8 +1,9 @@
-import database from "../../utils/mongoose-database";
+import database from "../utils/mongoose-database";
 import {Document, Schema} from 'mongoose';
 import {Journal} from "./journal.type";
 
 export interface JournalDocument extends Document, Journal {
+  _id: string,
   name: string,
   author: Schema.Types.ObjectId;
   dateOfCreation: Date,
