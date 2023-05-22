@@ -28,50 +28,37 @@ export class JournalEntriesRoute {
     }
 
     private getEntry: RequestHandler = async (req, res) => {
-        combineLatest([
-            userOwnsJournal$(req.user as User, req.params.journalid),
-        ]).pipe(map(([ownsJournal]) => {
-            if (!req.params.journalid) {
-                res.status(HTTP_STATUS_BAD_REQUEST)
-                    .json(`Journal Id required.`);
-                return;
-            }
+        if (!req.params.journalid) {
+            res.status(HTTP_STATUS_BAD_REQUEST)
+                .json(`Journal Id required.`);
+            return;
+        }
 
-            if (!req.params.entryid) {
-                res.status(HTTP_STATUS_BAD_REQUEST)
-                    .json(`Entry Id required.`);
-                return;
-            }
+        userOwnsJournal$(req.user as User, req.params.journalid)
+            .subscribe((ownsJournal) => {
+                if (!ownsJournal) {
+                    res.status(HTTP_STATUS_UNAUTHORIZED)
+                        .json(`Unauthorized access to journal ${req.params.id}`);
+                    return;
+                }
 
-            if (!ownsJournal) {
-                res.status(HTTP_STATUS_UNAUTHORIZED)
-                    .json(`Unauthorized access to journal ${(req.params.journalid)}.`);
-                return;
-            }
+                this.journalEntryRepository.entry$(req.params.entryid)
+                    .subscribe((entry: JournalEntry | undefined) => {
+                        if (!entry) {
+                            res.status(HTTP_STATUS_NOT_FOUND)
+                                .json(`Journal entry ${req.params.entryid} not found.`);
+                            return;
+                        }
 
-            this.journalEntryRepository.entry$(req.params.entryid)
-                .subscribe((entry: JournalEntry | undefined) => {
-                    if (!entry) {
-                        res.status(HTTP_STATUS_NOT_FOUND)
-                            .json(`Journal entry ${req.params.entryid} not found.`);
-                        return;
-                    }
-
-                    res.json(entry);
-                })
-        })).subscribe();
+                        res.json(entry);
+                    });
+            });
     };
 
     private getEntries: RequestHandler = async (req, res) => {
         combineLatest([
             userOwnsJournal$(req.user as User, req.params.id)
         ]).pipe(map(([ownsJournal]) => {
-            if (!req.params.id) {
-                res.status(HTTP_STATUS_BAD_REQUEST)
-                    .json(`Journal Id required.`);
-                return;
-            }
-
             if (!ownsJournal) {
                 res.status(HTTP_STATUS_UNAUTHORIZED)
                     .json(`Unauthorized access to journal ${(req.params.id)}.`);
