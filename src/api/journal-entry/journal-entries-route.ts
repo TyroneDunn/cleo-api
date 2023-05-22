@@ -148,22 +148,27 @@ export class JournalEntriesRoute {
             return;
         }
 
-        combineLatest([
-            userOwnsJournal$(req.user as User, req.params.journalid),
-            this.journalEntryRepository.updateEntry$(req.params.entryid, req.body.body),
-        ]).pipe(
-            filter(([ownsJournal, _]) => {
-                return (ownsJournal === true);
-            }),
-        ).subscribe(([_, entry]) => {
-            if (!entry) {
-                res.status(HTTP_STATUS_NOT_FOUND)
-                    .json(`Journal entry ${(req.params.entryid)} not found.`);
-                return;
-            }
+        userOwnsJournal$(req.user as User, req.params.journalid)
+            .subscribe((ownsJournal) => {
+                if (!ownsJournal) {
+                    res.status(HTTP_STATUS_UNAUTHORIZED)
+                        .json(`Unauthorized access to journal ${req.params.id}`);
+                    return;
+                }
 
-            res.status(HTTP_STATUS_OK)
-                .json(entry);
-        });
+                this.journalEntryRepository.updateEntry$(
+                    req.params.entryid,
+                    req.body.body
+                ).subscribe((entry) => {
+                    if (!entry) {
+                        res.status(HTTP_STATUS_NOT_FOUND)
+                            .json(`Journal entry ${(req.params.entryid)} not found.`);
+                        return;
+                    }
+
+                    res.status(HTTP_STATUS_OK)
+                        .json(entry);
+                })
+            });
     }
 }
