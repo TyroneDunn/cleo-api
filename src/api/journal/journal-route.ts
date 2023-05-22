@@ -18,7 +18,7 @@ export class JournalRoute {
         this.router.get('/', this.getJournals);
         this.router.post('/', this.createJournal);
         this.router.delete('/:id', this.deleteJournal);
-        this.router.patch('/:id', this.updateJournal$);
+        this.router.patch('/:id', this.updateJournal);
     }
 
     private getJournal: RequestHandler = async (req, res) => {
@@ -84,7 +84,7 @@ export class JournalRoute {
             })
     };
 
-    private updateJournal$: RequestHandler = async (req, res) => {
+    private updateJournal: RequestHandler = async (req, res) => {
         if (!req.params.id) {
             res.status(HTTP_STATUS_BAD_REQUEST)
                 .json(`Journal id required.`);
