@@ -41,16 +41,63 @@ export class JournalRoute {
     }
 
     private getJournals: RequestHandler = async (req, res) => {
-        this.journalRepository.journals$((req.user as User)._id)
-            .subscribe((journals: Journal[]) => {
-                if (journals.length === 0) {
-                    res.status(NOT_FOUND)
-                        .json(`No journals found.`);
+        const sort: string | undefined = req.query.sort as string;
+        console.log(sort)
+        if (sort === undefined) {
+            console.log('waypoint')
+            this.journalRepository.journals$((req.user as User)._id)
+                .subscribe((journals: Journal[]) => {
+                    if (journals.length === 0) {
+                        res.status(NOT_FOUND)
+                            .json(`No journals found.`);
+                        return;
+                    }
+                    res.json(journals);
+                });
+            return;
+        }
+
+        if ((sort !== 'name') &&
+            (sort !== 'lastUpdated') &&
+            (sort !== 'dateCreated')) {
+            res.status(BAD_REQUEST)
+                .json(`Invalid sort query.`);
+            return;
+        }
+
+        let order = req.query.order as string;
+        if (!order) order = '1';
+
+        if (sort === 'name') {
+            if (parseInt(order) === 1) {
+                this.journalRepository.sortUsersJournalsByName$(
+                    ((req.user as User)._id as string),
+                    1
+                ).subscribe((journals) => {
+                    if (journals.length === 0) {
+                        res.status(NOT_FOUND)
+                            .json(`No journals found.`);
+                        return;
+                    }
+                    res.json(journals);
                     return;
-                }
-                res.json(journals);
-            });
-    };
+                });
+            } else {
+                this.journalRepository.sortUsersJournalsByName$(
+                    ((req.user as User)._id as string),
+                    -1
+                ).subscribe((journals) => {
+                    if (journals.length === 0) {
+                        res.status(NOT_FOUND)
+                            .json(`No journals found.`);
+                        return;
+                    }
+                    res.json(journals);
+                    return;
+                });
+            }
+        }
+    }
 
     private createJournal: RequestHandler = async (req, res) => {
         if (!(req.body.name as string)){
