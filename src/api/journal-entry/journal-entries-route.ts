@@ -33,25 +33,27 @@ export class JournalEntriesRoute {
             return;
         }
 
-        userOwnsJournal$(req.user as User, req.params.journalid, this.journalRepository)
-            .subscribe((ownsJournal) => {
-                if (!ownsJournal) {
-                    res.status(HTTP_STATUS_UNAUTHORIZED)
-                        .json(`Unauthorized access to journal ${req.params.id}`);
-                    return;
-                }
+        userOwnsJournal$(
+            req.user as User,
+            req.params.journalid, this.journalRepository
+        ).subscribe((ownsJournal) => {
+            if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${req.params.id}`);
+                return;
+            }
 
-                this.journalEntryRepository.entry$(req.params.entryid)
-                    .subscribe((entry: JournalEntry | undefined) => {
-                        if (!entry) {
-                            res.status(HTTP_STATUS_NOT_FOUND)
-                                .json(`Journal entry ${req.params.entryid} not found.`);
-                            return;
-                        }
+            this.journalEntryRepository.entry$(req.params.entryid)
+                .subscribe((entry: JournalEntry | undefined) => {
+                    if (!entry) {
+                        res.status(HTTP_STATUS_NOT_FOUND)
+                            .json(`Journal entry ${req.params.entryid} not found.`);
+                        return;
+                    }
 
-                        res.json(entry);
-                    });
-            });
+                    res.json(entry);
+                });
+        });
     };
 
     private getEntries: RequestHandler = async (req, res) => {
