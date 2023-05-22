@@ -9,8 +9,7 @@ import {
     HTTP_STATUS_OK,
     HTTP_STATUS_UNAUTHORIZED
 } from "../../utils/environment";
-import {Journal} from "../journal/journal.type"
-import {combineLatest, filter, map, Observable} from "rxjs";
+import {combineLatest, filter, map} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
 import {userOwnsJournal$} from '../utils/userOwnsJournal$';
 
@@ -78,8 +77,7 @@ export class JournalEntriesRoute {
     }
 
     private createEntry: RequestHandler = async (req, res) => {
-        const journalId = req.params.id;
-        if (!journalId) {
+        if (!req.params.id) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
             return;
         }
@@ -89,17 +87,21 @@ export class JournalEntriesRoute {
             return;
         }
 
-        userOwnsJournal$(req.user as User, journalId).subscribe((ownsJournal) => {
-            if (!ownsJournal) {
-                res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${journalId}.`);
-                return;
-            }
+        userOwnsJournal$(req.user as User, req.params.journalid)
+            .subscribe((ownsJournal) => {
+                if (!ownsJournal) {
+                    res.status(HTTP_STATUS_UNAUTHORIZED)
+                        .json(`Unauthorized access to journal ${req.params.id}`);
+                    return;
+                }
 
-            this.journalEntryRepository.createEntry$(journalId, req.body.content)
-                .subscribe((entry) => {
+                this.journalEntryRepository.createEntry$(
+                    req.params.id,
+                    req.body.content
+                ).subscribe((entry) => {
                     res.status(HTTP_STATUS_CREATED).json(entry);
-                })
-        })
+                });
+            });
     };
 
     private deleteEntry: RequestHandler = async (req, res) => {
