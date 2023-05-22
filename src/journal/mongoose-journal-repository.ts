@@ -59,7 +59,7 @@ export class MongooseJournalRepository implements JournalRepository {
         });
     }
 
-    sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]> {
+    public sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]> {
         return new Observable((subscriber) => {
             JournalModel.find({author: id}).sort({dateCreated: order})
                 .then((journal: Journal[]) => {
