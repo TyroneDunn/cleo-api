@@ -1,18 +1,18 @@
 import {API_TITLE} from "../utils/environment";
 import {Application, RequestHandler} from "express";
-import {AuthRoute} from "./user/auth-route";
-import {UserRepository} from "./user/user-repository.type";
-import {JournalRoute} from "./journal/journal-route";
-import {JournalRepository} from "./journal/journal-repository.type";
-import {JournalEntriesRoute} from "./journal-entry/journal-entries-route";
+import {AuthRoute} from "../user/auth-route";
+import {UserRepository} from "../user/user-repository.type";
+import {JournalRoute} from "../journal/journal-route";
+import {JournalRepository} from "../journal/journal-repository.type";
+import {JournalEntriesRoute} from "../journal-entry/journal-entries-route";
 import {JournalEntryRepository}
-    from "./journal-entry/journal-entry-repository.type";
+    from "../journal-entry/journal-entry-repository.type";
 const express = require("express");
 import passport = require("passport");
 import {CorsOptions} from "cors";
 require("./passport/passport-config");
 const cors = require('cors');
-import authGuard from './user/auth-guard'
+import authGuard from '../user/auth-guard'
 
 export class CleoAPI {
     private app: Application;

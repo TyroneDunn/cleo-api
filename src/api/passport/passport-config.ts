@@ -1,8 +1,8 @@
 import {validatePassword} from "../../utils/password-utils";
 const passportConfig = require('passport');
 import LocalStrategy = require('passport-local');
-import {User} from "../user/user.type";
-import UserModel from "../user/user-model"
+import {User} from "../../user/user.type";
+import UserModel from "../../user/user-model"
 
 const customFields = {
     usernameField: 'username',

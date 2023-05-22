@@ -1,6 +1,6 @@
-import database from "../../utils/mongoose-database";
+import database from "../utils/mongoose-database";
 import {Document, Schema} from 'mongoose';
-import {JournalEntry} from "../journal-entry/journal-entry.type";
+import {JournalEntry} from "./journal-entry.type";
 
 export interface JournalEntryDocument extends Document, JournalEntry {
     body: string,

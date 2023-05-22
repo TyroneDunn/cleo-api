@@ -1,4 +1,4 @@
-import database from "../../utils/mongoose-database";
+import database from "../utils/mongoose-database";
 import {Document, Schema} from 'mongoose';
 import {User} from "./user.type";
 

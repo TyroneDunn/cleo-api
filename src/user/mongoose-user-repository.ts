@@ -1,5 +1,5 @@
 import {UserRepository} from "./user-repository.type";
-import {generateHash} from "../../utils/password-utils";
+import {generateHash} from "../utils/password-utils";
 import UserModel from "./user-model";
 
 export class MongooseUserRepository implements UserRepository {

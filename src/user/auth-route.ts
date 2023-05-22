@@ -4,7 +4,7 @@ import {
    HTTP_STATUS_CREATED,
    HTTP_STATUS_INTERNAL_SERVER_ERROR,
    HTTP_STATUS_OK
-} from "../../utils/environment";
+} from "../utils/environment";
 const express = require('express');
 import {RequestHandler} from "express";
 import {UserRepository} from "./user-repository.type";

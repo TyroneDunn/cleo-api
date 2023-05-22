@@ -8,7 +8,7 @@ import {
     HTTP_STATUS_NOT_FOUND,
     HTTP_STATUS_OK,
     HTTP_STATUS_UNAUTHORIZED
-} from "../../utils/environment";
+} from "../utils/environment";
 import {map} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
 import {userOwnsJournal$} from '../utils/userOwnsJournal$';
