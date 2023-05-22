@@ -4,7 +4,7 @@ import {
     HTTP_STATUS_NOT_FOUND,
     HTTP_STATUS_OK,
     HTTP_STATUS_UNAUTHORIZED,
-} from "../utils/environment";
+} from "../utils/http-status-constants";
 import {RequestHandler, Router} from "express";
 import {JournalRepository} from "./journal-repository.type";
 import {User} from "../user/user.type";
