@@ -12,6 +12,7 @@ import {
 import {Journal} from "../journal/journal.type"
 import {combineLatest, filter, map, Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
+import {userOwnsJournal$} from '../utils/userOwnsJournal$';
 
 export class JournalEntriesRoute {
     public readonly router: Router = Router();
@@ -28,7 +29,7 @@ export class JournalEntriesRoute {
 
     private getEntry: RequestHandler = async (req, res) => {
         combineLatest([
-            this.userOwnsJournal$(req.user as User, req.params.journalid),
+            userOwnsJournal$(req.user as User, req.params.journalid),
         ]).pipe(map(([ownsJournal]) => {
             if (!req.params.journalid) {
                 res.status(HTTP_STATUS_BAD_REQUEST)
@@ -63,7 +64,7 @@ export class JournalEntriesRoute {
 
     private getEntries: RequestHandler = async (req, res) => {
         combineLatest([
-            this.userOwnsJournal$(req.user as User, req.params.id)
+            userOwnsJournal$(req.user as User, req.params.id)
         ]).pipe(map(([ownsJournal]) => {
             if (!req.params.id) {
                 res.status(HTTP_STATUS_BAD_REQUEST)
@@ -96,7 +97,7 @@ export class JournalEntriesRoute {
             return;
         }
 
-        this.userOwnsJournal$(req.user as User, journalId).subscribe((ownsJournal) => {
+        userOwnsJournal$(req.user as User, journalId).subscribe((ownsJournal) => {
             if (!ownsJournal) {
                 res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${journalId}.`);
                 return;
@@ -123,7 +124,7 @@ export class JournalEntriesRoute {
         }
 
         combineLatest([
-            this.userOwnsJournal$(req.user as User, journalId),
+            userOwnsJournal$(req.user as User, journalId),
             this.journalEntryRepository.deleteEntry$(journalId, entryId),
         ]).pipe(map(([ownsJournal, entry]) => {
             if (!ownsJournal) {
@@ -154,7 +155,7 @@ export class JournalEntriesRoute {
         }
 
         combineLatest([
-            this.userOwnsJournal$(req.user as User, req.params.journalid),
+            userOwnsJournal$(req.user as User, req.params.journalid),
             this.journalEntryRepository.updateEntry$(req.params.entryid, req.body.body),
         ]).pipe(
             filter(([ownsJournal, _]) => {
@@ -170,16 +171,5 @@ export class JournalEntriesRoute {
             res.status(HTTP_STATUS_OK)
                 .json(entry);
         });
-    }
-
-    private userOwnsJournal$(user: User, journalId: string): Observable<boolean> {
-        return this.journalRepository.journal$(journalId).pipe(
-            map((journal: Journal | undefined): boolean => {
-                if (!journal)
-                    return false;
-
-                return(journal.author.toString() === user._id.toString());
-            })
-        );
     }
 }

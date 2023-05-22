@@ -8,8 +8,8 @@ import {
 import {RequestHandler, Router} from "express";
 import {JournalRepository} from "./journal-repository.type";
 import {User} from "../user/user.type";
-import {Journal} from "./journal.type"
-import {map, Observable} from "rxjs";
+import {Journal} from "./journal.type";
+import {userOwnsJournal$} from '../utils/userOwnsJournal$';
 
 export class JournalRoute {
     public readonly router: Router = Router();
@@ -68,7 +68,7 @@ export class JournalRoute {
             return;
         }
         
-        this.userOwnsJournal$((req.user as User), req.params.id)
+        userOwnsJournal$((req.user as User), req.params.id)
             .subscribe(ownsJournal => {
                 if (!ownsJournal) {
                     res.status(HTTP_STATUS_UNAUTHORIZED)
@@ -91,7 +91,7 @@ export class JournalRoute {
             return;
         }
 
-        this.userOwnsJournal$((req.user as User), req.params.id)
+        userOwnsJournal$((req.user as User), req.params.id)
             .subscribe((ownsJournal) => {
                 if (!ownsJournal) {
                     res.status(HTTP_STATUS_UNAUTHORIZED)
@@ -107,14 +107,4 @@ export class JournalRoute {
             });
     }
 
-     private userOwnsJournal$(user: User, journalId: string): Observable<boolean> {
-        return this.journalRepository.journal$(journalId).pipe(
-            map((journal: Journal | undefined): boolean => {
-                if (!journal)
-                    return false;
-
-                return(journal.author.toString() === user._id.toString());
-            })
-        );
-    }
 }
