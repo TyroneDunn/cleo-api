@@ -15,7 +15,7 @@ export class JournalRoute {
     public readonly router: Router = Router();
     constructor(private journalRepository: JournalRepository) {
         this.router.get('/:id', this.getJournal);
-        this.router.get('/', this.journals$);
+        this.router.get('/', this.getJournals);
         this.router.post('/', this.createJournal$);
         this.router.delete('/:id', this.deleteJournal$);
         this.router.patch('/:id', this.updateJournal$);
@@ -40,7 +40,7 @@ export class JournalRoute {
             });
     }
 
-    private journals$: RequestHandler = async (req, res) => {
+    private getJournals: RequestHandler = async (req, res) => {
         this.journalRepository.journals$((req.user as User)._id)
             .subscribe((journals: Journal[]) => {
                 res.json(journals);
