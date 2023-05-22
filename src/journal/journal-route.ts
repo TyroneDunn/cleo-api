@@ -122,6 +122,34 @@ export class JournalRoute {
                     return;
                 });
         }}
+        if (sort === 'dateCreated') {
+            if (parseInt(order) === 1) {
+                this.journalRepository.sortUsersJournalsByDateCreated$(
+                    ((req.user as User)._id as string),
+                    1
+                ).subscribe((journals) => {
+                    if (journals.length === 0) {
+                        res.status(NOT_FOUND)
+                            .json(`No journals found.`);
+                        return;
+                    }
+                    res.json(journals);
+                    return;
+                });
+            } else {
+                this.journalRepository.sortUsersJournalsByDateCreated$(
+                    ((req.user as User)._id as string),
+                    -1
+                ).subscribe((journals) => {
+                    if (journals.length === 0) {
+                        res.status(NOT_FOUND)
+                            .json(`No journals found.`);
+                        return;
+                    }
+                    res.json(journals);
+                    return;
+                });
+            }}
     }
 
     private createJournal: RequestHandler = async (req, res) => {
