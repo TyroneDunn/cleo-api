@@ -43,6 +43,11 @@ export class JournalRoute {
     private getJournals: RequestHandler = async (req, res) => {
         this.journalRepository.journals$((req.user as User)._id)
             .subscribe((journals: Journal[]) => {
+                if (journals.length === 0) {
+                    res.status(HTTP_STATUS_NOT_FOUND)
+                        .json(`No journals found.`);
+                    return;
+                }
                 res.json(journals);
             });
     };
