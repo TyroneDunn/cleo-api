@@ -105,31 +105,31 @@ export class JournalEntriesRoute {
     };
 
     private deleteEntry: RequestHandler = async (req, res) => {
-        const journalId = req.params.journalid;
-        if (!journalId) {
+        if (!req.params.journalid) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
             return;
         }
 
-        const entryId = req.params.entryid;
-        if (!entryId) {
+        if (!req.params.entryid) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Entry id required.`);
             return;
         }
 
-        combineLatest([
-            userOwnsJournal$(req.user as User, journalId),
-            this.journalEntryRepository.deleteEntry$(journalId, entryId),
-        ]).pipe(map(([ownsJournal, entry]) => {
-            if (!ownsJournal) {
-                res.status(HTTP_STATUS_UNAUTHORIZED)
-                    .json(`Unauthorized access to journal ${journalId}.`);
-                return;
-            }
+        userOwnsJournal$(req.user as User, req.params.journalid)
+            .subscribe((ownsJournal) => {
+                if (!ownsJournal) {
+                    res.status(HTTP_STATUS_UNAUTHORIZED)
+                        .json(`Unauthorized access to journal ${req.params.id}`);
+                    return;
+                }
 
-            res.status(HTTP_STATUS_OK)
-                .json(entry);
-        })).subscribe();
+                this.journalEntryRepository.deleteEntry$(
+                    req.params.journalid,
+                    req.params.entryid
+                ).subscribe((entry) => {
+                    res.status(HTTP_STATUS_OK).json(entry);
+                });
+            });
     };
 
     private updateEntry: RequestHandler = async (req, res) => {
