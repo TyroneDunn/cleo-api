@@ -14,14 +14,14 @@ import {map, Observable} from "rxjs";
 export class JournalRoute {
     public readonly router: Router = Router();
     constructor(private journalRepository: JournalRepository) {
-        this.router.get('/:id', this.journal$);
+        this.router.get('/:id', this.getJournal);
         this.router.get('/', this.journals$);
         this.router.post('/', this.createJournal$);
         this.router.delete('/:id', this.deleteJournal$);
         this.router.patch('/:id', this.updateJournal$);
     }
 
-    private journal$: RequestHandler = async (req, res) => {
+    private getJournal: RequestHandler = async (req, res) => {
         if (!req.params.id) {
             res.status(HTTP_STATUS_BAD_REQUEST)
                 .json(`ID required.`);
@@ -75,7 +75,7 @@ export class JournalRoute {
                         .json(`Unauthorized access to journal ${req.params.id}`)
                     return;
                 }
-                
+
                 this.journalRepository.deleteJournal$(req.params.id)
                     .subscribe((journal: Journal) => {
                         res.status(HTTP_STATUS_OK)
