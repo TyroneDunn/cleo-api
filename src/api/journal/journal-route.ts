@@ -68,7 +68,7 @@ export class JournalRoute {
             return;
         }
         
-        userOwnsJournal$((req.user as User), req.params.id)
+        userOwnsJournal$((req.user as User), req.params.id, this.journalRepository)
             .subscribe(ownsJournal => {
                 if (!ownsJournal) {
                     res.status(HTTP_STATUS_UNAUTHORIZED)
@@ -91,7 +91,7 @@ export class JournalRoute {
             return;
         }
 
-        userOwnsJournal$((req.user as User), req.params.id)
+        userOwnsJournal$((req.user as User), req.params.id, this.journalRepository)
             .subscribe((ownsJournal) => {
                 if (!ownsJournal) {
                     res.status(HTTP_STATUS_UNAUTHORIZED)
