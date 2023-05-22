@@ -3,12 +3,12 @@ import JournalEntryModel, {JournalEntryDocument} from "./journal-entry-model";
 import {now} from "mongoose";
 import {Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
-const ObjectId = require('mongoose').Types.ObjectId;
+import {isValidObjectId} from "../utils/isValidObjectId";
 
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
     public entry$(id: string): Observable<JournalEntry | undefined> {
         return new Observable((subscriber) => {
-            if (!this.isValidObjectId(id)) {
+            if (!isValidObjectId(id)) {
                subscriber.next(undefined);
                subscriber.complete();
                return;
@@ -74,9 +74,5 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
                     subscriber.complete();
                 })
         });
-    }
-
-    private isValidObjectId(id: string): boolean {
-        return ObjectId.isValid(id);
     }
 }

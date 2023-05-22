@@ -5,13 +5,12 @@ import {now, ObjectId} from "mongoose";
 import {Observable} from "rxjs";
 import {Journal} from "./journal.type";
 import {JournalEntry} from "../journal-entry/journal-entry.type";
-
-const ObjectId = require('mongoose').Types.ObjectId;
+import {isValidObjectId} from "../utils/isValidObjectId";
 
 export class MongooseJournalRepository implements JournalRepository {
     public journal$(id: string): Observable<Journal | undefined> {
         return new Observable((subscriber) => {
-            if (!this.isValidObjectId(id)) {
+            if (!isValidObjectId(id)) {
                 subscriber.next(undefined);
                 subscriber.complete();
                 return;
@@ -27,10 +26,6 @@ export class MongooseJournalRepository implements JournalRepository {
                 subscriber.complete();
             });
         });
-    }
-
-    private isValidObjectId(id: string): boolean {
-        return ObjectId.isValid(id);
     }
 
     public journals$(userId: string): Observable<Journal[]> {
