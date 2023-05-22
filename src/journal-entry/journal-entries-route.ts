@@ -20,7 +20,7 @@ export class JournalEntriesRoute {
         private journalRepository: JournalRepository
     ) {
         this.router.get('/:id', this.getEntry)
-        this.router.get('/:id', this.getEntries);
+        this.router.get('', this.getEntries);
         this.router.post('/:id', this.createEntry);
         this.router.delete('/:id', this.deleteEntry);
         this.router.patch('/:id', this.updateEntry);
@@ -59,17 +59,18 @@ export class JournalEntriesRoute {
     };
 
     private getEntries: RequestHandler = async (req, res) => {
-        if (!req.params.id) {
+        const journalId = req.query.journalid as string;
+        if (!journalId) {
             res.status(BAD_REQUEST)
                 .json(`Journal Id required.`);
             return;
         }
 
-        this.journalEntryRepository.entries$(req.params.id)
+        this.journalEntryRepository.entries$(journalId)
             .subscribe((entries) => {
-                if (!entries) {
+                if (entries.length === 0) {
                     res.status(NOT_FOUND)
-                        .json(`Journal ${req.params.id} entries not found.`);
+                        .json(`Journal ${journalId} entries not found.`);
                     return;
                 }
 
@@ -80,7 +81,7 @@ export class JournalEntriesRoute {
                 ).subscribe((ownsJournal) => {
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
-                            .json(`Unauthorized access to journal ${req.params.id}`);
+                            .json(`Unauthorized access to journal ${journalId}`);
                         return;
                     }
                 });
