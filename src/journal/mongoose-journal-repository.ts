@@ -40,10 +40,19 @@ export class MongooseJournalRepository implements JournalRepository {
             });
         });
     }
-
     public sortUsersJournalsByName$(id: string, order: 1 | -1): Observable<Journal[]> {
         return new Observable((subscriber) => {
             JournalModel.find({author: id}).sort({name: order})
+                .then((journal: Journal[]) => {
+                    subscriber.next(journal);
+                    subscriber.complete();
+                });
+        });
+    }
+
+    public sortUsersJournalsByLastUpdated$(id: string, order: 1 | -1): Observable<Journal[]> {
+        return new Observable((subscriber) => {
+            JournalModel.find({author: id}).sort({lastUpdated: order})
                 .then((journal: Journal[]) => {
                     subscriber.next(journal);
                     subscriber.complete();
