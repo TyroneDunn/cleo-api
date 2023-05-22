@@ -60,11 +60,7 @@ export class CleoAPI {
         this.app.get('/', this.homeRouter);
         this.app.use('/auth/', this.authRouter);
         this.app.use('/journals/', this.authGuard, this.journalsRouter);
-        this.app.use(
-            '/journal-entries/',
-            this.authGuard,
-            this.journalEntriesRouter
-        );
+        this.app.use('/entries/', this.authGuard, this.journalEntriesRouter);
     }
 
     private homeRouter(req, res): RequestHandler {
