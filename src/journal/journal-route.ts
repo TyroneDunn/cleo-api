@@ -72,21 +72,31 @@ export class JournalRoute {
                 .json(`Journal id required.`);
             return;
         }
-        
-        userOwnsJournal$((req.user as User), req.params.id, this.journalRepository)
-            .subscribe(ownsJournal => {
-                if (!ownsJournal) {
-                    res.status(HTTP_STATUS_UNAUTHORIZED)
-                        .json(`Unauthorized access to journal ${req.params.id}`)
+
+        this.journalRepository.journal$(req.params.id)
+            .subscribe((entry) => {
+                if (!entry) {
+                    res.status(HTTP_STATUS_NOT_FOUND)
+                        .json(`Journal ${(req.params.id)} not found.`);
                     return;
                 }
 
-                this.journalRepository.deleteJournal$(req.params.id)
-                    .subscribe((journal: Journal) => {
-                        res.status(HTTP_STATUS_OK)
-                            .json(journal);
+                userOwnsJournal$((req.user as User), req.params.id, this.journalRepository)
+                    .subscribe(ownsJournal => {
+                        if (!ownsJournal) {
+                            res.status(HTTP_STATUS_UNAUTHORIZED)
+                                .json(`Unauthorized access to journal ${req.params.id}`)
+                            return;
+                        }
+
+                        this.journalRepository.deleteJournal$(req.params.id)
+                            .subscribe((journal: Journal) => {
+                                res.status(HTTP_STATUS_OK)
+                                    .json(journal);
+                            })
                     })
-            })
+            });
+
     };
 
     private updateJournal: RequestHandler = async (req, res) => {
