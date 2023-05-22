@@ -16,7 +16,7 @@ export class JournalRoute {
     constructor(private journalRepository: JournalRepository) {
         this.router.get('/:id', this.getJournal);
         this.router.get('/', this.getJournals);
-        this.router.post('/', this.createJournal$);
+        this.router.post('/', this.createJournal);
         this.router.delete('/:id', this.deleteJournal$);
         this.router.patch('/:id', this.updateJournal$);
     }
@@ -47,7 +47,7 @@ export class JournalRoute {
             });
     };
 
-    private createJournal$: RequestHandler = async (req, res) => {
+    private createJournal: RequestHandler = async (req, res) => {
         if (!(req.body.name as string)){
             res.status(HTTP_STATUS_BAD_REQUEST)
                 .json('Journal name required.');
