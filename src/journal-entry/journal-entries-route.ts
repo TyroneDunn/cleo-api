@@ -6,7 +6,6 @@ import {
     BAD_REQUEST,
     CREATED,
     NOT_FOUND,
-    OK,
     UNAUTHORIZED
 } from "../utils/http-status-constants";
 import {map} from "rxjs";
@@ -19,7 +18,7 @@ export class JournalEntriesRoute {
         private journalEntryRepository: JournalEntryRepository,
         private journalRepository: JournalRepository
     ) {
-        this.router.get('/:id', this.getEntry)
+        this.router.get('/:id', this.getEntry);
         this.router.get('', this.getEntries);
         this.router.post('/:id', this.createEntry);
         this.router.delete('/:id', this.deleteEntry);
@@ -53,8 +52,7 @@ export class JournalEntriesRoute {
                     }
                 });
 
-                res.status(OK)
-                    .json(entry);
+                res.json(entry);
             });
     };
 
@@ -86,8 +84,7 @@ export class JournalEntriesRoute {
                     }
                 });
 
-                res.status(OK)
-                    .json(entries);
+                res.json(entries);
             })
     }
 
@@ -147,7 +144,7 @@ export class JournalEntriesRoute {
                     this.journalEntryRepository.deleteEntry$(
                         req.params.id
                     ).subscribe((entry) => {
-                        res.status(OK).json(entry);
+                        res.json(entry);
                     });
                 });
             });
@@ -187,9 +184,8 @@ export class JournalEntriesRoute {
                         req.params.id,
                         req.body.body
                     ).subscribe((entry) => {
-                        res.status(OK)
-                            .json(entry);
-                    })
+                        res.json(entry);
+                    });
                 });
             });
     }
