@@ -3,11 +3,11 @@ import {JournalEntryRepository} from "./journal-entry-repository.type";
 import {User} from "../user/user.type";
 import {JournalRepository} from "../journal/journal-repository.type";
 import {
-    HTTP_STATUS_BAD_REQUEST,
-    HTTP_STATUS_CREATED,
-    HTTP_STATUS_NOT_FOUND,
-    HTTP_STATUS_OK,
-    HTTP_STATUS_UNAUTHORIZED
+    BAD_REQUEST,
+    CREATED,
+    NOT_FOUND,
+    OK,
+    UNAUTHORIZED
 } from "../utils/http-status-constants";
 import {map} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
@@ -28,7 +28,7 @@ export class JournalEntriesRoute {
 
     private getEntry: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(HTTP_STATUS_BAD_REQUEST)
+            res.status(BAD_REQUEST)
                 .json('Entry id required.');
             return;
         }
@@ -36,7 +36,7 @@ export class JournalEntriesRoute {
         this.journalEntryRepository.entry$(req.params.id)
             .subscribe((entry: JournalEntry | undefined) => {
                 if (!entry) {
-                    res.status(HTTP_STATUS_NOT_FOUND)
+                    res.status(NOT_FOUND)
                         .json(`Journal entry ${req.params.id} not found.`);
                     return;
                 }
@@ -47,20 +47,20 @@ export class JournalEntriesRoute {
                     this.journalRepository
                 ).subscribe((ownsJournal) => {
                     if (!ownsJournal) {
-                        res.status(HTTP_STATUS_UNAUTHORIZED)
+                        res.status(UNAUTHORIZED)
                             .json(`Unauthorized access to journal ${entry.journal}`);
                         return;
                     }
                 });
 
-                res.status(HTTP_STATUS_OK)
+                res.status(OK)
                     .json(entry);
             });
     };
 
     private getEntries: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(HTTP_STATUS_BAD_REQUEST)
+            res.status(BAD_REQUEST)
                 .json(`Journal Id required.`);
             return;
         }
@@ -68,7 +68,7 @@ export class JournalEntriesRoute {
         this.journalEntryRepository.entries$(req.params.id)
             .subscribe((entries) => {
                 if (!entries) {
-                    res.status(HTTP_STATUS_NOT_FOUND)
+                    res.status(NOT_FOUND)
                         .json(`Journal ${req.params.id} entries not found.`);
                     return;
                 }
@@ -79,32 +79,32 @@ export class JournalEntriesRoute {
                     this.journalRepository
                 ).subscribe((ownsJournal) => {
                     if (!ownsJournal) {
-                        res.status(HTTP_STATUS_UNAUTHORIZED)
+                        res.status(UNAUTHORIZED)
                             .json(`Unauthorized access to journal ${req.params.id}`);
                         return;
                     }
                 });
 
-                res.status(HTTP_STATUS_OK)
+                res.status(OK)
                     .json(entries);
             })
     }
 
     private createEntry: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Journal id required.`);
+            res.status(BAD_REQUEST).json(`Journal id required.`);
             return;
         }
 
         if (!req.body.content) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Content required.`);
+            res.status(BAD_REQUEST).json(`Content required.`);
             return;
         }
 
         userOwnsJournal$(req.user as User, req.params.id, this.journalRepository)
             .subscribe((ownsJournal) => {
                 if (!ownsJournal) {
-                    res.status(HTTP_STATUS_UNAUTHORIZED)
+                    res.status(UNAUTHORIZED)
                         .json(`Unauthorized access to journal ${req.params.id}`);
                     return;
                 }
@@ -113,21 +113,21 @@ export class JournalEntriesRoute {
                     req.params.id,
                     req.body.content
                 ).subscribe((entry) => {
-                    res.status(HTTP_STATUS_CREATED).json(entry);
+                    res.status(CREATED).json(entry);
                 });
             });
     };
 
     private deleteEntry: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Entry id required.`);
+            res.status(BAD_REQUEST).json(`Entry id required.`);
             return;
         }
 
         this.journalEntryRepository.entry$(req.params.id)
             .subscribe((entry) => {
                 if (!entry) {
-                    res.status(HTTP_STATUS_NOT_FOUND)
+                    res.status(NOT_FOUND)
                         .json(`Journal entry ${req.params.id} not found.`);
                     return;
                 }
@@ -138,7 +138,7 @@ export class JournalEntriesRoute {
                     this.journalRepository
                 ).subscribe((ownsJournal) => {
                     if (!ownsJournal) {
-                        res.status(HTTP_STATUS_UNAUTHORIZED)
+                        res.status(UNAUTHORIZED)
                             .json(`Unauthorized access to journal ${req.params.id}`);
                         return;
                     }
@@ -146,7 +146,7 @@ export class JournalEntriesRoute {
                     this.journalEntryRepository.deleteEntry$(
                         req.params.id
                     ).subscribe((entry) => {
-                        res.status(HTTP_STATUS_OK).json(entry);
+                        res.status(OK).json(entry);
                     });
                 });
             });
@@ -154,19 +154,19 @@ export class JournalEntriesRoute {
 
     private updateEntry: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Entry id required.`);
+            res.status(BAD_REQUEST).json(`Entry id required.`);
             return;
         }
 
         if (!req.body.body) {
-            res.status(HTTP_STATUS_BAD_REQUEST).json(`Entry body required.`);
+            res.status(BAD_REQUEST).json(`Entry body required.`);
             return;
         }
 
         this.journalEntryRepository.entry$(req.params.id)
             .subscribe((entry) => {
                 if (!entry) {
-                    res.status(HTTP_STATUS_NOT_FOUND)
+                    res.status(NOT_FOUND)
                         .json(`Journal entry ${req.params.id} not found.`);
                     return;
                 }
@@ -177,7 +177,7 @@ export class JournalEntriesRoute {
                     this.journalRepository
                 ).subscribe((ownsJournal) => {
                     if (!ownsJournal) {
-                        res.status(HTTP_STATUS_UNAUTHORIZED)
+                        res.status(UNAUTHORIZED)
                             .json(`Unauthorized access to journal ${req.params.id}`);
                         return;
                     }
@@ -186,7 +186,7 @@ export class JournalEntriesRoute {
                         req.params.id,
                         req.body.body
                     ).subscribe((entry) => {
-                        res.status(HTTP_STATUS_OK)
+                        res.status(OK)
                             .json(entry);
                     })
                 });

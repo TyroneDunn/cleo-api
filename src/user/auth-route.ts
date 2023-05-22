@@ -1,9 +1,9 @@
 import {
-   HTTP_STATUS_BAD_REQUEST,
-   HTTP_STATUS_CONFLICT,
-   HTTP_STATUS_CREATED,
-   HTTP_STATUS_INTERNAL_SERVER_ERROR,
-   HTTP_STATUS_OK
+   BAD_REQUEST,
+   CONFLICT,
+   CREATED,
+   INTERNAL_SERVER_ERROR,
+   OK
 } from "../utils/http-status-constants";
 const express = require('express');
 import {RequestHandler} from "express";
@@ -25,40 +25,40 @@ export class AuthRoute {
       const password = req.body.password;
 
       if (!username) {
-         res.status(HTTP_STATUS_BAD_REQUEST).json(`Username required.`);
+         res.status(BAD_REQUEST).json(`Username required.`);
          return;
       }
 
       if (!password) {
-         res.status(HTTP_STATUS_BAD_REQUEST).json(`Password required.`);
+         res.status(BAD_REQUEST).json(`Password required.`);
          return;
       }
 
       if (await this.userRepository.userExists(username)) {
-         res.status(HTTP_STATUS_CONFLICT).json(`Username already taken.`);
+         res.status(CONFLICT).json(`Username already taken.`);
          return;
       }
 
       await this.userRepository.registerUser(username, password);
-      res.status(HTTP_STATUS_CREATED).json(`New user created.`);
+      res.status(CREATED).json(`New user created.`);
    }
 
    private login: RequestHandler = (req, res) => {
-      res.status(HTTP_STATUS_OK).json(`Logged in as ${(req.user as User).username}`);
+      res.status(OK).json(`Logged in as ${(req.user as User).username}`);
    }
 
    private logout = (req, res) => {
       req.logout(error => {
          if (error) {
-            res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).json(`Log out failed.`);
+            res.status(INTERNAL_SERVER_ERROR).json(`Log out failed.`);
             return;
          }
 
-         res.status(HTTP_STATUS_OK).json(`Logged out successfully.`);
+         res.status(OK).json(`Logged out successfully.`);
       });
    };
 
    private protected = (req, res) => {
-      res.status(HTTP_STATUS_OK).json(`Authenticated as ${(req.user as User).username}`);
+      res.status(OK).json(`Authenticated as ${(req.user as User).username}`);
    };
 }

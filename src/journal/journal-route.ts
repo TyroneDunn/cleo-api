@@ -1,9 +1,9 @@
 import {
-    HTTP_STATUS_BAD_REQUEST,
-    HTTP_STATUS_CREATED,
-    HTTP_STATUS_NOT_FOUND,
-    HTTP_STATUS_OK,
-    HTTP_STATUS_UNAUTHORIZED,
+    BAD_REQUEST,
+    CREATED,
+    NOT_FOUND,
+    OK,
+    UNAUTHORIZED,
 } from "../utils/http-status-constants";
 import {RequestHandler, Router} from "express";
 import {JournalRepository} from "./journal-repository.type";
@@ -23,15 +23,15 @@ export class JournalRoute {
 
     private getJournal: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(HTTP_STATUS_BAD_REQUEST)
-                .json(`ID required.`);
+            res.status(BAD_REQUEST)
+                .json(`Id required.`);
             return;
         }
 
         this.journalRepository.journal$(req.params.id)
             .subscribe((journal: Journal | undefined) => {
                 if (!journal) {
-                    res.status(HTTP_STATUS_NOT_FOUND)
+                    res.status(NOT_FOUND)
                         .json(`Journal ${(req.params.id)} not found.`);
                     return;
                 }
@@ -44,7 +44,7 @@ export class JournalRoute {
         this.journalRepository.journals$((req.user as User)._id)
             .subscribe((journals: Journal[]) => {
                 if (journals.length === 0) {
-                    res.status(HTTP_STATUS_NOT_FOUND)
+                    res.status(NOT_FOUND)
                         .json(`No journals found.`);
                     return;
                 }
@@ -54,21 +54,21 @@ export class JournalRoute {
 
     private createJournal: RequestHandler = async (req, res) => {
         if (!(req.body.name as string)){
-            res.status(HTTP_STATUS_BAD_REQUEST)
+            res.status(BAD_REQUEST)
                 .json('Journal name required.');
             return;
         }
 
         this.journalRepository.createJournal$((req.user as User)._id, req.body.name)
             .subscribe((journal: Journal) => {
-                res.status(HTTP_STATUS_CREATED)
+                res.status(CREATED)
                     .json(journal);
             });
     };
 
     private deleteJournal: RequestHandler = (req, res) => {
         if (!req.params.id) {
-            res.status(HTTP_STATUS_BAD_REQUEST)
+            res.status(BAD_REQUEST)
                 .json(`Journal id required.`);
             return;
         }
@@ -76,7 +76,7 @@ export class JournalRoute {
         this.journalRepository.journal$(req.params.id)
             .subscribe((entry) => {
                 if (!entry) {
-                    res.status(HTTP_STATUS_NOT_FOUND)
+                    res.status(NOT_FOUND)
                         .json(`Journal ${(req.params.id)} not found.`);
                     return;
                 }
@@ -84,31 +84,31 @@ export class JournalRoute {
                 userOwnsJournal$((req.user as User), req.params.id, this.journalRepository)
                     .subscribe(ownsJournal => {
                         if (!ownsJournal) {
-                            res.status(HTTP_STATUS_UNAUTHORIZED)
+                            res.status(UNAUTHORIZED)
                                 .json(`Unauthorized access to journal ${req.params.id}`)
                             return;
                         }
 
                         this.journalRepository.deleteJournal$(req.params.id)
                             .subscribe((journal: Journal) => {
-                                res.status(HTTP_STATUS_OK)
+                                res.status(OK)
                                     .json(journal);
                             })
                     })
             });
-
     };
 
     private updateJournal: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(HTTP_STATUS_BAD_REQUEST)
+            res.status(BAD_REQUEST)
                 .json(`Journal id required.`);
             return;
         }
+
         this.journalRepository.journal$(req.params.id)
             .subscribe((entry) => {
                 if (!entry) {
-                    res.status(HTTP_STATUS_NOT_FOUND)
+                    res.status(NOT_FOUND)
                         .json(`Journal ${(req.params.id)} not found.`);
                     return;
                 }
@@ -116,15 +116,14 @@ export class JournalRoute {
                 userOwnsJournal$((req.user as User), req.params.id, this.journalRepository)
                     .subscribe((ownsJournal) => {
                         if (!ownsJournal) {
-                            res.status(HTTP_STATUS_UNAUTHORIZED)
+                            res.status(UNAUTHORIZED)
                                 .json(`Unauthorized access to journal ${(req.params.id)}.`);
                             return;
                         }
 
                         this.journalRepository.updateJournal$(req.params.id, req.body.name)
                             .subscribe((journal) => {
-                                res.status(HTTP_STATUS_OK)
-                                    .json(journal);
+                                res.json(journal);
                             });
                     });
             });
