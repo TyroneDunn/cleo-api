@@ -27,7 +27,6 @@ export class MongooseJournalRepository implements JournalRepository {
             });
         });
     }
-
     public journals$(userId: string): Observable<Journal[]> {
         return new Observable((subscriber) => {
             JournalModel.find({author: userId}, (error, journals: Journal[]) => {
@@ -49,7 +48,7 @@ export class MongooseJournalRepository implements JournalRepository {
                     subscriber.next(journal);
                     subscriber.complete();
                 });
-        })
+        });
     }
 
     public createJournal$(userId: string, name: string): Observable<Journal> {
