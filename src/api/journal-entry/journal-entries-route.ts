@@ -28,9 +28,8 @@ export class JournalEntriesRoute {
 
     private getEntry: RequestHandler = async (req, res) => {
         combineLatest([
-            this.journalRepository.journalExists$(req.params.journalid),
             this.userOwnsJournal$(req.user as User, req.params.journalid),
-        ]).pipe(map(([journalExists, ownsJournal]) => {
+        ]).pipe(map(([ownsJournal]) => {
             if (!req.params.journalid) {
                 res.status(HTTP_STATUS_BAD_REQUEST)
                     .json(`Journal Id required.`);
@@ -40,12 +39,6 @@ export class JournalEntriesRoute {
             if (!req.params.entryid) {
                 res.status(HTTP_STATUS_BAD_REQUEST)
                     .json(`Entry Id required.`);
-                return;
-            }
-
-            if (!journalExists) {
-                res.status(HTTP_STATUS_NOT_FOUND)
-                    .json(`Journal ${(req.params.journalid)} not found.`);
                 return;
             }
 
@@ -70,18 +63,11 @@ export class JournalEntriesRoute {
 
     private getEntries: RequestHandler = async (req, res) => {
         combineLatest([
-            this.journalRepository.journalExists$(req.params.id),
             this.userOwnsJournal$(req.user as User, req.params.id)
-        ]).pipe(map(([journalExists, ownsJournal]) => {
+        ]).pipe(map(([ownsJournal]) => {
             if (!req.params.id) {
                 res.status(HTTP_STATUS_BAD_REQUEST)
                     .json(`Journal Id required.`);
-                return;
-            }
-
-            if (!journalExists) {
-                res.status(HTTP_STATUS_NOT_FOUND)
-                    .json(`Journal ${(req.params.id)} not found.`);
                 return;
             }
 
@@ -130,23 +116,25 @@ export class JournalEntriesRoute {
             return;
         }
 
-        const hasOwnershipOfJournal = await this.userOwnsJournal$(req.user as User, journalId);
-        if (!hasOwnershipOfJournal) {
-            res.status(HTTP_STATUS_UNAUTHORIZED).json(`Unauthorized access to journal ${journalId}.`);
-            return;
-        }
-
         const entryId = req.params.entryid;
         if (!entryId) {
             res.status(HTTP_STATUS_BAD_REQUEST).json(`Entry id required.`);
             return;
         }
 
-        this.journalEntryRepository.deleteEntry$(journalId, entryId)
-            .subscribe((entry) => {
-                res.status(HTTP_STATUS_OK)
-                    .json(entry);
-            })
+        combineLatest([
+            this.userOwnsJournal$(req.user as User, journalId),
+            this.journalEntryRepository.deleteEntry$(journalId, entryId),
+        ]).pipe(map(([ownsJournal, entry]) => {
+            if (!ownsJournal) {
+                res.status(HTTP_STATUS_UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${journalId}.`);
+                return;
+            }
+
+            res.status(HTTP_STATUS_OK)
+                .json(entry);
+        })).subscribe();
     };
 
     private updateEntry: RequestHandler = async (req, res) => {
