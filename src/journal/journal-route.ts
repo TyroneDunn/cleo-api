@@ -80,8 +80,36 @@ export class JournalRoute {
                     res.json(journals);
                     return;
                 });
+        } else {
+            this.journalRepository.sortUsersJournalsByName$(
+                ((req.user as User)._id as string),
+                -1
+            ).subscribe((journals) => {
+                if (journals.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json(`No journals found.`);
+                    return;
+                }
+                res.json(journals);
+                return;
+            });
+        }}
+        if (sort === 'lastUpdated') {
+            if (parseInt(order) === 1) {
+                this.journalRepository.sortUsersJournalsByLastUpdated$(
+                    ((req.user as User)._id as string),
+                    1
+                ).subscribe((journals) => {
+                    if (journals.length === 0) {
+                        res.status(NOT_FOUND)
+                            .json(`No journals found.`);
+                        return;
+                    }
+                    res.json(journals);
+                    return;
+                });
             } else {
-                this.journalRepository.sortUsersJournalsByName$(
+                this.journalRepository.sortUsersJournalsByLastUpdated$(
                     ((req.user as User)._id as string),
                     -1
                 ).subscribe((journals) => {
@@ -93,8 +121,7 @@ export class JournalRoute {
                     res.json(journals);
                     return;
                 });
-            }
-        }
+        }}
     }
 
     private createJournal: RequestHandler = async (req, res) => {
