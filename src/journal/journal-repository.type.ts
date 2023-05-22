@@ -6,6 +6,7 @@ export interface JournalRepository {
     journals$(userId: string): Observable<Journal[]>;
     sortUsersJournalsByName$(id: string, order: 1 | -1): Observable<Journal[]>;
     sortUsersJournalsByLastUpdated$(id: string, order: 1 | -1): Observable<Journal[]>;
+    sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]>;
     createJournal$(userId: string, name: string): Observable<Journal>;
     deleteJournal$(id: string): Observable<Journal>;
     updateJournal$(id: string, name: string): Observable<Journal>;
