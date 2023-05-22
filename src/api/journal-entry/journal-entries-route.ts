@@ -56,20 +56,25 @@ export class JournalEntriesRoute {
     };
 
     private getEntries: RequestHandler = async (req, res) => {
-        combineLatest([
-            userOwnsJournal$(req.user as User, req.params.id)
-        ]).pipe(map(([ownsJournal]) => {
-            if (!ownsJournal) {
-                res.status(HTTP_STATUS_UNAUTHORIZED)
-                    .json(`Unauthorized access to journal ${(req.params.id)}.`);
-                return;
-            }
+        if (!req.params.id) {
+            res.status(HTTP_STATUS_BAD_REQUEST)
+                .json(`Journal Id required.`);
+            return;
+        }
 
-            this.journalEntryRepository.entries$(req.params.id)
-                .subscribe((entries) => {
-                    res.json(entries);
-                })
-        })).subscribe();
+        userOwnsJournal$(req.user as User, req.params.journalid)
+            .subscribe((ownsJournal) => {
+                if (!ownsJournal) {
+                    res.status(HTTP_STATUS_UNAUTHORIZED)
+                        .json(`Unauthorized access to journal ${req.params.id}`);
+                    return;
+                }
+
+                this.journalEntryRepository.entries$(req.params.id)
+                    .subscribe((entries) => {
+                        res.json(entries);
+                    })
+            });
     }
 
     private createEntry: RequestHandler = async (req, res) => {
