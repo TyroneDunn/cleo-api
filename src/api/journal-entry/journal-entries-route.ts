@@ -9,7 +9,7 @@ import {
     HTTP_STATUS_OK,
     HTTP_STATUS_UNAUTHORIZED
 } from "../../utils/environment";
-import {combineLatest, filter, map} from "rxjs";
+import {map} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
 import {userOwnsJournal$} from '../utils/userOwnsJournal$';
 
