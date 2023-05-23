@@ -128,7 +128,10 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
         return new Observable((subscriber) => {
             JournalEntryModel.findByIdAndUpdate(
                 id,
-                {body: body, lastUpdated: now()},
+                {
+                    body: body,
+                    lastUpdated: now(),
+                },
                 {new: true},
                 (error, entry) => {
                     if (error) {
