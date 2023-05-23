@@ -21,6 +21,7 @@ export class MongooseUserRepository implements UserRepository {
             });
         });
     }
+    
     public userExists$(username: string): Observable<boolean> {
         return new Observable((subscriber) => {
             UserModel.findOne({username: username}, (error, user) => {
