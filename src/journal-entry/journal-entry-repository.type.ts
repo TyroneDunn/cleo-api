@@ -4,12 +4,12 @@ import {Observable} from "rxjs";
 export interface JournalEntryRepository {
     entry$(id: string): Observable<JournalEntry | undefined>;
     entries$(
-        journalId: string,
+        id: string,
         page: number,
         limit: number,
     ): Observable<JournalEntry[]>;
     createEntry$(
-        journalId: string,
+        id: string,
         body: string,
         page: number,
         limit: number,
