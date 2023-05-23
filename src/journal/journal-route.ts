@@ -24,7 +24,7 @@ export class JournalRoute {
     private getJournal: RequestHandler = async (req, res) => {
         if (!req.params.id) {
             res.status(BAD_REQUEST)
-                .json(`Id required.`);
+                .json('Journal id required.');
             return;
         }
 
@@ -89,7 +89,7 @@ export class JournalRoute {
             ).subscribe((journals: Journal[]) => {
                 if (journals.length === 0) {
                     res.status(NOT_FOUND)
-                        .json(`No journals found.`);
+                        .json('No journals found.');
                     return;
                 }
                 res.json(journals);
@@ -110,8 +110,8 @@ export class JournalRoute {
                     return;
                 }
                 res.json(journals);
-                return;
             });
+            return;
         }
 
         if (sort === 'lastUpdated') {
@@ -127,8 +127,8 @@ export class JournalRoute {
                     return;
                 }
                 res.json(journals);
-                return;
             });
+            return;
         }
 
         if (sort === 'dateCreated') {
@@ -144,8 +144,8 @@ export class JournalRoute {
                     return;
                 }
                 res.json(journals);
-                return;
             });
+            return;
         }
     }
 
