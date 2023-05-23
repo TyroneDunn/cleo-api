@@ -6,7 +6,7 @@ export interface JournalDocument extends Document, Journal {
   _id: string,
   name: string,
   author: Schema.Types.ObjectId;
-  dateOfCreation: Date,
+  dateCreated: Date,
   lastUpdated: Date,
 }
 
@@ -20,7 +20,7 @@ const journalSchema = new Schema<JournalDocument>({
     ref: "User",
     required: true,
   },
-  dateOfCreation: Date,
+  dateCreated: Date,
   lastUpdated: Date,
 });
 

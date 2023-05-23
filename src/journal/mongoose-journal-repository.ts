@@ -49,9 +49,9 @@ export class MongooseJournalRepository implements JournalRepository {
                 });
         });
     }
-    public sortUsersJournalsByLastUpdated$(id: string, order: 1 | -1): Observable<Journal[]> {
+    public sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]> {
         return new Observable((subscriber) => {
-            JournalModel.find({author: id}).sort({lastUpdated: order})
+            JournalModel.find({author: id}).sort({dateCreated: order})
                 .then((journal: Journal[]) => {
                     subscriber.next(journal);
                     subscriber.complete();
@@ -59,9 +59,9 @@ export class MongooseJournalRepository implements JournalRepository {
         });
     }
 
-    public sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]> {
+    public sortUsersJournalsByLastUpdated$(id: string, order: 1 | -1): Observable<Journal[]> {
         return new Observable((subscriber) => {
-            JournalModel.find({author: id}).sort({dateCreated: order})
+            JournalModel.find({author: id}).sort({lastUpdated: order})
                 .then((journal: Journal[]) => {
                     subscriber.next(journal);
                     subscriber.complete();
@@ -74,7 +74,7 @@ export class MongooseJournalRepository implements JournalRepository {
             new JournalModel({
                 name: name,
                 author: userId,
-                dateOfCreation: now(),
+                dateCreated: now(),
                 lastUpdated: now(),
             }).save((error, journal: Journal) => {
                 subscriber.next(journal)
