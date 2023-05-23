@@ -8,6 +8,12 @@ export interface JournalEntryRepository {
         page: number,
         limit: number,
     ): Observable<JournalEntry[]>;
+    sortEntriesByDateCreated$(
+        id: string,
+        order: 1 | -1,
+        page: number,
+        limit: number,
+    ): Observable<JournalEntry[]>;
     createEntry$(
         id: string,
         body: string,
