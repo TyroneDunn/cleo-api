@@ -1,8 +1,9 @@
 import {validatePassword} from "../../utils/password-utils";
-const passportConfig = require('passport');
-import LocalStrategy = require('passport-local');
 import {User} from "../../user/user.type";
 import UserModel from "../../user/user-model"
+
+const passportConfig = require('passport');
+import LocalStrategy = require('passport-local');
 
 const customFields = {
     usernameField: 'username',
@@ -10,16 +11,17 @@ const customFields = {
 };
 
 const verifyCallback = async (username, password, done) => {
-    const user: User  = await UserModel.findOne({username: username});
-    if (!user) {
-        done(null, false);
-    } else {
-        const isValid = validatePassword(password, user.hash);
-        if (isValid)
+    UserModel.findOne({username: username}, (error, user: User) => {
+        if (!user) {
+            done(null, false);
+            return;
+        }
+
+        if (validatePassword(password, user.hash))
             done(null, user);
         else
             done(null, false);
-    }
+    });
 };
 
 const localStrategy = new LocalStrategy.Strategy(customFields, verifyCallback);
@@ -30,8 +32,11 @@ passportConfig.serializeUser((user, done) => {
 });
 
 passportConfig.deserializeUser((userId, done) => {
-    UserModel.findById(userId)
-        .then(user => {
-            done(null, user);
-        }).catch(err => done(err));
+    UserModel.findById(userId, (error, user) => {
+       if (error) {
+           done(error);
+           return;
+       }
+        done(null, user);
+    });
 });
