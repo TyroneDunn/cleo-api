@@ -13,7 +13,11 @@ import {User} from "./user.type";
 export class AuthRoute {
    public readonly router = express.Router();
 
-   constructor(private userRepository: UserRepository, authenticateUserMiddleware: RequestHandler, authGuard: RequestHandler) {
+   constructor(
+       private userRepository: UserRepository,
+       authenticateUserMiddleware: RequestHandler,
+       authGuard: RequestHandler
+   ) {
       this.router.post('/register/', this.register);
       this.router.post('/login/', authenticateUserMiddleware, this.login);
       this.router.post('/logout/', authGuard, this.logout);
@@ -30,7 +34,7 @@ export class AuthRoute {
       }
 
       if (!password) {
-         res.status(BAD_REQUEST).json(`Password required.`);
+         res.status(BAD_REQUEST).json('Password required.');
          return;
       }
 
@@ -42,9 +46,8 @@ export class AuthRoute {
 
          this.userRepository.registerUser$(username, password).subscribe((user) => {
             res.status(CREATED).json(user);
-         })
-      })
-
+         });
+      });
    }
 
    private login: RequestHandler = (req, res) => {
@@ -52,17 +55,19 @@ export class AuthRoute {
    }
 
    private logout = (req, res) => {
-      req.logout(error => {
+      req.logout(
+          (error) => {
          if (error) {
-            res.status(INTERNAL_SERVER_ERROR).json(`Log out failed.`);
+            res.status(INTERNAL_SERVER_ERROR)
+                .json('Log out failed.');
             return;
          }
 
-         res.status(OK).json(`Logged out successfully.`);
+         res.json('Logged out successfully.');
       });
    };
 
    private protected = (req, res) => {
-      res.status(OK).json(`Authenticated as ${(req.user as User).username}`);
+      res.json('Authenticated as ${(req.user as User).username}');
    };
 }
