@@ -70,11 +70,20 @@ export class MongooseJournalRepository implements JournalRepository {
             });
     }
 
-    public sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]> {
+    public sortUsersJournalsByDateCreated$(
+        id: string,
+        order: 1 | -1,
+        page: number,
+        limit: number
+    ): Observable<Journal[]> {
         return new Observable((subscriber) => {
-            JournalModel.find({author: id}).sort({dateCreated: order})
-                .then((journal: Journal[]) => {
-                    subscriber.next(journal);
+            const skip = (page - 1) * limit;
+            JournalModel.find({author: id})
+                .sort({dateCreated: order})
+                .skip(skip)
+                .limit(limit)
+                .exec((error, journals: Journal[]) => {
+                    subscriber.next(journals);
                     subscriber.complete();
                 });
         });
