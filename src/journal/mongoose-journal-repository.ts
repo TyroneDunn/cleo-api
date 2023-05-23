@@ -50,14 +50,23 @@ export class MongooseJournalRepository implements JournalRepository {
                 });
         });
     }
-    public sortUsersJournalsByName$(id: string, order: 1 | -1): Observable<Journal[]> {
-        return new Observable((subscriber) => {
-            JournalModel.find({author: id}).sort({name: order})
-                .then((journal: Journal[]) => {
-                    subscriber.next(journal);
-                    subscriber.complete();
-                });
-        });
+    public sortUsersJournalsByName$(
+        id: string,
+        order: 1 | -1,
+        page: number,
+        limit: number
+        ): Observable<Journal[]> {
+            return new Observable((subscriber) => {
+                const skip = (page - 1) * limit;
+                JournalModel.find({author: id})
+                    .sort({name: order})
+                    .skip(skip)
+                    .limit(limit)
+                    .exec((error, journals: Journal[]) => {
+                        subscriber.next(journals);
+                        subscriber.complete();
+                    });
+            });
     }
     public sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]> {
         return new Observable((subscriber) => {
