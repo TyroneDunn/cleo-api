@@ -21,6 +21,26 @@ export class MongooseUserRepository implements UserRepository {
             });
         });
     }
+    public userExists$(username: string): Observable<boolean> {
+        return new Observable((subscriber) => {
+            UserModel.findOne({username: username}, (error, user) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+
+                if (!user) {
+                    subscriber.next(false);
+                    subscriber.complete();
+                }
+                else {
+                    subscriber.next(true);
+                    subscriber.complete();
+                }
+            });
+        });
+    }
 
     async registerUser(username: string, password: string): Promise<void> {
         const newUser = new UserModel({
