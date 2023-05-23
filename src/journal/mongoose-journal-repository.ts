@@ -70,11 +70,11 @@ export class MongooseJournalRepository implements JournalRepository {
             });
     }
 
-    public sortUsersJournalsByDateCreated$(
+    public sortUsersJournalsByLastUpdated$(
         id: string,
         order: 1 | -1,
         page: number,
-        limit: number
+        limit: number,
     ): Observable<Journal[]> {
         return new Observable((subscriber) => {
             const skip = (page - 1) * limit;
@@ -89,11 +89,11 @@ export class MongooseJournalRepository implements JournalRepository {
         });
     }
 
-    public sortUsersJournalsByLastUpdated$(
+    public sortUsersJournalsByDateCreated$(
         id: string,
         order: 1 | -1,
         page: number,
-        limit: number,
+        limit: number
     ): Observable<Journal[]> {
         return new Observable((subscriber) => {
             const skip = (page - 1) * limit;
