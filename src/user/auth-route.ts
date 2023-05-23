@@ -51,7 +51,7 @@ export class AuthRoute {
    }
 
    private login: RequestHandler = (req, res) => {
-      res.status(OK).json(`Logged in as ${(req.user as User).username}`);
+      res.json(`Logged in as ${(req.user as User).username}`);
    }
 
    private logout = (req, res) => {
