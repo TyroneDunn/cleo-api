@@ -68,6 +68,6 @@ export class AuthRoute {
    };
 
    private protected = (req, res) => {
-      res.json('Authenticated as ${(req.user as User).username}');
+      res.json(`Authenticated as ${(req.user as User).username}`);
    };
 }
