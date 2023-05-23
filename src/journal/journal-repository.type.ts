@@ -3,7 +3,11 @@ import {Observable} from "rxjs";
 
 export interface JournalRepository {
     journal$(id: string): Observable<Journal | undefined>;
-    journals$(userId: string): Observable<Journal[]>;
+    journals$(
+        userId: string, 
+        page: number, 
+        limit: number,
+    ): Observable<Journal[]>;
     sortUsersJournalsByName$(id: string, order: 1 | -1): Observable<Journal[]>;
     sortUsersJournalsByLastUpdated$(id: string, order: 1 | -1): Observable<Journal[]>;
     sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]>;
