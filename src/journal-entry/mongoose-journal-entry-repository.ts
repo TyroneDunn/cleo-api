@@ -32,7 +32,7 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
                     subscriber.complete();
                     return;
                 }
-                
+
                 JournalEntryModel.find({journal: id})
                     .skip(skip)
                     .limit(limit)
@@ -55,10 +55,10 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
                 journal: journalId,
                 dateOfCreation: now(),
                 lastUpdated: now(),
-            }).save().then((entry) => {
+            }).save((error, entry: JournalEntry) => {
                 subscriber.next(entry);
                 subscriber.complete();
-            })
+            });
         });
     }
 
