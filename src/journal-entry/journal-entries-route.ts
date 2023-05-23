@@ -182,12 +182,12 @@ export class JournalEntriesRoute {
 
     private createEntry: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(BAD_REQUEST).json(`Journal id required.`);
+            res.status(BAD_REQUEST).json('Journal id required.');
             return;
         }
 
-        if (!req.body.content) {
-            res.status(BAD_REQUEST).json(`Content required.`);
+        if (!req.body.body) {
+            res.status(BAD_REQUEST).json('Entry body required.');
             return;
         }
 
@@ -201,7 +201,7 @@ export class JournalEntriesRoute {
 
                 this.journalEntryRepository.createEntry$(
                     req.params.id,
-                    req.body.content
+                    req.body.body,
                 ).subscribe((entry) => {
                     res.status(CREATED).json(entry);
                 });
@@ -210,7 +210,7 @@ export class JournalEntriesRoute {
 
     private deleteEntry: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(BAD_REQUEST).json(`Entry id required.`);
+            res.status(BAD_REQUEST).json('Entry id required.');
             return;
         }
 
@@ -244,12 +244,12 @@ export class JournalEntriesRoute {
 
     private updateEntry: RequestHandler = async (req, res) => {
         if (!req.params.id) {
-            res.status(BAD_REQUEST).json(`Entry id required.`);
+            res.status(BAD_REQUEST).json('Entry id required.');
             return;
         }
 
         if (!req.body.body) {
-            res.status(BAD_REQUEST).json(`Entry body required.`);
+            res.status(BAD_REQUEST).json('Entry body required.');
             return;
         }
 
