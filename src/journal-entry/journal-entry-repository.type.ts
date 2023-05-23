@@ -6,9 +6,14 @@ export interface JournalEntryRepository {
     entries$(
         journalId: string,
         page: number,
-        limit: number
+        limit: number,
     ): Observable<JournalEntry[]>;
-    createEntry$(journalId: string, body: string): Observable<JournalEntry>;
+    createEntry$(
+        journalId: string,
+        body: string,
+        page: number,
+        limit: number,
+    ): Observable<JournalEntry>;
     deleteEntry$(id: string): Observable<JournalEntry>;
     updateEntry$(id: string, content: string): Observable<JournalEntry>;
 }
