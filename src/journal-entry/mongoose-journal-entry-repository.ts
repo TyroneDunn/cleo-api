@@ -20,14 +20,32 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
         });
     }
 
-    public entries$(journalId: string): Observable<JournalEntry[]> {
-        return new Observable((subscriber) => {
-            JournalEntryModel.find({journal: journalId})
-                .then((entries: JournalEntry[]) => {
-                    subscriber.next(entries);
+    public entries$(
+        id: string,
+        page: number,
+        limit: number,
+        ): Observable<JournalEntry[]> {
+            return new Observable((subscriber) => {
+                const skip = (page - 1) * limit;
+                if (!isValidObjectId(id)) {
+                    subscriber.next(undefined);
                     subscriber.complete();
-                });
-        })
+                    return;
+                }
+                
+                JournalEntryModel.find({journal: id})
+                    .skip(skip)
+                    .limit(limit)
+                    .exec((error, entries: JournalEntry[]) => {
+                        if (error) {
+                            subscriber.error(error);
+                            subscriber.complete();
+                            return;
+                        }
+                        subscriber.next(entries);
+                        subscriber.complete();
+                    });
+        });
     }
 
     public createEntry$(journalId: string, body: string): Observable<JournalEntry> {
