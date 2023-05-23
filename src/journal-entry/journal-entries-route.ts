@@ -44,14 +44,14 @@ export class JournalEntriesRoute {
                     entry.journal,
                     this.journalRepository
                 ).subscribe((ownsJournal) => {
+                    console.log(ownsJournal);
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
-                            .json(`Unauthorized access to journal ${entry.journal}`);
-                        return;
+                            .json(`Unauthorized access to entry ${req.params.id}`);
                     }
+                    return;
+                    res.json(entry);
                 });
-
-                res.json(entry);
             });
     };
 
