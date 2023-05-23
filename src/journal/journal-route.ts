@@ -44,18 +44,6 @@ export class JournalRoute {
         const page: number = parseInt(req.query.page as string) || 1;
         const limit: number = parseInt(req.query.limit as string) || 0;
         const sort: string | undefined = req.query.sort as string;
-        if (sort === undefined) {
-            this.journalRepository.journals$((req.user as User)._id, page, limit)
-                .subscribe((journals: Journal[]) => {
-                    if (journals.length === 0) {
-                        res.status(NOT_FOUND)
-                            .json(`No journals found.`);
-                        return;
-                    }
-                    res.json(journals);
-                });
-            return;
-        }
 
         if ((sort !== 'name') &&
             (sort !== 'lastUpdated') &&
@@ -64,9 +52,42 @@ export class JournalRoute {
                 .json(`Invalid sort query.`);
             return;
         }
+        
+        if (parseInt(req.query.limit as string) < 0) {
+            res.status(BAD_REQUEST)
+                .json(`Invalid limit query.`);
+            return;
+        }
 
-        let order = req.query.order as string;
-        if (!order) order = '1';
+        if (((req.query.order as string) !== '1') &&
+            ((req.query.order as string) !== '-1')) {
+                res.status(BAD_REQUEST)
+                    .json(`Invalid order query.`);
+                return;
+            }
+        
+        let order: 1 | -1;
+        if ((req.query.order as string) === '1')
+            order = 1;
+        else
+            order = -1;
+        
+        
+        if (sort === undefined) {
+            this.journalRepository.journals$(
+                (req.user as User)._id,
+                page,
+                limit
+            ).subscribe((journals: Journal[]) => {
+                if (journals.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json(`No journals found.`);
+                    return;
+                }
+                res.json(journals);
+            });
+            return;
+        }
 
         if (sort === 'name') {
             if (parseInt(order) === 1) {
@@ -85,7 +106,9 @@ export class JournalRoute {
         } else {
             this.journalRepository.sortUsersJournalsByName$(
                 ((req.user as User)._id as string),
-                -1
+                order,
+                page,
+                limit,
             ).subscribe((journals) => {
                 if (journals.length === 0) {
                     res.status(NOT_FOUND)
@@ -95,7 +118,8 @@ export class JournalRoute {
                 res.json(journals);
                 return;
             });
-        }}
+        }
+
         if (sort === 'lastUpdated') {
             if (parseInt(order) === 1) {
                 this.journalRepository.sortUsersJournalsByLastUpdated$(
