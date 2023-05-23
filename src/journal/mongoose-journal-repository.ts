@@ -36,12 +36,10 @@ export class MongooseJournalRepository implements JournalRepository {
     ): Observable<Journal[]> {
         return new Observable((subscriber) => {
             const skip = (page - 1) * limit;
-            JournalModel.find()
-            JournalModel.find(
-                {author: userId},
-                null,
-                {skip: skip, limit: limit},
-                (error, journals: Journal[]) => {
+            JournalModel.find({author: userId})
+                .skip(skip)
+                .limit(limit)
+                .exec((error, journals: Journal[]) => {
                     if (error) {
                         subscriber.error(error);
                         subscriber.complete();
