@@ -242,7 +242,7 @@ export class JournalEntriesRoute {
                 ).subscribe((ownsJournal) => {
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
-                            .json(`Unauthorized access to journal ${req.params.id}`);
+                            .json(`Unauthorized access to entry ${req.params.id}`);
                         return;
                     }
 
