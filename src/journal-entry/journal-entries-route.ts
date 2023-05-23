@@ -44,7 +44,6 @@ export class JournalEntriesRoute {
                     entry.journal,
                     this.journalRepository
                 ).subscribe((ownsJournal) => {
-                    console.log(ownsJournal);
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
                             .json(`Unauthorized access to entry ${req.params.id}`);
@@ -113,7 +112,19 @@ export class JournalEntriesRoute {
                         .json('No entries found.')
                     return;
                 }
-                res.json(entries);
+
+                userOwnsJournal$(
+                    req.user as User,
+                    entries[0].journal._id,
+                    this.journalRepository
+                ).subscribe((ownsJournal) => {
+                    if (!ownsJournal) {
+                        res.status(UNAUTHORIZED)
+                            .json(`Unauthorized access to journal ${req.query.id}`);
+                        return;
+                    }
+                    res.json(entries);
+                });
             });
             return;
         }
@@ -130,7 +141,19 @@ export class JournalEntriesRoute {
                         .json('No entries found.');
                     return;
                 }
-                res.json(entries);
+
+                userOwnsJournal$(
+                    req.user as User,
+                    entries[0].journal._id,
+                    this.journalRepository
+                ).subscribe((ownsJournal) => {
+                    if (!ownsJournal) {
+                        res.status(UNAUTHORIZED)
+                            .json(`Unauthorized access to journal ${req.query.id}`);
+                        return;
+                    }
+                    res.json(entries);
+                });
             });
             return;
         }
@@ -147,7 +170,19 @@ export class JournalEntriesRoute {
                         .json('No entries found.');
                     return;
                 }
-                res.json(entries);
+
+                userOwnsJournal$(
+                    req.user as User,
+                    entries[0].journal._id,
+                    this.journalRepository
+                ).subscribe((ownsJournal) => {
+                    if (!ownsJournal) {
+                        res.status(UNAUTHORIZED)
+                            .json(`Unauthorized access to journal ${req.query.id}`);
+                        return;
+                    }
+                    res.json(entries);
+                });
             });
             return;
         }
