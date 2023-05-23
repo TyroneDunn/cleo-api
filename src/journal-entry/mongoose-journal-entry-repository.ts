@@ -19,7 +19,7 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
             })
         });
     }
-
+    
     public entries$(
         id: string,
         page: number,
@@ -49,15 +49,39 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
     }
 
     public sortEntriesByLastUpdated$(
-        id: string, 
-        order: 1 | -1, 
-        page: number, 
+        id: string,
+        order: 1 | -1,
+        page: number,
         limit: number
     ): Observable<JournalEntry[]> {
         return new Observable((subscriber) => {
             const skip = (page - 1) * limit;
             JournalEntryModel.find({journal: id})
                 .sort({lastUpdated: order})
+                .skip(skip)
+                .limit(limit)
+                .exec((error, entries: JournalEntry[]) => {
+                    if (error) {
+                        subscriber.error(error);
+                        subscriber.complete();
+                        return;
+                    }
+                    subscriber.next(entries);
+                    subscriber.complete();
+                });
+        });
+    }
+
+    public sortEntriesByDateCreated$(
+        id: string,
+        order: 1 | -1,
+        page: number,
+        limit: number
+    ): Observable<JournalEntry[]> {
+        return new Observable((subscriber) => {
+            const skip = (page - 1) * limit;
+            JournalEntryModel.find({journal: id})
+                .sort({dateCreated: order})
                 .skip(skip)
                 .limit(limit)
                 .exec((error, entries: JournalEntry[]) => {
