@@ -19,7 +19,7 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
             })
         });
     }
-    
+
     public entries$(journalId: string): Observable<JournalEntry[]> {
         return new Observable((subscriber) => {
             JournalEntryModel.find({journal: journalId})
