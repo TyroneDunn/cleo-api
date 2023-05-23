@@ -41,9 +41,9 @@ export class JournalRoute {
     }
 
     private getJournals: RequestHandler = async (req, res) => {
+        const sort: string | undefined = req.query.sort as string;
         const page: number = parseInt(req.query.page as string) || 1;
         const limit: number = parseInt(req.query.limit as string) || 0;
-        const sort: string | undefined = req.query.sort as string;
 
         if ((sort !== 'name') &&
             (sort !== 'lastUpdated') &&
@@ -53,26 +53,24 @@ export class JournalRoute {
             return;
         }
 
+        if (((req.query.order as string) !== '1') &&
+            ((req.query.order as string) !== '-1')) {
+            res.status(BAD_REQUEST)
+                .json(`Invalid order query.`);
+            return;
+        }
+
         if (page < 0) {
             res.status(BAD_REQUEST)
                 .json(`Invalid page query.`);
             return;
         }
 
-        if (parseInt(req.query.limit as string) < 0) {
+        if (limit < 0) {
             res.status(BAD_REQUEST)
                 .json(`Invalid limit query.`);
             return;
-
         }
-
-        if (((req.query.order as string) !== '1') &&
-            ((req.query.order as string) !== '-1')) {
-            res.status(BAD_REQUEST)
-                    .json(`Invalid order query.`);
-            return;
-
-            }
 
         let order: 1 | -1;
         if ((req.query.order as string) === '1')
