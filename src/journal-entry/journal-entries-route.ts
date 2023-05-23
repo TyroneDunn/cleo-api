@@ -48,8 +48,8 @@ export class JournalEntriesRoute {
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
                             .json(`Unauthorized access to entry ${req.params.id}`);
+                        return;
                     }
-                    return;
                     res.json(entry);
                 });
             });
