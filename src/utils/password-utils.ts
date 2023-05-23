@@ -1,8 +1,14 @@
-import {PASSWORD_SALT} from "./environment";
+import {PASSWORD_SALT, HASHING_ITERATIONS, HASHING_ALGORITHM} from "./environment";
 const crypto = require('crypto');
 
 function encrypt(password: string) {
-    return crypto.pbkdf2Sync(password, PASSWORD_SALT, 100000, 64, 'sha512').toString('hex');
+    return crypto.pbkdf2Sync(
+        password,
+        PASSWORD_SALT,
+        HASHING_ITERATIONS,
+        64,
+        HASHING_ALGORITHM
+    ).toString('hex');
 }
 
 export function generateHash(password: string) {
