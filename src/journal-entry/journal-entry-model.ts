@@ -6,7 +6,7 @@ export interface JournalEntryDocument extends Document, JournalEntry {
     _id: string,
     body: string,
     journal: Schema.Types.ObjectId;
-    dateOfCreation: Date,
+    dateCreated: Date,
     lastUpdated: Date,
 }
 

@@ -53,7 +53,7 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
             new JournalEntryModel({
                 body: body,
                 journal: journalId,
-                dateOfCreation: now(),
+                dateCreated: now(),
                 lastUpdated: now(),
             }).save((error, entry: JournalEntry) => {
                 subscriber.next(entry);
