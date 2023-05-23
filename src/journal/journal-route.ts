@@ -107,33 +107,22 @@ export class JournalRoute {
         }
 
         if (sort === 'lastUpdated') {
-            if (parseInt(order) === 1) {
-                this.journalRepository.sortUsersJournalsByLastUpdated$(
-                    ((req.user as User)._id as string),
-                    1
-                ).subscribe((journals) => {
-                    if (journals.length === 0) {
-                        res.status(NOT_FOUND)
-                            .json(`No journals found.`);
-                        return;
-                    }
-                    res.json(journals);
+            this.journalRepository.sortUsersJournalsByLastUpdated$(
+                ((req.user as User)._id as string),
+                order,
+                page,
+                limit
+            ).subscribe((journals) => {
+                if (journals.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json(`No journals found.`);
                     return;
-                });
-            } else {
-                this.journalRepository.sortUsersJournalsByLastUpdated$(
-                    ((req.user as User)._id as string),
-                    -1
-                ).subscribe((journals) => {
-                    if (journals.length === 0) {
-                        res.status(NOT_FOUND)
-                            .json(`No journals found.`);
-                        return;
-                    }
-                    res.json(journals);
-                    return;
-                });
-        }}
+                }
+                res.json(journals);
+                return;
+            });
+        }
+
         if (sort === 'dateCreated') {
             if (parseInt(order) === 1) {
                 this.journalRepository.sortUsersJournalsByDateCreated$(
