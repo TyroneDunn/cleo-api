@@ -1,8 +1,27 @@
 import {UserRepository} from "./user-repository.type";
 import {generateHash} from "../utils/password-utils";
 import UserModel from "./user-model";
+import {Observable} from "rxjs";
+import {User} from "./user.type";
 
 export class MongooseUserRepository implements UserRepository {
+    public registerUser$(username: string, password: string): Observable<User> {
+        return new Observable((subscriber) => {
+            new UserModel({
+                username: username,
+                hash: generateHash(password),
+            }).save((error, user: User) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(user);
+                subscriber.complete();
+            });
+        });
+    }
+
     async registerUser(username: string, password: string): Promise<void> {
         const newUser = new UserModel({
             username: username,
