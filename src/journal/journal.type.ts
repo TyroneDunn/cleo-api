@@ -1,5 +1,5 @@
 export type Journal = {
-    _id: any,
+    _id: string,
     name: string,
     author: any,
     dateCreated: Date,
