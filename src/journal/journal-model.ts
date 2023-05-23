@@ -20,8 +20,14 @@ const journalSchema = new Schema<JournalDocument>({
     ref: "User",
     required: true,
   },
-  dateCreated: Date,
-  lastUpdated: Date,
+  dateCreated: {
+    type: Date,
+    required: true,
+  },
+  lastUpdated: {
+    type: Date,
+    required: true,
+  },
 });
 
 const JournalModel = database.model<JournalDocument>('Journal', journalSchema);
