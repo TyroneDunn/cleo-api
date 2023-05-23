@@ -19,5 +19,10 @@ export interface JournalEntryRepository {
         page: number,
         limit: number,
         ): Observable<JournalEntry>;
-    updateEntry$(id: string, content: string): Observable<JournalEntry>;
+    updateEntry$(
+        id: string,
+        content: string,
+        page: number,
+        limit: number,
+    ): Observable<JournalEntry>;
 }
