@@ -8,7 +8,6 @@ import {
     NOT_FOUND,
     UNAUTHORIZED
 } from "../utils/http-status-constants";
-import {map} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
 import {userOwnsJournal$} from '../utils/userOwnsJournal$';
 
@@ -57,18 +56,25 @@ export class JournalEntriesRoute {
     };
 
     private getEntries: RequestHandler = async (req, res) => {
-        const journalId = req.query.journalid as string;
-        if (!journalId) {
+        const id = req.query.id as string;
+        if (!id) {
             res.status(BAD_REQUEST)
-                .json(`Journal Id required.`);
+                .json('Entry id required.');
             return;
         }
+        
+        const sort: string | undefined = req.query.sort as string;
+        const page: number = parseInt(req.query.page as string) || 1;
+        const limit: number = parseInt(req.query.limit as string) || 0;
 
-        this.journalEntryRepository.entries$(journalId)
-            .subscribe((entries) => {
+        this.journalEntryRepository.entries$(
+            id,
+            page,
+            limit,
+            ).subscribe((entries) => {
                 if (entries.length === 0) {
                     res.status(NOT_FOUND)
-                        .json(`Journal ${journalId} entries not found.`);
+                        .json(`Journal ${id} entries not found.`);
                     return;
                 }
 
@@ -79,13 +85,99 @@ export class JournalEntriesRoute {
                 ).subscribe((ownsJournal) => {
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
-                            .json(`Unauthorized access to journal ${journalId}`);
+                            .json(`Unauthorized access to journal ${id}`);
                         return;
                     }
                 });
-
                 res.json(entries);
+                return;
             })
+        
+        
+        if ((sort !== undefined) &&
+            (sort !== 'lastUpdated') &&
+            (sort !== 'dateCreated')) {
+            res.status(BAD_REQUEST)
+                .json('Invalid sort query.');
+            return;
+        }
+
+        if ((((req.query.order as string) !== undefined) && 
+            (req.query.order as string) !== '1') &&
+            ((req.query.order as string) !== '-1')) {
+            res.status(BAD_REQUEST)
+                .json('Invalid order query.');
+            return;
+        }
+
+        if (page < 0) {
+            res.status(BAD_REQUEST)
+                .json('Invalid page query.');
+            return;
+        }
+
+        if (limit < 0) {
+            res.status(BAD_REQUEST)
+                .json('Invalid limit query.');
+            return;
+        }
+
+        let order: 1 | -1;
+        if ((req.query.order as string) === '-1')
+            order = -1;
+        else
+            order = 1;
+
+
+        if (sort === undefined) {
+            this.journalEntryRepository.entries$(
+                id,
+                page,
+                limit,
+            ).subscribe((entries: JournalEntry[]) => {
+                if (entries.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json('No entries found.')
+                    return;
+                }
+                res.json(entries);
+            });
+            return;
+        }
+
+        if (sort === 'lastUpdated') {
+            this.journalEntryRepository.sortEntriesByLastUpdated$(
+                id,
+                order,
+                page,
+                limit,
+            ).subscribe((entries) => {
+                if (entries.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json('No entries found.');
+                    return;
+                }
+                res.json(entries);
+            });
+            return;
+        }
+        
+        if (sort === 'dateCreated') {
+            this.journalEntryRepository.sortEntriesByDateCreated$(
+                id,
+                order,
+                page,
+                limit,
+            ).subscribe((entries) => {
+                if (entries.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json('No entries found.');
+                    return;
+                }
+                res.json(entries);
+            });
+            return;
+        }
     }
 
     private createEntry: RequestHandler = async (req, res) => {
