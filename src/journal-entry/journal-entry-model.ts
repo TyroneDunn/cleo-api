@@ -20,8 +20,14 @@ const journalEntrySchema = new Schema({
         ref: "JournalSchema",
         required: true,
     },
-    dateOfCreation: Date,
-    lastUpdated: Date,
+    dateCreated: {
+        type: Date,
+        required: true,
+    },
+    lastUpdated: {
+        type: Date,
+        required: true,
+    },
 });
 
 const JournalEntryModel = database.model<JournalEntryDocument>('JournalEntry', journalEntrySchema);
