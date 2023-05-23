@@ -43,7 +43,6 @@ export class JournalRoute {
     private getJournals: RequestHandler = async (req, res) => {
         const page: number = parseInt(req.query.page as string) || 1;
         const limit: number = parseInt(req.query.limit as string) || 0;
-
         const sort: string | undefined = req.query.sort as string;
         if (sort === undefined) {
             this.journalRepository.journals$((req.user as User)._id, page, limit)
