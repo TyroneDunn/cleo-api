@@ -59,7 +59,7 @@ export class JournalEntriesRoute {
         const id = req.query.id as string;
         if (!id) {
             res.status(BAD_REQUEST)
-                .json('Entry id required.');
+                .json('Journal id required.');
             return;
         }
         
@@ -67,33 +67,6 @@ export class JournalEntriesRoute {
         const page: number = parseInt(req.query.page as string) || 1;
         const limit: number = parseInt(req.query.limit as string) || 0;
 
-        this.journalEntryRepository.entries$(
-            id,
-            page,
-            limit,
-            ).subscribe((entries) => {
-                if (entries.length === 0) {
-                    res.status(NOT_FOUND)
-                        .json(`Journal ${id} entries not found.`);
-                    return;
-                }
-
-                userOwnsJournal$(
-                    req.user as User,
-                    entries[0].journal,
-                    this.journalRepository
-                ).subscribe((ownsJournal) => {
-                    if (!ownsJournal) {
-                        res.status(UNAUTHORIZED)
-                            .json(`Unauthorized access to journal ${id}`);
-                        return;
-                    }
-                });
-                res.json(entries);
-                return;
-            })
-        
-        
         if ((sort !== undefined) &&
             (sort !== 'lastUpdated') &&
             (sort !== 'dateCreated')) {
@@ -203,8 +176,10 @@ export class JournalEntriesRoute {
                     req.params.id,
                     req.body.body,
                 ).subscribe((entry) => {
-                    res.status(CREATED).json(entry);
+                    res.status(CREATED)
+                        .json(entry);
                 });
+                return;
             });
     };
 
