@@ -1,11 +1,12 @@
-import database from "../../utils/mongoose-database";
+import database from "../utils/mongoose-database";
 import {Document, Schema} from 'mongoose';
-import {JournalEntry} from "../journal-entry/journal-entry.type";
+import {JournalEntry} from "./journal-entry.type";
 
 export interface JournalEntryDocument extends Document, JournalEntry {
+    _id: string,
     body: string,
     journal: Schema.Types.ObjectId;
-    dateOfCreation: Date,
+    dateCreated: Date,
     lastUpdated: Date,
 }
 
@@ -19,8 +20,14 @@ const journalEntrySchema = new Schema({
         ref: "JournalSchema",
         required: true,
     },
-    dateOfCreation: Date,
-    lastUpdated: Date,
+    dateCreated: {
+        type: Date,
+        required: true,
+    },
+    lastUpdated: {
+        type: Date,
+        required: true,
+    },
 });
 
 const JournalEntryModel = database.model<JournalEntryDocument>('JournalEntry', journalEntrySchema);
