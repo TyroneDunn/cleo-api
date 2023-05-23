@@ -3,6 +3,7 @@ import {Document, Schema} from 'mongoose';
 import {JournalEntry} from "./journal-entry.type";
 
 export interface JournalEntryDocument extends Document, JournalEntry {
+    _id: string,
     body: string,
     journal: Schema.Types.ObjectId;
     dateOfCreation: Date,
