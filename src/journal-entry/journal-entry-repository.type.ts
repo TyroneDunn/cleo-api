@@ -23,18 +23,12 @@ export interface JournalEntryRepository {
     createEntry$(
         id: string,
         body: string,
-        page: number,
-        limit: number,
     ): Observable<JournalEntry>;
     deleteEntry$(
         id: string,
-        page: number,
-        limit: number,
         ): Observable<JournalEntry>;
     updateEntry$(
         id: string,
         content: string,
-        page: number,
-        limit: number,
     ): Observable<JournalEntry>;
 }
