@@ -179,7 +179,6 @@ export class JournalEntriesRoute {
                     res.status(CREATED)
                         .json(entry);
                 });
-                return;
             });
     };
 
