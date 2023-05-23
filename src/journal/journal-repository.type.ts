@@ -20,7 +20,12 @@ export interface JournalRepository {
         page: number,
         limit: number,
         ): Observable<Journal[]>;
-    sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]>;
+    sortUsersJournalsByDateCreated$(
+        id: string,
+        order: 1 | -1,
+        page: number,
+        limit: number,
+    ): Observable<Journal[]>;
     createJournal$(userId: string, name: string): Observable<Journal>;
     deleteJournal$(id: string): Observable<Journal>;
     updateJournal$(id: string, name: string): Observable<Journal>;
