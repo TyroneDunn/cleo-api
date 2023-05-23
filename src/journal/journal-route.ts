@@ -50,7 +50,7 @@ export class JournalRoute {
             (sort !== 'dateCreated' &&
             (sort !== undefined))) {
             res.status(BAD_REQUEST)
-                .json(`Invalid sort query.`);
+                .json('Invalid sort query.');
             return;
         }
 
@@ -58,19 +58,19 @@ export class JournalRoute {
             ((req.query.order as string) !== '-1') &&
             ((req.query.order as string) !== undefined)) {
             res.status(BAD_REQUEST)
-                .json(`Invalid order query.`);
+                .json('Invalid order query.');
             return;
         }
 
         if (page < 0) {
             res.status(BAD_REQUEST)
-                .json(`Invalid page query.`);
+                .json('Invalid page query.');
             return;
         }
 
         if (limit < 0) {
             res.status(BAD_REQUEST)
-                .json(`Invalid limit query.`);
+                .json('Invalid limit query.');
             return;
         }
 
@@ -123,7 +123,7 @@ export class JournalRoute {
             ).subscribe((journals) => {
                 if (journals.length === 0) {
                     res.status(NOT_FOUND)
-                        .json(`No journals found.`);
+                        .json('No journals found.');
                     return;
                 }
                 res.json(journals);
@@ -140,7 +140,7 @@ export class JournalRoute {
             ).subscribe((journals) => {
                 if (journals.length === 0) {
                     res.status(NOT_FOUND)
-                        .json(`No journals found.`);
+                        .json('No journals found.');
                     return;
                 }
                 res.json(journals);
@@ -166,7 +166,7 @@ export class JournalRoute {
     private deleteJournal: RequestHandler = (req, res) => {
         if (!req.params.id) {
             res.status(BAD_REQUEST)
-                .json(`Journal id required.`);
+                .json('Journal id required.');
             return;
         }
 
@@ -198,7 +198,7 @@ export class JournalRoute {
     private updateJournal: RequestHandler = async (req, res) => {
         if (!req.params.id) {
             res.status(BAD_REQUEST)
-                .json(`Journal id required.`);
+                .json('Journal id required.');
             return;
         }
 
