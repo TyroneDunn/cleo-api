@@ -34,13 +34,17 @@ export class AuthRoute {
          return;
       }
 
-      if (await this.userRepository.userExists(username)) {
-         res.status(CONFLICT).json(`Username already taken.`);
-         return;
-      }
+      this.userRepository.userExists$(username).subscribe((userExists) => {
+         if (userExists) {
+            res.status(CONFLICT).json(`Username already taken.`);
+            return;
+         }
 
-      await this.userRepository.registerUser(username, password);
-      res.status(CREATED).json(`New user created.`);
+         this.userRepository.registerUser$(username, password).subscribe((user) => {
+            res.status(CREATED).json(user);
+         })
+      })
+
    }
 
    private login: RequestHandler = (req, res) => {
