@@ -47,14 +47,16 @@ export class JournalRoute {
 
         if ((sort !== 'name') &&
             (sort !== 'lastUpdated') &&
-            (sort !== 'dateCreated')) {
+            (sort !== 'dateCreated' &&
+            (sort !== undefined))) {
             res.status(BAD_REQUEST)
                 .json(`Invalid sort query.`);
             return;
         }
 
         if (((req.query.order as string) !== '1') &&
-            ((req.query.order as string) !== '-1')) {
+            ((req.query.order as string) !== '-1') &&
+            ((req.query.order as string) !== undefined)) {
             res.status(BAD_REQUEST)
                 .json(`Invalid order query.`);
             return;
@@ -73,12 +75,12 @@ export class JournalRoute {
         }
 
         let order: 1 | -1;
-        if ((req.query.order as string) === '1')
-            order = 1;
-        else
+        if ((req.query.order as string) === '-1')
             order = -1;
-        
-        
+        else
+            order = 1;
+
+
         if (sort === undefined) {
             this.journalRepository.journals$(
                 (req.user as User)._id,
