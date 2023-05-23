@@ -64,6 +64,11 @@ export class MongooseJournalRepository implements JournalRepository {
                     .skip(skip)
                     .limit(limit)
                     .exec((error, journals: Journal[]) => {
+                        if (error) {
+                            subscriber.error(error);
+                            subscriber.complete();
+                            return;
+                        }
                         subscriber.next(journals);
                         subscriber.complete();
                     });
@@ -83,6 +88,11 @@ export class MongooseJournalRepository implements JournalRepository {
                 .skip(skip)
                 .limit(limit)
                 .exec((error, journals: Journal[]) => {
+                    if (error) {
+                        subscriber.error(error);
+                        subscriber.complete();
+                        return;
+                    }
                     subscriber.next(journals);
                     subscriber.complete();
                 });
@@ -102,6 +112,11 @@ export class MongooseJournalRepository implements JournalRepository {
                 .skip(skip)
                 .limit(limit)
                 .exec((error, journals: Journal[]) => {
+                    if (error) {
+                        subscriber.error(error);
+                        subscriber.complete();
+                        return;
+                    }
                     subscriber.next(journals);
                     subscriber.complete();
                 });
@@ -116,6 +131,11 @@ export class MongooseJournalRepository implements JournalRepository {
                 dateCreated: now(),
                 lastUpdated: now(),
             }).save((error, journal: Journal) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
                 subscriber.next(journal)
                 subscriber.complete();
             });
@@ -131,7 +151,6 @@ export class MongooseJournalRepository implements JournalRepository {
                         subscriber.complete();
                         return;
                     }
-
                     subscriber.next(journal);
                     subscriber.complete();
                 });
