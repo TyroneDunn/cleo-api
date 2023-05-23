@@ -27,17 +27,27 @@ export class MongooseJournalRepository implements JournalRepository {
             });
         });
     }
-    public journals$(userId: string): Observable<Journal[]> {
+    public journals$(
+        userId: string,
+        page: number,
+        limit: number
+    ): Observable<Journal[]> {
         return new Observable((subscriber) => {
-            JournalModel.find({author: userId}, (error, journals: Journal[]) => {
-                if (error) {
-                    subscriber.error(error);
+            const skip = (page - 1) * limit;
+            JournalModel.find()
+            JournalModel.find(
+                {author: userId},
+                null,
+                {skip: skip, limit: limit},
+                (error, journals: Journal[]) => {
+                    if (error) {
+                        subscriber.error(error);
+                        subscriber.complete();
+                        return;
+                    }
+                    subscriber.next(journals);
                     subscriber.complete();
-                    return;
-                }
-                subscriber.next(journals);
-                subscriber.complete();
-            });
+                });
         });
     }
     public sortUsersJournalsByName$(id: string, order: 1 | -1): Observable<Journal[]> {
