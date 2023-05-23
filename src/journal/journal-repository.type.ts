@@ -8,7 +8,12 @@ export interface JournalRepository {
         page: number, 
         limit: number,
     ): Observable<Journal[]>;
-    sortUsersJournalsByName$(id: string, order: 1 | -1): Observable<Journal[]>;
+    sortUsersJournalsByName$(
+        id: string,
+        order: 1 | -1,
+        page: number,
+        limit: number,
+        ): Observable<Journal[]>;
     sortUsersJournalsByLastUpdated$(id: string, order: 1 | -1): Observable<Journal[]>;
     sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]>;
     createJournal$(userId: string, name: string): Observable<Journal>;
