@@ -52,20 +52,28 @@ export class JournalRoute {
                 .json(`Invalid sort query.`);
             return;
         }
-        
+
+        if (page < 0) {
+            res.status(BAD_REQUEST)
+                .json(`Invalid page query.`);
+            return;
+        }
+
         if (parseInt(req.query.limit as string) < 0) {
             res.status(BAD_REQUEST)
                 .json(`Invalid limit query.`);
             return;
+
         }
 
         if (((req.query.order as string) !== '1') &&
             ((req.query.order as string) !== '-1')) {
-                res.status(BAD_REQUEST)
+            res.status(BAD_REQUEST)
                     .json(`Invalid order query.`);
-                return;
+            return;
+
             }
-        
+
         let order: 1 | -1;
         if ((req.query.order as string) === '1')
             order = 1;
