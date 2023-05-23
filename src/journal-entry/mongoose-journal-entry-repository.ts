@@ -13,10 +13,16 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
                subscriber.complete();
                return;
             }
-            JournalEntryModel.findById(id).then((entry: JournalEntry | undefined) => {
+            JournalEntryModel.findById(id, (error, entry: JournalEntry) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+
                 subscriber.next(entry);
                 subscriber.complete();
-            })
+            });
         });
     }
     
