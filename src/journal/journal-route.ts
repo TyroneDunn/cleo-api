@@ -35,8 +35,19 @@ export class JournalRoute {
                         .json(`Journal ${(req.params.id)} not found.`);
                     return;
                 }
-            
-                res.json(journal);
+
+                userOwnsJournal$(
+                    req.user as User,
+                    journal._id,
+                    this.journalRepository
+                ).subscribe((ownsJournal) => {
+                    if (!ownsJournal) {
+                        res.status(UNAUTHORIZED)
+                            .json(`Unauthorized access to journal ${req.params.id}`);
+                        return;
+                    }
+                    res.json(journal);
+                });
             });
     }
 
@@ -92,6 +103,7 @@ export class JournalRoute {
                         .json('No journals found.');
                     return;
                 }
+
                 res.json(journals);
             });
             return;
