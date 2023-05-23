@@ -29,7 +29,7 @@ export class AuthRoute {
       const password = req.body.password;
 
       if (!username) {
-         res.status(BAD_REQUEST).json('Username requirel.');
+         res.status(BAD_REQUEST).json('Username required.');
          return;
       }
 
