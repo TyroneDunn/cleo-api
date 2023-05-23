@@ -110,6 +110,11 @@ export class MongooseJournalEntryRepository implements JournalEntryRepository {
                 dateCreated: now(),
                 lastUpdated: now(),
             }).save((error, entry: JournalEntry) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
                 subscriber.next(entry);
                 subscriber.complete();
             });
