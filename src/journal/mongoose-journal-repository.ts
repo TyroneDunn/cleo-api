@@ -1,6 +1,7 @@
 import {JournalRepository} from "./journal-repository.type";
 import JournalModel from './journal-model'
-import JournalEntryModel, {JournalEntryDocument} from "../journal-entry/journal-entry-model";
+import JournalEntryModel, {JournalEntryDocument}
+    from "../journal-entry/journal-entry-model";
 import {now, ObjectId} from "mongoose";
 import {Observable} from "rxjs";
 import {Journal} from "./journal.type";
@@ -27,6 +28,7 @@ export class MongooseJournalRepository implements JournalRepository {
             });
         });
     }
+
     public journals$(
         userId: string,
         page: number,
@@ -50,6 +52,7 @@ export class MongooseJournalRepository implements JournalRepository {
                 });
         });
     }
+
     public sortUsersJournalsByName$(
         id: string,
         order: 1 | -1,
@@ -68,6 +71,7 @@ export class MongooseJournalRepository implements JournalRepository {
                     });
             });
     }
+
     public sortUsersJournalsByDateCreated$(id: string, order: 1 | -1): Observable<Journal[]> {
         return new Observable((subscriber) => {
             JournalModel.find({author: id}).sort({dateCreated: order})
