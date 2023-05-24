@@ -4,7 +4,7 @@ import {now} from "mongoose";
 import {Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
 import {isValidObjectId} from "../utils/isValidObjectId";
-import {Entry$, Entries$} from "./entries$.type";
+import {Entry$, Entries$, SortEntriesBy$} from "./entries$.type";
 
 export const entry$: Entry$ = (id: string) => {
     return new Observable((subscriber) => {
@@ -53,6 +53,30 @@ export const entries$: Entries$ = (
             });
     });
 }
+
+export const sortEntriesByLastUpdated$: SortEntriesBy$ = (
+    id: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+) => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({journal: id})
+            .sort({lastUpdated: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
 
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
     public entry$(id: string): Observable<JournalEntry | undefined> {
