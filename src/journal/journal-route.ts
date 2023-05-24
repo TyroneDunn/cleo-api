@@ -5,15 +5,23 @@ import {
     UNAUTHORIZED,
 } from "../utils/http-status-constants";
 import {RequestHandler, Router} from "express";
-import {JournalRepository} from "./journal-repository.type";
 import {User} from "../user/user.type";
 import {Journal} from "./journal.type";
 import {userOwnsJournal$} from '../utils/userOwnsJournal$';
-import {journal$} from "./mongoose-journal-repository"
+import {
+    journal$,
+    journals$,
+    createJournal$,
+    deleteJournal$,
+    updateJournal$,
+    sortUsersJournalsByName$,
+    sortUsersJournalsByDateCreated$,
+    sortUsersJournalsByLastUpdated$
+} from "./mongo-journals";
 
 export class JournalRoute {
     public readonly router: Router = Router();
-    constructor(private journalRepository: JournalRepository) {
+    constructor() {
         this.router.get('/:id', this.getJournal);
         this.router.get('/', this.getJournals);
         this.router.post('/', this.createJournal);
@@ -39,7 +47,7 @@ export class JournalRoute {
                 userOwnsJournal$(
                     req.user as User,
                     journal._id,
-                    this.journalRepository
+                    journal$,
                 ).subscribe((ownsJournal) => {
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
@@ -93,7 +101,7 @@ export class JournalRoute {
 
 
         if (sort === undefined) {
-            this.journalRepository.journals$(
+            journals$(
                 (req.user as User)._id,
                 page,
                 limit
@@ -110,7 +118,7 @@ export class JournalRoute {
         }
 
         if (sort === 'name') {
-            this.journalRepository.sortUsersJournalsByName$(
+            sortUsersJournalsByName$(
                 ((req.user as User)._id as string),
                 order,
                 page,
@@ -127,7 +135,7 @@ export class JournalRoute {
         }
 
         if (sort === 'lastUpdated') {
-            this.journalRepository.sortUsersJournalsByLastUpdated$(
+            sortUsersJournalsByLastUpdated$(
                 ((req.user as User)._id as string),
                 order,
                 page,
@@ -144,7 +152,7 @@ export class JournalRoute {
         }
 
         if (sort === 'dateCreated') {
-            this.journalRepository.sortUsersJournalsByDateCreated$(
+            sortUsersJournalsByDateCreated$(
                 ((req.user as User)._id as string),
                 order,
                 page,
@@ -168,7 +176,7 @@ export class JournalRoute {
             return;
         }
 
-        this.journalRepository.createJournal$((req.user as User)._id, req.body.name)
+        createJournal$((req.user as User)._id, req.body.name)
             .subscribe((journal: Journal) => {
                 res.status(CREATED)
                     .json(journal);
@@ -182,7 +190,7 @@ export class JournalRoute {
             return;
         }
 
-        this.journalRepository.journal$(req.params.id)
+        journal$(req.params.id)
             .subscribe((entry) => {
                 if (!entry) {
                     res.status(NOT_FOUND)
@@ -190,7 +198,7 @@ export class JournalRoute {
                     return;
                 }
 
-                userOwnsJournal$((req.user as User), req.params.id, this.journalRepository)
+                userOwnsJournal$((req.user as User), req.params.id, journal$)
                     .subscribe(ownsJournal => {
                         if (!ownsJournal) {
                             res.status(UNAUTHORIZED)
@@ -198,7 +206,7 @@ export class JournalRoute {
                             return;
                         }
 
-                        this.journalRepository.deleteJournal$(req.params.id)
+                        deleteJournal$(req.params.id)
                             .subscribe((journal: Journal) => {
                                 res.json(journal);
                             })
@@ -213,7 +221,7 @@ export class JournalRoute {
             return;
         }
 
-        this.journalRepository.journal$(req.params.id)
+        journal$(req.params.id)
             .subscribe((entry) => {
                 if (!entry) {
                     res.status(NOT_FOUND)
@@ -221,7 +229,7 @@ export class JournalRoute {
                     return;
                 }
 
-                userOwnsJournal$((req.user as User), req.params.id, this.journalRepository)
+                userOwnsJournal$((req.user as User), req.params.id, journal$)
                     .subscribe((ownsJournal) => {
                         if (!ownsJournal) {
                             res.status(UNAUTHORIZED)
@@ -229,7 +237,7 @@ export class JournalRoute {
                             return;
                         }
 
-                        this.journalRepository.updateJournal$(req.params.id, req.body.name)
+                        updateJournal$(req.params.id, req.body.name)
                             .subscribe((journal) => {
                                 res.json(journal);
                             });
