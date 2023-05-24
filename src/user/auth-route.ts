@@ -37,11 +37,11 @@ const register = async (req, res) => {
          res.status(CREATED).json(user);
       });
    });
-}
+};
 
 const login: RequestHandler = (req, res) => {
    res.json(`Logged in as ${(req.user as User).username}`);
-}
+};
 
 const logout = (req, res) => {
    req.logout(
