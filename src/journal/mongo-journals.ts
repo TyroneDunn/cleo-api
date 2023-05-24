@@ -175,7 +175,6 @@ const deleteJournalEntries$ = (journalID: string): Observable<void> => {
     });
 };
 
-
 export const updateJournal$: UpdateJournal$ =
     (id: string, name: string): Observable<Journal> => {
         return new Observable((subscriber) => {
@@ -192,5 +191,5 @@ export const updateJournal$: UpdateJournal$ =
                     subscriber.next(journal);
                     subscriber.complete();
                 });
-        })
+        });
 };
