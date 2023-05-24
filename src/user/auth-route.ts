@@ -3,7 +3,6 @@ import {
    CONFLICT,
    CREATED,
    INTERNAL_SERVER_ERROR,
-   OK
 } from "../utils/http-status-constants";
 const express = require('express');
 import {RequestHandler} from "express";
