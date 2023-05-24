@@ -1,4 +1,3 @@
-import {UserRepository} from "./user-repository.type";
 import {generateHash} from "../utils/password-utils";
 import UserModel from "./user-model";
 import {Observable} from "rxjs";
