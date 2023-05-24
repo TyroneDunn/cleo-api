@@ -12,6 +12,7 @@ import {Journals$} from "./journals$.type";
 import {SortUsersJournals$} from "./sortUsersJournals.type";
 import {CreateJournal$} from "./createJournal$.type"
 import {DeleteJournal$} from "./deleteJournal$.type"
+import {UpdateJournal$} from "./updateJournal$.type"
 
 export const journal$: Journal$ = (id: string) => {
     return new Observable((subscriber) => {
@@ -175,6 +176,26 @@ const deleteJournalEntries$ = (journalID: string): Observable<void> => {
 };
 
 
+export const updateJournal$: UpdateJournal$ =
+    (id: string, name: string): Observable<Journal> => {
+        return new Observable((subscriber) => {
+            JournalModel.findByIdAndUpdate(
+                id,
+                {name: name, lastUpdated: now()},
+                {new: true},
+                (error, journal) => {
+                    if (error) {
+                        subscriber.error(error);
+                        subscriber.complete();
+                        return;
+                    }
+                    subscriber.next(journal);
+                    subscriber.complete();
+                });
+        })
+};
+
+
 export class MongooseJournalRepository implements JournalRepository {
     journal$(id: string): Observable<Journal> {
         throw new Error("Method not implemented.");
@@ -197,27 +218,13 @@ export class MongooseJournalRepository implements JournalRepository {
     deleteJournal$(id: string): Observable<Journal> {
         throw new Error("Method not implemented.");
     }
-
-
-
-
-
-
-    public updateJournal$(id: string, name: string): Observable<Journal> {
-        return new Observable((subscriber) => {
-            JournalModel.findByIdAndUpdate(
-                id,
-                {name: name, lastUpdated: now()},
-                {new: true},
-                (error, journal) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journal);
-                    subscriber.complete();
-            });
-        })
+    updateJournal$(id: string, name: string): Observable<Journal> {
+        throw new Error("Method not implemented.");
     }
+
+
+
+
+
+
 }
