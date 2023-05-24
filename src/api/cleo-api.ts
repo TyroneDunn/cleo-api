@@ -2,11 +2,8 @@ import {API_TITLE} from "../utils/environment";
 import {Application, RequestHandler} from "express";
 import {AuthRoute} from "../user/auth-route";
 import {UserRepository} from "../user/user-repository.type";
-import {JournalRoute} from "../journal/journal-route";
-import {JournalRepository} from "../journal/journal-repository.type";
-import {JournalEntriesRoute} from "../journal-entry/journal-entries-route";
-import {JournalEntryRepository}
-    from "../journal-entry/journal-entry-repository.type";
+import journalsRouter from "../journal/journals-router";
+import journalEntriesRouter from "../journal-entry/journal-entries-router";
 const express = require("express");
 import passport = require("passport");
 import {CorsOptions} from "cors";
@@ -19,15 +16,11 @@ export class CleoAPI {
     private readonly authenticateUserMiddleware: RequestHandler;
     private readonly authRouter: RequestHandler;
     private readonly authGuard = authGuard
-    private readonly journalsRouter: RequestHandler;
-    private readonly journalEntriesRouter: RequestHandler;
     public constructor(
         private readonly port: number,
         private readonly sessionMiddleware: RequestHandler,
         corsOptions: CorsOptions,
         private readonly userRepository: UserRepository,
-        private readonly journalRepository: JournalRepository,
-        private readonly journalEntryRepository: JournalEntryRepository
     ) {
         this.authenticateUserMiddleware = passport.authenticate('local');
         this.authRouter =
@@ -35,12 +28,6 @@ export class CleoAPI {
                 this.userRepository,
                 this.authenticateUserMiddleware,
                 this.authGuard
-            ).router;
-        this.journalsRouter = new JournalRoute(this.journalRepository).router;
-        this.journalEntriesRouter = 
-            new JournalEntriesRoute(
-                this.journalEntryRepository,
-                this.journalRepository
             ).router;
         
         this.configureServerApplication(corsOptions);
@@ -59,8 +46,8 @@ export class CleoAPI {
     private configureRoutes() {
         this.app.get('/', this.homeRouter);
         this.app.use('/auth/', this.authRouter);
-        this.app.use('/journals/', this.authGuard, this.journalsRouter);
-        this.app.use('/entries/', this.authGuard, this.journalEntriesRouter);
+        this.app.use('/journals/', this.authGuard, journalsRouter);
+        this.app.use('/entries/', this.authGuard, journalEntriesRouter);
     }
 
     private homeRouter(req, res): RequestHandler {
