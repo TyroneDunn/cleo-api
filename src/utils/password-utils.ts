@@ -1,26 +1,27 @@
 import {
     PASSWORD_SALT,
+    PASSWORD_LENGTH,
     HASHING_ITERATIONS,
     HASHING_ALGORITHM
 } from "./environment";
 const crypto = require('crypto');
 
-function encrypt(password: string) {
+function encrypt(password: string): string {
     return crypto.pbkdf2Sync(
         password,
         PASSWORD_SALT,
         HASHING_ITERATIONS,
-        64,
+        PASSWORD_LENGTH,
         HASHING_ALGORITHM
     ).toString('hex');
 }
 
-export function generateHash(password: string) {
+export function generateHash(password: string): string {
     return encrypt(password);
 }
 
 export function validatePassword(password: string, hash: string): boolean {
-    const comparator = encrypt(password);
+    const comparator: string = encrypt(password);
     return (hash === comparator);
 }
 

@@ -10,7 +10,7 @@ const customFields = {
     passwordField: 'password',
 };
 
-const verifyCallback = async (username, password, done) => {
+const verifyCallback = async (username: string, password: string, done) => {
     UserModel.findOne({username: username}, (error, user: User) => {
         if (!user) {
             done(null, false);
