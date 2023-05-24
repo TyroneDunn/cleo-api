@@ -6,67 +6,64 @@ import {
 } from "../utils/http-status-constants";
 const express = require('express');
 import {RequestHandler} from "express";
-import {UserRepository} from "./user-repository.type";
 import {User} from "./user.type";
+import {authGuard} from "./auth-guard";
+import passport = require("passport");
+import {registerUser$, userExists$} from "./mongo-users";
 
-export class AuthRoute {
-   public readonly router = express.Router();
+const authenticateUserMiddleware = passport.authenticate('local');
 
-   constructor(
-       private userRepository: UserRepository,
-       authenticateUserMiddleware: RequestHandler,
-       authGuard: RequestHandler
-   ) {
-      this.router.post('/register/', this.register);
-      this.router.post('/login/', authenticateUserMiddleware, this.login);
-      this.router.post('/logout/', authGuard, this.logout);
-      this.router.get('/protected/', authGuard, this.protected);
+const register = async (req, res) => {
+   const username = req.body.username;
+   const password = req.body.password;
+
+   if (!username) {
+      res.status(BAD_REQUEST).json('Username required.');
+      return;
    }
 
-   private register = async (req, res) => {
-      const username = req.body.username;
-      const password = req.body.password;
+   if (!password) {
+      res.status(BAD_REQUEST).json('Password required.');
+      return;
+   }
 
-      if (!username) {
-         res.status(BAD_REQUEST).json('Username required.');
+   userExists$(username).subscribe((userExists) => {
+      if (userExists) {
+         res.status(CONFLICT).json('Username already taken.');
          return;
       }
 
-      if (!password) {
-         res.status(BAD_REQUEST).json('Password required.');
-         return;
-      }
-
-      this.userRepository.userExists$(username).subscribe((userExists) => {
-         if (userExists) {
-            res.status(CONFLICT).json('Username already taken.');
-            return;
-         }
-
-         this.userRepository.registerUser$(username, password).subscribe((user) => {
-            res.status(CREATED).json(user);
-         });
+      registerUser$(username, password).subscribe((user) => {
+         res.status(CREATED).json(user);
       });
-   }
-
-   private login: RequestHandler = (req, res) => {
-      res.json(`Logged in as ${(req.user as User).username}`);
-   }
-
-   private logout = (req, res) => {
-      req.logout(
-          (error) => {
-         if (error) {
-            res.status(INTERNAL_SERVER_ERROR)
-                .json('Log out failed.');
-            return;
-         }
-
-         res.json('Logged out successfully.');
-      });
-   };
-
-   private protected = (req, res) => {
-      res.json(`Authenticated as ${(req.user as User).username}`);
-   };
+   });
 }
+
+const login: RequestHandler = (req, res) => {
+   res.json(`Logged in as ${(req.user as User).username}`);
+}
+
+const logout = (req, res) => {
+   req.logout(
+       (error) => {
+          if (error) {
+             res.status(INTERNAL_SERVER_ERROR)
+                 .json('Log out failed.');
+             return;
+          }
+
+          res.json('Logged out successfully.');
+       });
+};
+
+const authenticate = (req, res) => {
+   res.json(`Authenticated as ${(req.user as User).username}`);
+};
+
+const authRouter = express.Router();
+
+authRouter.post('/register/', register);
+authRouter.post('/login/', authenticateUserMiddleware, login);
+authRouter.post('/logout/', authGuard, logout);
+authRouter.get('/protected/', authGuard, authenticate);
+export default authRouter;
