@@ -7,7 +7,7 @@ import {
     SortEntriesBy$,
     DeleteEntry$,
     UpdateEntry$,
-} from "./entries$.type";
+} from "./entries.type";
 import JournalEntryModel  from "./mongo-journal-entry-model";
 import {isValidObjectId} from "../utils/isValidObjectId";
 import {Observable} from "rxjs";
