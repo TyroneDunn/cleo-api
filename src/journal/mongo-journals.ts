@@ -2,7 +2,7 @@ import {Journal} from "./journal.type"
 import {
     Journal$,
     Journals$,
-    SearchUsersJournals$,
+    SearchUsersJournalsAndSortBy$,
     SortUsersJournals$,
     CreateJournal$,
     DeleteJournal$,
@@ -58,28 +58,30 @@ export const journals$: Journals$ = (
     });
 };
 
-export const searchUsersJournals$: SearchUsersJournals$ = (
+export const searchUsersJournalsAndSortByLastUpdated$: SearchUsersJournalsAndSortBy$ = (
     id: string,
     query: string,
+    order: 1 | -1,
     page: number,
     limit: number
 ): Observable<Journal[]> => {
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
         JournalModel.find({name: {$regex: query, $options: 'i'}})
-           .skip(skip)
-           .limit(limit)
-           .exec((error, journals: Journal[]) => {
-               if (error) {
+            .sort({lastUpdated: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, journals: Journal[]) => {
+                if (error) {
                    subscriber.error(error);
                    subscriber.complete();
                    return;
-               }
-               subscriber.next(journals);
-               subscriber.complete();
+                }
+                subscriber.next(journals);
+                subscriber.complete();
            });
     });
-}
+};
 
 export const sortUsersJournalsByName$: SortUsersJournals$ = (
     id: string,
