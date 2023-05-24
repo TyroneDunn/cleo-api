@@ -20,7 +20,7 @@ export const generateHash = (password: string): string => {
     return encrypt(password);
 }
 
-export function validatePassword(password: string, hash: string): boolean {
+export const validatePassword = (password: string, hash: string): boolean => {
     const comparator: string = encrypt(password);
     return (hash === comparator);
 }
