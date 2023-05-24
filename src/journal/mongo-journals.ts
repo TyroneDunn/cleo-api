@@ -2,6 +2,7 @@ import {Journal} from "./journal.type"
 import {
     Journal$,
     Journals$,
+    SearchUsersJournals$,
     SearchUsersJournalsAndSortBy$,
     SortUsersJournals$,
     CreateJournal$,
@@ -44,6 +45,29 @@ export const journals$: Journals$ = (
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
         JournalModel.find({author: userId})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, journals: Journal[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(journals);
+                subscriber.complete();
+            });
+    });
+};
+
+export const searchUsersJournals$: SearchUsersJournals$ = (
+    id: string,
+    query: string,
+    page: number,
+    limit: number
+): Observable<Journal[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalModel.find({name: {$regex: query, $options: 'i'}})
             .skip(skip)
             .limit(limit)
             .exec((error, journals: Journal[]) => {
