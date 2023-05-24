@@ -78,6 +78,30 @@ export const sortEntriesByLastUpdated$: SortEntriesBy$ = (
     });
 };
 
+export const sortEntriesByDateCreated$: SortEntriesBy$ = (
+    id: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+) => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({journal: id})
+            .sort({dateCreated: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
+
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
     public entry$(id: string): Observable<JournalEntry | undefined> {
         return new Observable((subscriber) => {
