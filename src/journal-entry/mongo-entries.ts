@@ -2,6 +2,7 @@ import {JournalEntry} from "./journal-entry.type";
 import {
     Entry$,
     Entries$,
+    SearchEntries$,
     SortEntriesBy$,
     DeleteEntry$,
     UpdateEntry$,
@@ -45,6 +46,29 @@ export const entries$: Entries$ = (
         }
 
         JournalEntryModel.find({journal: id})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
+
+export const searchEntries$: SearchEntries$ = (
+    id: string,
+    query: string,
+    page: number,
+    limit: number
+): Observable<JournalEntry[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({name: {$regex: query, $options: 'i'}})
             .skip(skip)
             .limit(limit)
             .exec((error, entries: JournalEntry[]) => {
