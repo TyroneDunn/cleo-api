@@ -1,11 +1,11 @@
 import {validatePassword} from "../../utils/password-utils";
 import {User} from "../../user/user.type";
-import UserModel from "../../user/user-model"
+import UserModel from "../../user/mongo-user-model"
 
 const passportConfig = require('passport');
 import LocalStrategy = require('passport-local');
 
-const customFields = {
+const userField = {
     usernameField: 'username',
     passwordField: 'password',
 };
@@ -17,14 +17,16 @@ const verifyCallback = async (username: string, password: string, done) => {
             return;
         }
 
-        if (validatePassword(password, user.hash))
-            done(null, user);
-        else
+        if (!validatePassword(password, user.hash)) {
             done(null, false);
+            return;
+        }
+
+        done(null, user);
     });
 };
 
-const localStrategy = new LocalStrategy.Strategy(customFields, verifyCallback);
+const localStrategy = new LocalStrategy.Strategy(userField, verifyCallback);
 
 passportConfig.use(localStrategy);
 passportConfig.serializeUser((user, done) => {
