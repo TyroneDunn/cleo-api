@@ -40,7 +40,7 @@ export class AuthRoute {
 
       this.userRepository.userExists$(username).subscribe((userExists) => {
          if (userExists) {
-            res.status(CONFLICT).json(`Username already taken.`);
+            res.status(CONFLICT).json('Username already taken.');
             return;
          }
 
