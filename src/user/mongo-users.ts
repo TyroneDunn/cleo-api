@@ -1,5 +1,5 @@
 import {generateHash} from "../utils/password-utils";
-import UserModel from "./user-model";
+import UserModel from "./mongo-user-model";
 import {Observable} from "rxjs";
 import {User} from "./user.type";
 import {RegisterUser$, UserExists$} from "./users.type";
