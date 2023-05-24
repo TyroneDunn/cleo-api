@@ -2,7 +2,7 @@ import {generateHash} from "../utils/password-utils";
 import UserModel from "./user-model";
 import {Observable} from "rxjs";
 import {User} from "./user.type";
-import {RegisterUser$, UserExists$} from "./user$.type";
+import {RegisterUser$, UserExists$} from "./users.type";
 
 export const registerUser$: RegisterUser$ = (username: string, password: string) => {
     return new Observable((subscriber) => {
@@ -20,7 +20,6 @@ export const registerUser$: RegisterUser$ = (username: string, password: string)
         });
     });
 };
-
 
 export const userExists$: UserExists$ = (username: string) => {
     return new Observable((subscriber) => {
