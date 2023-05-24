@@ -1,4 +1,4 @@
-import JournalModel from './journal-model'
+import JournalModel from './mongo-journal-model';
 import JournalEntryModel, {JournalEntryDocument}
     from "../journal-entry/journal-entry-model";
 import {now, ObjectId} from "mongoose";
