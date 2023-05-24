@@ -30,7 +30,7 @@ export const entry$: Entry$ = (id: string) => {
             subscriber.complete();
         });
     });
-}
+};
 
 export const entries$: Entries$ = (
     id: string,
@@ -58,7 +58,7 @@ export const entries$: Entries$ = (
                 subscriber.complete();
             });
     });
-}
+};
 
 export const sortEntriesByLastUpdated$: SortEntriesBy$ = (
     id: string,
@@ -125,7 +125,7 @@ export const createEntry$ = (journalId: string, body: string) => {
             subscriber.complete();
         });
     });
-}
+};
 
 export const deleteEntry$: DeleteEntry$ = (id: string) => {
     return new Observable((subscriber) => {
@@ -160,4 +160,4 @@ export const updateEntry$: UpdateEntry$ = (id: string, body: string) => {
                 subscriber.complete();
             })
     });
-}
+};
