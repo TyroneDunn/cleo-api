@@ -12,3 +12,9 @@ export type SortUsersJournals$ = (
     page: number,
     limit: number,
 ) => Observable<Journal[]>;
+export type SearchJournals = (
+    id: string,
+    query: string,
+    page: number,
+    limit: number
+) => Observable<Journal[]>;
