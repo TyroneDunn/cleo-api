@@ -18,6 +18,11 @@ export type DeleteEntry$ = (
     id: string,
 ) => Observable<JournalEntry>;
 
+export type UpdateEntry$ = (
+    id: string,
+    content: string,
+) => Observable<JournalEntry>;
+
 export type SortEntriesByDateCreated$ = (
     id: string,
     order: 1 | -1,
