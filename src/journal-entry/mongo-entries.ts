@@ -68,7 +68,7 @@ export const searchEntries$: SearchEntries$ = (
 ): Observable<JournalEntry[]> => {
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({name: {$regex: query, $options: 'i'}})
+        JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
             .skip(skip)
             .limit(limit)
             .exec((error, entries: JournalEntry[]) => {
