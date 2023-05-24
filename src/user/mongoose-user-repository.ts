@@ -3,9 +3,9 @@ import {generateHash} from "../utils/password-utils";
 import UserModel from "./user-model";
 import {Observable} from "rxjs";
 import {User} from "./user.type";
-import {registerUser$} from "./user$.type";
+import {RegisterUser$} from "./user$.type";
 
-export const registerUser$ = (username: string, password: string) => {
+export const registerUser$: RegisterUser$ = (username: string, password: string) => {
     return new Observable((subscriber) => {
         new UserModel({
             username: username,
