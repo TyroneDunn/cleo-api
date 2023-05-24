@@ -4,36 +4,34 @@ import {
    CREATED,
    INTERNAL_SERVER_ERROR,
 } from "../utils/http-status-constants";
-const express = require('express');
 import {RequestHandler} from "express";
 import {User} from "./user.type";
 import {authGuard} from "./auth-guard";
-import passport = require("passport");
 import {registerUser$, userExists$} from "./mongo-users";
+
+const express = require('express');
+import passport = require("passport");
 
 const authenticateUserMiddleware = passport.authenticate('local');
 
 const register = async (req, res) => {
-   const username = req.body.username;
-   const password = req.body.password;
-
-   if (!username) {
+   if (!req.body.username) {
       res.status(BAD_REQUEST).json('Username required.');
       return;
    }
 
-   if (!password) {
+   if (!req.body.password) {
       res.status(BAD_REQUEST).json('Password required.');
       return;
    }
 
-   userExists$(username).subscribe((userExists) => {
+   userExists$(req.body.username).subscribe((userExists) => {
       if (userExists) {
          res.status(CONFLICT).json('Username already taken.');
          return;
       }
 
-      registerUser$(username, password).subscribe((user) => {
+      registerUser$(req.body.username, req.body.password).subscribe((user) => {
          res.status(CREATED).json(user);
       });
    });
@@ -66,4 +64,5 @@ authRouter.post('/register/', register);
 authRouter.post('/login/', authenticateUserMiddleware, login);
 authRouter.post('/logout/', authGuard, logout);
 authRouter.get('/protected/', authGuard, authenticate);
+
 export default authRouter;
