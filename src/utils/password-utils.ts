@@ -6,7 +6,7 @@ import {
 } from "./environment";
 const crypto = require('crypto');
 
-function encrypt(password: string): string {
+const encrypt = (password: string): string => {
     return crypto.pbkdf2Sync(
         password,
         PASSWORD_SALT,
