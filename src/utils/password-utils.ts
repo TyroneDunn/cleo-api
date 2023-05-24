@@ -16,7 +16,7 @@ const encrypt = (password: string): string => {
     ).toString('hex');
 }
 
-export function generateHash(password: string): string {
+export const generateHash = (password: string): string => {
     return encrypt(password);
 }
 
