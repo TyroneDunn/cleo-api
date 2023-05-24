@@ -9,7 +9,7 @@ export type Entries$ = (
     limit: number,
 ) => Observable<JournalEntry[]>;
 
-export type SearchEntries$ = (
+export type SearchEntriesAndSortBy$ = (
     id: string,
     query: string,
     order: 1 | -1,

@@ -2,7 +2,7 @@ import {JournalEntry} from "./journal-entry.type";
 import {
     Entry$,
     Entries$,
-    SearchEntries$,
+    SearchEntriesAndSortBy$,
     SortEntriesBy$,
     DeleteEntry$,
     UpdateEntry$,
