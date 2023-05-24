@@ -2,7 +2,6 @@ import {
     BAD_REQUEST,
     CREATED,
     NOT_FOUND,
-    OK,
     UNAUTHORIZED,
 } from "../utils/http-status-constants";
 import {RequestHandler, Router} from "express";
@@ -200,8 +199,7 @@ export class JournalRoute {
 
                         this.journalRepository.deleteJournal$(req.params.id)
                             .subscribe((journal: Journal) => {
-                                res.status(OK)
-                                    .json(journal);
+                                res.json(journal);
                             })
                     })
             });
