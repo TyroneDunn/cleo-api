@@ -8,7 +8,8 @@ import {
     Entry$,
     Entries$,
     SortEntriesBy$,
-    DeleteEntry$
+    DeleteEntry$,
+    UpdateEntry$,
 } from "./entries$.type";
 
 export const entry$: Entry$ = (id: string) => {
@@ -139,6 +140,27 @@ export const deleteEntry$: DeleteEntry$ = (id: string) => {
         })
     });
 };
+
+export const updateEntry$: UpdateEntry$ = (id: string, body: string) => {
+    return new Observable((subscriber) => {
+        JournalEntryModel.findByIdAndUpdate(
+            id,
+            {
+                body: body,
+                lastUpdated: now(),
+            },
+            {new: true},
+            (error, entry) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entry);
+                subscriber.complete();
+            })
+    });
+}
 
 
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
