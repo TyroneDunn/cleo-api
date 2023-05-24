@@ -77,6 +77,30 @@ export const sortUsersJournalsByName$: SortUsersJournals$ = (
     });
 }
 
+export const sortUsersJournalsByLastUpdated$: SortUsersJournals$ = (
+    id: string,
+    order: 1 | -1,
+    page: number,
+    limit: number,
+): Observable<Journal[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalModel.find({author: id})
+            .sort({dateCreated: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, journals: Journal[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(journals);
+                subscriber.complete();
+            });
+    });
+}
+
 export class MongooseJournalRepository implements JournalRepository {
     journal$(id: string): Observable<Journal> {
         throw new Error("Method not implemented.");
@@ -87,31 +111,11 @@ export class MongooseJournalRepository implements JournalRepository {
     sortUsersJournalsByName$(id: string, order: 1 | -1, page: number, limit: number): Observable<Journal[]> {
         throw new Error("Method not implemented.");
     }
-
-
-    public sortUsersJournalsByLastUpdated$(
-        id: string,
-        order: 1 | -1,
-        page: number,
-        limit: number,
-    ): Observable<Journal[]> {
-        return new Observable((subscriber) => {
-            const skip = (page - 1) * limit;
-            JournalModel.find({author: id})
-                .sort({dateCreated: order})
-                .skip(skip)
-                .limit(limit)
-                .exec((error, journals: Journal[]) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journals);
-                    subscriber.complete();
-                });
-        });
+    sortUsersJournalsByLastUpdated$(id: string, order: 1 | -1, page: number, limit: number): Observable<Journal[]> {
+        throw new Error("Method not implemented.");
     }
+
+
 
     public sortUsersJournalsByDateCreated$(
         id: string,
