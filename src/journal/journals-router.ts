@@ -5,6 +5,8 @@ import {
     journal$,
     journals$,
     searchUsersJournals$,
+    searchUsersJournalsAndSortByLastUpdated$,
+    searchUsersJournalsAndSortByDateCreated$,
     createJournal$,
     deleteJournal$,
     updateJournal$,
@@ -73,20 +75,59 @@ const getJournal: RequestHandler = async (req, res) => {
         else
             order = 1;
 
-        searchUsersJournals$(
-            ((req.user as User)._id as string),
-            req.query.q as string,
-            page,
-            limit
-        ).subscribe((journals) => {
-            if (journals.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No journals found.');
-                return;
-            }
-            res.json(journals);
-        });
-        return;
+
+        if (sort === undefined) {
+            searchUsersJournals$(
+                ((req.user as User)._id as string),
+                req.query.q as string,
+                page,
+                limit
+            ).subscribe((journals) => {
+                if (journals.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json('No journals found.');
+                    return;
+                }
+                res.json(journals);
+            });
+            return;
+        }
+
+        if (sort === 'lastUpdated') {
+            searchUsersJournalsAndSortByLastUpdated$(
+                ((req.user as User)._id as string),
+                req.query.q as string,
+                order,
+                page,
+                limit
+            ).subscribe((entries) => {
+                if (entries.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json('No entries found.');
+                    return;
+                }
+                res.json(entries);
+            });
+            return;
+        }
+
+        if (sort === 'dateCreated') {
+            searchUsersJournalsAndSortByDateCreated$(
+                ((req.user as User)._id as string),
+                req.query.q as string,
+                order,
+                page,
+                limit
+            ).subscribe((entries) => {
+                if (entries.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json('No entries found.');
+                    return;
+                }
+                res.json(entries);
+            });
+            return;
+        }
     }
 
     journal$(req.params.id)
