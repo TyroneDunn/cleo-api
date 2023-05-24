@@ -23,14 +23,7 @@ export type UpdateEntry$ = (
     content: string,
 ) => Observable<JournalEntry>;
 
-export type SortEntriesByDateCreated$ = (
-    id: string,
-    order: 1 | -1,
-    page: number,
-    limit: number,
-) => Observable<JournalEntry[]>;
-
-export type SortEntriesByLastUpdated$ = (
+export type SortEntriesBy$ = (
     id: string,
     order: 1 | -1,
     page: number,
