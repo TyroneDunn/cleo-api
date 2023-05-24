@@ -1,12 +1,5 @@
-import {
-    BAD_REQUEST,
-    CREATED,
-    NOT_FOUND,
-    UNAUTHORIZED,
-} from "../utils/http-status-constants";
-import {RequestHandler, Router} from "express";
-import {User} from "../user/user.type";
 import {Journal} from "./journal.type";
+import {User} from "../user/user.type";
 import {userOwnsJournal$} from '../utils/userOwnsJournal$';
 import {
     journal$,
@@ -18,6 +11,13 @@ import {
     sortUsersJournalsByDateCreated$,
     sortUsersJournalsByLastUpdated$
 } from "./mongo-journals";
+import {RequestHandler, Router} from "express";
+import {
+    BAD_REQUEST,
+    CREATED,
+    NOT_FOUND,
+    UNAUTHORIZED,
+} from "../utils/http-status-constants";
 
 const getJournal: RequestHandler = async (req, res) => {
     if (!req.params.id) {

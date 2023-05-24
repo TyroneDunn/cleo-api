@@ -1,6 +1,6 @@
-import database from "../utils/mongoose-database";
-import {Document, Schema} from 'mongoose';
 import {User} from "./user.type";
+import {Document, Schema} from 'mongoose';
+import database from "../utils/mongoose-database";
 
 export interface UserDocument extends Document, User {
     _id: string,

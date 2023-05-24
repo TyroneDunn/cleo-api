@@ -1,13 +1,5 @@
-import {RequestHandler, Router} from "express";
-import {User} from "../user/user.type";
-import {
-    BAD_REQUEST,
-    CREATED,
-    NOT_FOUND,
-    UNAUTHORIZED
-} from "../utils/http-status-constants";
 import {JournalEntry} from "./journal-entry.type";
-import {userOwnsJournal$} from '../utils/userOwnsJournal$';
+import {User} from "../user/user.type";
 import {
     entry$,
     entries$,
@@ -17,7 +9,15 @@ import {
     deleteEntry$,
     updateEntry$,
 } from "./mongo-entries";
+import {userOwnsJournal$} from '../utils/userOwnsJournal$';
 import {journal$} from "../journal/mongo-journals";
+import {RequestHandler, Router} from "express";
+import {
+    BAD_REQUEST,
+    CREATED,
+    NOT_FOUND,
+    UNAUTHORIZED
+} from "../utils/http-status-constants";
 
 const getEntry: RequestHandler = async (req, res) => {
     if (!req.params.id) {

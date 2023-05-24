@@ -1,7 +1,7 @@
 import {User} from '../user/user.type';
 import {Journal} from '../journal/journal.type';
-import {map, Observable} from "rxjs";
 import {Journal$} from "../journal/journals$.type"
+import {map, Observable} from "rxjs";
 
 export const userOwnsJournal$ = (
     user: User, 

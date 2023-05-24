@@ -1,7 +1,7 @@
 import {
     PASSWORD_SALT,
-    PASSWORD_LENGTH,
     HASHING_ITERATIONS,
+    PASSWORD_LENGTH,
     HASHING_ALGORITHM
 } from "./environment";
 const crypto = require('crypto');

@@ -1,8 +1,8 @@
-import {generateHash} from "../utils/password-utils";
-import UserModel from "./mongo-user-model";
-import {Observable} from "rxjs";
 import {User} from "./user.type";
+import UserModel from "./mongo-user-model";
 import {RegisterUser$, UserExists$} from "./users.type";
+import {generateHash} from "../utils/password-utils";
+import {Observable} from "rxjs";
 
 export const registerUser$: RegisterUser$ = (username: string, password: string) => {
     return new Observable((subscriber) => {

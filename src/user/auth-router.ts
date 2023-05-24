@@ -1,13 +1,13 @@
+import {User} from "./user.type";
+import {registerUser$, userExists$} from "./mongo-users";
+import {RequestHandler} from "express";
+import {authGuard} from "./auth-guard";
 import {
    BAD_REQUEST,
    CONFLICT,
    CREATED,
    INTERNAL_SERVER_ERROR,
 } from "../utils/http-status-constants";
-import {RequestHandler} from "express";
-import {User} from "./user.type";
-import {authGuard} from "./auth-guard";
-import {registerUser$, userExists$} from "./mongo-users";
 
 const express = require('express');
 import passport = require("passport");

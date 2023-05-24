@@ -1,8 +1,4 @@
-import JournalEntryModel  from "./mongo-journal-entry-model";
-import {now} from "mongoose";
-import {Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
-import {isValidObjectId} from "../utils/isValidObjectId";
 import {
     Entry$,
     Entries$,
@@ -10,6 +6,10 @@ import {
     DeleteEntry$,
     UpdateEntry$,
 } from "./entries$.type";
+import JournalEntryModel  from "./mongo-journal-entry-model";
+import {isValidObjectId} from "../utils/isValidObjectId";
+import {Observable} from "rxjs";
+import {now} from "mongoose";
 
 export const entry$: Entry$ = (id: string) => {
     return new Observable((subscriber) => {

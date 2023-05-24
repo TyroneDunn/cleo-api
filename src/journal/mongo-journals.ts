@@ -1,17 +1,17 @@
-import JournalModel from './mongo-journal-model';
-import JournalEntryModel
-    from "../journal-entry/mongo-journal-entry-model";
-import {now, ObjectId} from "mongoose";
-import {Observable} from "rxjs";
 import {Journal} from "./journal.type";
 import {JournalEntry} from "../journal-entry/journal-entry.type";
-import {isValidObjectId} from "../utils/isValidObjectId";
 import {Journal$} from "./journals$.type";
 import {Journals$} from "./journals$.type";
 import {SortUsersJournals$} from "./journals$.type";
 import {CreateJournal$} from "./journals$.type";
 import {DeleteJournal$} from "./journals$.type";
 import {UpdateJournal$} from "./journals$.type";
+import JournalModel from './mongo-journal-model';
+import JournalEntryModel
+    from "../journal-entry/mongo-journal-entry-model";
+import {isValidObjectId} from "../utils/isValidObjectId";
+import {now, ObjectId} from "mongoose";
+import {Observable} from "rxjs";
 
 export const journal$: Journal$ = (id: string) => {
     return new Observable((subscriber) => {

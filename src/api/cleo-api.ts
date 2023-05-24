@@ -1,15 +1,15 @@
-import {API_TITLE} from "../utils/environment";
 import {Application, RequestHandler} from "express";
-import authRouter from "../user/auth-router";
-import journalsRouter from "../journal/journals-router";
-import journalEntriesRouter from "../journal-entry/journal-entries-router";
 const express = require("express");
+import {corsOptions} from "./cors/cors-config";
+const cors = require('cors');
+import {sessionMiddleware} from "./session/session-config";
 import passport = require("passport");
 require("./passport/passport-config");
-const cors = require('cors');
+import authRouter from "../user/auth-router";
 import {authGuard} from "../user/auth-guard";
-import {corsOptions} from "./cors/cors-config";
-import {sessionMiddleware} from "./session/session-config";
+import journalsRouter from "../journal/journals-router";
+import journalEntriesRouter from "../journal-entry/journal-entries-router";
+import {API_TITLE} from "../utils/environment";
 
 const cleoHomeRoute = (req, res): RequestHandler => {
     return res.send(API_TITLE || 'Cleo-Server:v.1.3.x');
