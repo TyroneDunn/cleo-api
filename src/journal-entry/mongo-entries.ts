@@ -60,15 +60,17 @@ export const entries$: Entries$ = (
     });
 };
 
-export const searchEntries$: SearchEntries$ = (
+export const searchEntriesAndSortByLastUpdated$: SearchEntriesAndSortBy$ = (
     id: string,
     query: string,
+    order: 1 | -1,
     page: number,
     limit: number
 ): Observable<JournalEntry[]> => {
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
         JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
+            .sort({lastUpdated: order})
             .skip(skip)
             .limit(limit)
             .exec((error, entries: JournalEntry[]) => {
