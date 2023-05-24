@@ -1,4 +1,3 @@
-import {JournalRepository} from "./journal-repository.type";
 import JournalModel from './journal-model'
 import JournalEntryModel, {JournalEntryDocument}
     from "../journal-entry/journal-entry-model";
