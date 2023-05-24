@@ -26,6 +26,4 @@ export const validatePassword = (password: string, hash: string): boolean => {
 }
 
 // Tool for the developer to generate new salt.
-// export function generateSalt() {
-//     return crypto.randomBytes(256).toString('hex');
-// }
+// export const generateSalt = () => crypto.randomBytes(256).toString('hex');
