@@ -1,3 +1,4 @@
-import {buildCleoApi} from "./api/cleo-api.builder";
+import {run} from "./api/cleo-api";
+import {API_PORT} from "./utils/environment";
 
-buildCleoApi().run();
+run(API_PORT);
