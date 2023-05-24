@@ -194,37 +194,3 @@ export const updateJournal$: UpdateJournal$ =
                 });
         })
 };
-
-
-export class MongooseJournalRepository implements JournalRepository {
-    journal$(id: string): Observable<Journal> {
-        throw new Error("Method not implemented.");
-    }
-    journals$(userId: string, page: number, limit: number): Observable<Journal[]> {
-        throw new Error("Method not implemented.");
-    }
-    sortUsersJournalsByName$(id: string, order: 1 | -1, page: number, limit: number): Observable<Journal[]> {
-        throw new Error("Method not implemented.");
-    }
-    sortUsersJournalsByLastUpdated$(id: string, order: 1 | -1, page: number, limit: number): Observable<Journal[]> {
-        throw new Error("Method not implemented.");
-    }
-    sortUsersJournalsByDateCreated$(id: string, order: 1 | -1, page: number, limit: number): Observable<Journal[]> {
-        throw new Error("Method not implemented.");
-    }
-    createJournal$(userId: string, name: string): Observable<Journal> {
-        throw new Error("Method not implemented.");
-    }
-    deleteJournal$(id: string): Observable<Journal> {
-        throw new Error("Method not implemented.");
-    }
-    updateJournal$(id: string, name: string): Observable<Journal> {
-        throw new Error("Method not implemented.");
-    }
-
-
-
-
-
-
-}
