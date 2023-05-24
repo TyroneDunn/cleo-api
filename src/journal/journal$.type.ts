@@ -1,4 +1,4 @@
 import {Observable} from "rxjs";
 import {Journal} from "./journal.type";
 
-export type journal$ = (id: string) => Observable<Journal | undefined>;
+export type Journal$ = (id: string) => Observable<Journal | undefined>;
