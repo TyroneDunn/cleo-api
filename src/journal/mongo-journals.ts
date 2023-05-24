@@ -178,7 +178,7 @@ export const sortUsersJournalsByDateCreated$: SortUsersJournals$ = (
                 subscriber.complete();
             });
     });
-}
+};
 
 export const createJournal$: CreateJournal$ = (
     userId: string,
