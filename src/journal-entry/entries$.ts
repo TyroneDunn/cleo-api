@@ -20,3 +20,10 @@ export type sortEntriesByDateCreated$ = (
     page: number,
     limit: number,
 ) => Observable<JournalEntry[]>;
+
+export type sortEntriesByLastUpdated$ = (
+    id: string,
+    order: 1 | -1,
+    page: number,
+    limit: number,
+) => Observable<JournalEntry[]>;
