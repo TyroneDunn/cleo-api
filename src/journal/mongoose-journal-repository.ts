@@ -11,6 +11,7 @@ import {Journal$} from "./journal$.type";
 import {Journals$} from "./journals$.type";
 import {SortUsersJournals$} from "./sortUsersJournals.type";
 import {CreateJournal$} from "./createJournal$.type"
+import {DeleteJournal$} from "./deleteJournal$.type"
 
 export const journal$: Journal$ = (id: string) => {
     return new Observable((subscriber) => {
@@ -102,28 +103,6 @@ export const sortUsersJournalsByLastUpdated$: SortUsersJournals$ = (
     });
 };
 
-export const createJournal$: CreateJournal$ = (
-    userId: string,
-    name: string
-): Observable<Journal> => {
-    return new Observable<Journal>((subscriber) => {
-        new JournalModel({
-            name: name,
-            author: userId,
-            dateCreated: now(),
-            lastUpdated: now(),
-        }).save((error, journal: Journal) => {
-            if (error) {
-                subscriber.error(error);
-                subscriber.complete();
-                return;
-            }
-            subscriber.next(journal)
-            subscriber.complete();
-        });
-    });
-};
-
 export const sortUsersJournalsByDateCreated$: SortUsersJournals$ = (
     id: string,
     order: 1 | -1,
@@ -148,6 +127,54 @@ export const sortUsersJournalsByDateCreated$: SortUsersJournals$ = (
     });
 }
 
+export const createJournal$: CreateJournal$ = (
+    userId: string,
+    name: string
+): Observable<Journal> => {
+    return new Observable<Journal>((subscriber) => {
+        new JournalModel({
+            name: name,
+            author: userId,
+            dateCreated: now(),
+            lastUpdated: now(),
+        }).save((error, journal: Journal) => {
+            if (error) {
+                subscriber.error(error);
+                subscriber.complete();
+                return;
+            }
+            subscriber.next(journal)
+            subscriber.complete();
+        });
+    });
+};
+
+export const deleteJournal$: DeleteJournal$ = (id: string): Observable<Journal> => {
+    return new Observable<Journal>((subscriber) => {
+        deleteJournalEntries$(id).subscribe();
+        JournalModel.findByIdAndDelete(id, (error, journal: Journal) => {
+            if (error) {
+                subscriber.error(error);
+                subscriber.complete();
+                return;
+            }
+            subscriber.next(journal);
+            subscriber.complete();
+        });
+    });
+};
+
+const deleteJournalEntries$ = (journalID: string): Observable<void> => {
+    return new Observable((subscriber) => {
+        JournalEntryModel.deleteMany({journal: journalID}, (error, result) => {
+            if (error)
+                subscriber.error(error);
+            subscriber.complete();
+        });
+    });
+};
+
+
 export class MongooseJournalRepository implements JournalRepository {
     journal$(id: string): Observable<Journal> {
         throw new Error("Method not implemented.");
@@ -167,35 +194,14 @@ export class MongooseJournalRepository implements JournalRepository {
     createJournal$(userId: string, name: string): Observable<Journal> {
         throw new Error("Method not implemented.");
     }
-
-
-
-
-
-    public deleteJournal$(id: string): Observable<Journal> {
-        return new Observable<Journal>((subscriber) => {
-            this.deleteJournalEntries$(id).subscribe();
-                JournalModel.findByIdAndDelete(id, (error, journal: Journal) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journal);
-                    subscriber.complete();
-                });
-            });
+    deleteJournal$(id: string): Observable<Journal> {
+        throw new Error("Method not implemented.");
     }
 
-    private deleteJournalEntries$(journalID: string): Observable<void> {
-        return new Observable((subscriber) => {
-            JournalEntryModel.deleteMany({journal: journalID}, (error, result) => {
-                if (error)
-                    subscriber.error(error);
-                subscriber.complete();
-            });
-        });
-    }
+
+
+
+
 
     public updateJournal$(id: string, name: string): Observable<Journal> {
         return new Observable((subscriber) => {
