@@ -83,6 +83,31 @@ export const searchUsersJournalsAndSortByLastUpdated$: SearchUsersJournalsAndSor
     });
 };
 
+export const searchUsersJournalsAndSortByDateCreated$: SearchUsersJournalsAndSortBy$ = (
+    id: string,
+    query: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+): Observable<Journal[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalModel.find({name: {$regex: query, $options: 'i'}})
+            .sort({dateCreated: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, journals: Journal[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(journals);
+                subscriber.complete();
+            });
+    });
+};
+
 export const sortUsersJournalsByName$: SortUsersJournals$ = (
     id: string,
     order: 1 | -1,
