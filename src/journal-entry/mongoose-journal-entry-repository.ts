@@ -4,7 +4,12 @@ import {now} from "mongoose";
 import {Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
 import {isValidObjectId} from "../utils/isValidObjectId";
-import {Entry$, Entries$, SortEntriesBy$} from "./entries$.type";
+import {
+    Entry$,
+    Entries$,
+    SortEntriesBy$,
+    DeleteEntry$
+} from "./entries$.type";
 
 export const entry$: Entry$ = (id: string) => {
     return new Observable((subscriber) => {
@@ -120,6 +125,21 @@ export const createEntry$ = (journalId: string, body: string) => {
         });
     });
 }
+
+export const deleteEntry$: DeleteEntry$ = (id: string) => {
+    return new Observable((subscriber) => {
+        JournalEntryModel.findByIdAndDelete(id, (error, entry) => {
+            if (error) {
+                subscriber.error(error)
+                subscriber.complete();
+                return;
+            }
+            subscriber.next(entry);
+            subscriber.complete();
+        })
+    });
+};
+
 
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
     public entry$(id: string): Observable<JournalEntry | undefined> {
