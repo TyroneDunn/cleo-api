@@ -7,26 +7,31 @@ import {Observable} from "rxjs";
 import {Journal} from "./journal.type";
 import {JournalEntry} from "../journal-entry/journal-entry.type";
 import {isValidObjectId} from "../utils/isValidObjectId";
+import {Journal$} from "./journal$.type";
 
-export class MongooseJournalRepository implements JournalRepository {
-    public journal$(id: string): Observable<Journal | undefined> {
-        return new Observable((subscriber) => {
-            if (!isValidObjectId(id)) {
-                subscriber.next(undefined);
+export const journal$: Journal$ = (id: string): Observable<Journal | undefined> => {
+    return new Observable((subscriber) => {
+        if (!isValidObjectId(id)) {
+            subscriber.next(undefined);
+            subscriber.complete();
+            return;
+        }
+
+        JournalModel.findById(id, (error, journal: Journal) => {
+            if (error) {
+                subscriber.error(error);
                 subscriber.complete();
                 return;
             }
-
-            JournalModel.findById(id, (error, journal: Journal) => {
-                if (error) {
-                    subscriber.error(error);
-                    subscriber.complete();
-                    return;
-                }
-                subscriber.next(journal);
-                subscriber.complete();
-            });
+            subscriber.next(journal);
+            subscriber.complete();
         });
+    });
+}
+
+export class MongooseJournalRepository implements JournalRepository {
+    journal$(id: string): Observable<Journal> {
+        throw new Error("Method not implemented.");
     }
 
     public journals$(
