@@ -19,30 +19,20 @@ import {
     sortUsersJournalsByLastUpdated$
 } from "./mongo-journals";
 
-export class JournalRoute {
-    public readonly router: Router = Router();
-    constructor() {
-        this.router.get('/:id', this.getJournal);
-        this.router.get('/', this.getJournals);
-        this.router.post('/', this.createJournal);
-        this.router.delete('/:id', this.deleteJournal);
-        this.router.patch('/:id', this.updateJournal);
+const getJournal: RequestHandler = async (req, res) => {
+    if (!req.params.id) {
+        res.status(BAD_REQUEST)
+            .json('Journal id required.');
+        return;
     }
 
-    private getJournal: RequestHandler = async (req, res) => {
-        if (!req.params.id) {
-            res.status(BAD_REQUEST)
-                .json('Journal id required.');
-            return;
-        }
-
-        journal$(req.params.id)
-            .subscribe((journal: Journal | undefined) => {
-                if (!journal) {
-                    res.status(NOT_FOUND)
-                        .json(`Journal ${(req.params.id)} not found.`);
-                    return;
-                }
+    journal$(req.params.id)
+        .subscribe((journal: Journal | undefined) => {
+            if (!journal) {
+                res.status(NOT_FOUND)
+                    .json(`Journal ${(req.params.id)} not found.`);
+                return;
+            }
 
                 userOwnsJournal$(
                     req.user as User,
