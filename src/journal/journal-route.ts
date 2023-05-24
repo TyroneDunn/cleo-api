@@ -9,6 +9,7 @@ import {JournalRepository} from "./journal-repository.type";
 import {User} from "../user/user.type";
 import {Journal} from "./journal.type";
 import {userOwnsJournal$} from '../utils/userOwnsJournal$';
+import {journal$} from "./mongoose-journal-repository"
 
 export class JournalRoute {
     public readonly router: Router = Router();
@@ -27,7 +28,7 @@ export class JournalRoute {
             return;
         }
 
-        this.journalRepository.journal$(req.params.id)
+        journal$(req.params.id)
             .subscribe((journal: Journal | undefined) => {
                 if (!journal) {
                     res.status(NOT_FOUND)

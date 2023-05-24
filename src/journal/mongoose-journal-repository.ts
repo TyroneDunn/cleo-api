@@ -9,6 +9,7 @@ import {JournalEntry} from "../journal-entry/journal-entry.type";
 import {isValidObjectId} from "../utils/isValidObjectId";
 import {Journal$} from "./journal$.type";
 import {Journals$} from "./journals$.type";
+import {SortUsersJournals$} from "./sortUsersJournals.type";
 
 export const journal$: Journal$ = (id: string) => {
     return new Observable((subscriber) => {
@@ -52,6 +53,30 @@ export const journals$: Journals$ = (
     });
 };
 
+export const sortUsersJournalsByName$: SortUsersJournals$ = (
+    id: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+): Observable<Journal[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalModel.find({author: id})
+            .sort({name: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, journals: Journal[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(journals);
+                subscriber.complete();
+            });
+    });
+}
+
 export class MongooseJournalRepository implements JournalRepository {
     journal$(id: string): Observable<Journal> {
         throw new Error("Method not implemented.");
@@ -59,30 +84,10 @@ export class MongooseJournalRepository implements JournalRepository {
     journals$(userId: string, page: number, limit: number): Observable<Journal[]> {
         throw new Error("Method not implemented.");
     }
-
-    public sortUsersJournalsByName$(
-        id: string,
-        order: 1 | -1,
-        page: number,
-        limit: number
-        ): Observable<Journal[]> {
-            return new Observable((subscriber) => {
-                const skip = (page - 1) * limit;
-                JournalModel.find({author: id})
-                    .sort({name: order})
-                    .skip(skip)
-                    .limit(limit)
-                    .exec((error, journals: Journal[]) => {
-                        if (error) {
-                            subscriber.error(error);
-                            subscriber.complete();
-                            return;
-                        }
-                        subscriber.next(journals);
-                        subscriber.complete();
-                    });
-            });
+    sortUsersJournalsByName$(id: string, order: 1 | -1, page: number, limit: number): Observable<Journal[]> {
+        throw new Error("Method not implemented.");
     }
+
 
     public sortUsersJournalsByLastUpdated$(
         id: string,
