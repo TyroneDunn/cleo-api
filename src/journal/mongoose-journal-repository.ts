@@ -10,6 +10,7 @@ import {isValidObjectId} from "../utils/isValidObjectId";
 import {Journal$} from "./journal$.type";
 import {Journals$} from "./journals$.type";
 import {SortUsersJournals$} from "./sortUsersJournals.type";
+import {CreateJournal$} from "./createJournal$.type"
 
 export const journal$: Journal$ = (id: string) => {
     return new Observable((subscriber) => {
@@ -75,7 +76,7 @@ export const sortUsersJournalsByName$: SortUsersJournals$ = (
                 subscriber.complete();
             });
     });
-}
+};
 
 export const sortUsersJournalsByLastUpdated$: SortUsersJournals$ = (
     id: string,
@@ -99,7 +100,29 @@ export const sortUsersJournalsByLastUpdated$: SortUsersJournals$ = (
                 subscriber.complete();
             });
     });
-}
+};
+
+export const createJournal$: CreateJournal$ = (
+    userId: string,
+    name: string
+): Observable<Journal> => {
+    return new Observable<Journal>((subscriber) => {
+        new JournalModel({
+            name: name,
+            author: userId,
+            dateCreated: now(),
+            lastUpdated: now(),
+        }).save((error, journal: Journal) => {
+            if (error) {
+                subscriber.error(error);
+                subscriber.complete();
+                return;
+            }
+            subscriber.next(journal)
+            subscriber.complete();
+        });
+    });
+};
 
 export const sortUsersJournalsByDateCreated$: SortUsersJournals$ = (
     id: string,
@@ -141,28 +164,13 @@ export class MongooseJournalRepository implements JournalRepository {
     sortUsersJournalsByDateCreated$(id: string, order: 1 | -1, page: number, limit: number): Observable<Journal[]> {
         throw new Error("Method not implemented.");
     }
-
-
-
-
-    public createJournal$(userId: string, name: string): Observable<Journal> {
-        return new Observable<Journal>((subscriber) => {
-            new JournalModel({
-                name: name,
-                author: userId,
-                dateCreated: now(),
-                lastUpdated: now(),
-            }).save((error, journal: Journal) => {
-                if (error) {
-                    subscriber.error(error);
-                    subscriber.complete();
-                    return;
-                }
-                subscriber.next(journal)
-                subscriber.complete();
-            });
-        });
+    createJournal$(userId: string, name: string): Observable<Journal> {
+        throw new Error("Method not implemented.");
     }
+
+
+
+
 
     public deleteJournal$(id: string): Observable<Journal> {
         return new Observable<Journal>((subscriber) => {
