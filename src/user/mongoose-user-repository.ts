@@ -3,7 +3,7 @@ import {generateHash} from "../utils/password-utils";
 import UserModel from "./user-model";
 import {Observable} from "rxjs";
 import {User} from "./user.type";
-import {RegisterUser$} from "./user$.type";
+import {RegisterUser$, UserExists$} from "./user$.type";
 
 export const registerUser$: RegisterUser$ = (username: string, password: string) => {
     return new Observable((subscriber) => {
@@ -18,6 +18,28 @@ export const registerUser$: RegisterUser$ = (username: string, password: string)
             }
             subscriber.next(user);
             subscriber.complete();
+        });
+    });
+};
+
+
+export const userExists$: UserExists$ = (username: string) => {
+    return new Observable((subscriber) => {
+        UserModel.findOne({username: username}, (error, user) => {
+            if (error) {
+                subscriber.error(error);
+                subscriber.complete();
+                return;
+            }
+
+            if (!user) {
+                subscriber.next(false);
+                subscriber.complete();
+            }
+            else {
+                subscriber.next(true);
+                subscriber.complete();
+            }
         });
     });
 };
