@@ -6,19 +6,17 @@ import {
 } from "./environment";
 const crypto = require('crypto');
 
-const encrypt = (password: string): string => {
-    return crypto.pbkdf2Sync(
+const encrypt = (password: string): string =>
+    crypto.pbkdf2Sync(
         password,
         PASSWORD_SALT,
         HASHING_ITERATIONS,
         PASSWORD_LENGTH,
         HASHING_ALGORITHM
     ).toString('hex');
-}
 
-export const generateHash = (password: string): string => {
-    return encrypt(password);
-}
+
+export const generateHash = (password: string): string => encrypt(password);
 
 export const validatePassword = (password: string, hash: string): boolean => {
     const comparator: string = encrypt(password);
