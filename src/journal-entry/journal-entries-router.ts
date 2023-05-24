@@ -4,6 +4,8 @@ import {
     entry$,
     entries$,
     searchEntries$,
+    searchEntriesAndSortByDateCreated$,
+    searchEntriesAndSortByLastUpdated$,
     sortEntriesByLastUpdated$,
     sortEntriesByDateCreated$,
     createEntry$,
@@ -38,8 +40,7 @@ const getEntry: RequestHandler = async (req, res) => {
             return;
         }
 
-        if ((sort !== 'name') &&
-            (sort !== 'lastUpdated') &&
+        if ((sort !== 'lastUpdated') &&
             (sort !== 'dateCreated' &&
                 (sort !== undefined))) {
             res.status(BAD_REQUEST)
@@ -73,20 +74,58 @@ const getEntry: RequestHandler = async (req, res) => {
         else
             order = 1;
 
-        searchEntries$(
-            ((req.user as User)._id as string),
-            req.query.q as string,
-            page,
-            limit
-        ).subscribe((entries) => {
-            if (entries.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No entries found.');
-                return;
-            }
-            res.json(entries);
-        });
-        return;
+        if (sort === undefined) {
+            searchEntries$(
+                ((req.user as User)._id as string),
+                req.query.q as string,
+                page,
+                limit
+            ).subscribe((entries) => {
+                if (entries.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json('No entries found.');
+                    return;
+                }
+                res.json(entries);
+            });
+            return;
+        }
+
+        if (sort === 'lastUpdated') {
+            searchEntriesAndSortByLastUpdated$(
+                ((req.user as User)._id as string),
+                req.query.q as string,
+                order,
+                page,
+                limit
+            ).subscribe((entries) => {
+                if (entries.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json('No entries found.');
+                    return;
+                }
+                res.json(entries);
+            });
+            return;
+        }
+
+        if (sort === 'dateCreated') {
+            searchEntriesAndSortByDateCreated$(
+                ((req.user as User)._id as string),
+                req.query.q as string,
+                order,
+                page,
+                limit
+            ).subscribe((entries) => {
+                if (entries.length === 0) {
+                    res.status(NOT_FOUND)
+                        .json('No entries found.');
+                    return;
+                }
+                res.json(entries);
+            });
+            return;
+        }
     }
 
     entry$(req.params.id)
