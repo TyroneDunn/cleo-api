@@ -52,7 +52,7 @@ const logout = (req, res) => {
              return;
           }
 
-          res.json('Logged out successfully.');
+          res.json('Logged out successfuly.');
        });
 };
 
