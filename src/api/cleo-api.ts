@@ -9,7 +9,7 @@ import passport = require("passport");
 import {CorsOptions} from "cors";
 require("./passport/passport-config");
 const cors = require('cors');
-import authGuard from '../user/auth-guard'
+import authGuard from '../user/auth-guard';
 
 export class CleoAPI {
     private app: Application;
