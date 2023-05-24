@@ -1,11 +1,14 @@
-import {Journal} from "./journal.type";
+import {Journal} from "./journal.type"
+import {
+    Journal$,
+    Journals$,
+    SearchUsersJournals$,
+    SortUsersJournals$,
+    CreateJournal$,
+    DeleteJournal$,
+    UpdateJournal$,
+} from "./journals$.type";
 import {JournalEntry} from "../journal-entry/journal-entry.type";
-import {Journal$} from "./journals$.type";
-import {Journals$} from "./journals$.type";
-import {SortUsersJournals$} from "./journals$.type";
-import {CreateJournal$} from "./journals$.type";
-import {DeleteJournal$} from "./journals$.type";
-import {UpdateJournal$} from "./journals$.type";
 import JournalModel from './mongo-journal-model';
 import JournalEntryModel
     from "../journal-entry/mongo-journal-entry-model";
@@ -54,6 +57,29 @@ export const journals$: Journals$ = (
             });
     });
 };
+
+export const searchUsersJournals$: SearchUsersJournals$ = (
+    id: string,
+    query: string,
+    page: number,
+    limit: number
+): Observable<Journal[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalModel.find({name: {$regex: query, $options: 'i'}})
+           .skip(skip)
+           .limit(limit)
+           .exec((error, journals: Journal[]) => {
+               if (error) {
+                   subscriber.error(error);
+                   subscriber.complete();
+                   return;
+               }
+               subscriber.next(journals);
+               subscriber.complete();
+           });
+    });
+}
 
 export const sortUsersJournalsByName$: SortUsersJournals$ = (
     id: string,
