@@ -4,6 +4,27 @@ import {now} from "mongoose";
 import {Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
 import {isValidObjectId} from "../utils/isValidObjectId";
+import {Entry$} from "./entries$.type";
+
+export const entry$: Entry$ = (id: string) => {
+    return new Observable((subscriber) => {
+        if (!isValidObjectId(id)) {
+            subscriber.next(undefined);
+            subscriber.complete();
+            return;
+        }
+        JournalEntryModel.findById(id, (error, entry: JournalEntry) => {
+            if (error) {
+                subscriber.error(error);
+                subscriber.complete();
+                return;
+            }
+
+            subscriber.next(entry);
+            subscriber.complete();
+        });
+    });
+}
 
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
     public entry$(id: string): Observable<JournalEntry | undefined> {
