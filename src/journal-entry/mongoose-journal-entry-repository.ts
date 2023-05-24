@@ -1,5 +1,5 @@
 import {JournalEntryRepository} from "./journal-entry-repository.type";
-import JournalEntryModel, {JournalEntryDocument} from "./journal-entry-model";
+import JournalEntryModel  from "./mongo-journal-entry-model";
 import {now} from "mongoose";
 import {Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
