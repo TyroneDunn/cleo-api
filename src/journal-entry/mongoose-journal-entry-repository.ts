@@ -4,7 +4,7 @@ import {now} from "mongoose";
 import {Observable} from "rxjs";
 import {JournalEntry} from "./journal-entry.type";
 import {isValidObjectId} from "../utils/isValidObjectId";
-import {Entry$} from "./entries$.type";
+import {Entry$, Entries$} from "./entries$.type";
 
 export const entry$: Entry$ = (id: string) => {
     return new Observable((subscriber) => {
@@ -23,6 +23,34 @@ export const entry$: Entry$ = (id: string) => {
             subscriber.next(entry);
             subscriber.complete();
         });
+    });
+}
+
+export const entries$: Entries$ = (
+    id: string,
+    page: number,
+    limit: number,
+) => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        if (!isValidObjectId(id)) {
+            subscriber.next(undefined);
+            subscriber.complete();
+            return;
+        }
+
+        JournalEntryModel.find({journal: id})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
     });
 }
 
