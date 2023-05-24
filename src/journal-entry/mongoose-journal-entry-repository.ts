@@ -102,6 +102,25 @@ export const sortEntriesByDateCreated$: SortEntriesBy$ = (
     });
 };
 
+export const createEntry$ = (journalId: string, body: string) => {
+    return new Observable<JournalEntry>((subscriber) => {
+        new JournalEntryModel({
+            body: body,
+            journal: journalId,
+            dateCreated: now(),
+            lastUpdated: now(),
+        }).save((error, entry: JournalEntry) => {
+            if (error) {
+                subscriber.error(error);
+                subscriber.complete();
+                return;
+            }
+            subscriber.next(entry);
+            subscriber.complete();
+        });
+    });
+}
+
 export class MongooseJournalEntryRepository implements JournalEntryRepository {
     public entry$(id: string): Observable<JournalEntry | undefined> {
         return new Observable((subscriber) => {
