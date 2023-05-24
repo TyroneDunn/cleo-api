@@ -1,4 +1,3 @@
-import {JournalEntryRepository} from "./journal-entry-repository.type";
 import JournalEntryModel  from "./mongo-journal-entry-model";
 import {now} from "mongoose";
 import {Observable} from "rxjs";
