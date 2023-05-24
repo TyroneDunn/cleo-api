@@ -6,12 +6,12 @@ import {Observable} from "rxjs";
 import {Journal} from "./journal.type";
 import {JournalEntry} from "../journal-entry/journal-entry.type";
 import {isValidObjectId} from "../utils/isValidObjectId";
-import {Journal$} from "./journal$.type";
+import {Journal$} from "./journals$.type";
 import {Journals$} from "./journals$.type";
-import {SortUsersJournals$} from "./sortUsersJournals.type";
-import {CreateJournal$} from "./createJournal$.type"
-import {DeleteJournal$} from "./deleteJournal$.type"
-import {UpdateJournal$} from "./updateJournal$.type"
+import {SortUsersJournals$} from "./journals$.type";
+import {CreateJournal$} from "./journals$.type";
+import {DeleteJournal$} from "./journals$.type";
+import {UpdateJournal$} from "./journals$.type";
 
 export const journal$: Journal$ = (id: string) => {
     return new Observable((subscriber) => {
