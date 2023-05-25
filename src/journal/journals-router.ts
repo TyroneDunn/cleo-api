@@ -49,7 +49,7 @@ const sendJournalIfOwnedByUser = (res, req) => {
             res.json(journal);
         });
     };
-}
+};
 
 const getJournal: RequestHandler = async (req, res) => {
     if (!req.params.id) {
@@ -86,7 +86,6 @@ const searchJournal: RequestHandler = (req, res) => {
         return;
     }
 
-
     if (((req.query.order as string) !== '1') &&
         ((req.query.order as string) !== '-1') &&
         ((req.query.order as string) !== undefined)) {
@@ -107,12 +106,12 @@ const searchJournal: RequestHandler = (req, res) => {
             .json('Invalid limit query.');
         return;
     }
-
+    
     let order: 1 | -1;
-    if ((req.query.order as string) === '-1')
-        order = -1;
-    else
+    if ((req.query.order as string) === '1')
         order = 1;
+    else
+        order = -1;
 
     if (sort === undefined) {
         searchJournal$(
