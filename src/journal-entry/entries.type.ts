@@ -16,6 +16,14 @@ export type SearchJournal$ = (
     limit: number,
 ) => Observable<JournalEntry[]>;
 
+export type SearchJournalAndSortBy$ = (
+    id: string,
+    query: string,
+    order: 1 | -1,
+    page: number,
+    limit: number,
+) => Observable<JournalEntry[]>;
+
 export type SearchEntries$ = (
     id: string,
     query: string,
