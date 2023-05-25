@@ -1,4 +1,5 @@
 import {Journal} from "./journal.type";
+import {JournalEntry} from "../journal-entry/journal-entry.type";
 import {User} from "../user/user.type";
 import {userOwnsJournal$} from '../utils/userOwnsJournal$';
 import {
@@ -14,6 +15,11 @@ import {
     sortUsersJournalsByDateCreated$,
     sortUsersJournalsByLastUpdated$
 } from "./mongo-journals";
+import {
+    searchJournal$,
+    searchJournalAndSortByLastUpdated$,
+    searchJournalAndSortByDateCreated$,
+} from "../journal-entry/mongo-entries";
 import {RequestHandler, Router} from "express";
 import {
     BAD_REQUEST,
@@ -151,6 +157,147 @@ const getJournal: RequestHandler = async (req, res) => {
             res.json(journal);
         });
     });
+};
+
+const searchJournal: RequestHandler = (req, res) => {
+    if (!req.params.id) {
+        res.status(BAD_REQUEST)
+            .json('Journal id required.');
+        return;
+    }
+
+    const sort: string | undefined = req.query.sort as string;
+    const page: number = parseInt(req.query.page as string) || 1;
+    const limit: number = parseInt(req.query.limit as string) || 0;
+
+    if (!req.query.q) {
+        res.status(BAD_REQUEST)
+            .json('Query required.');
+        return;
+    }
+
+    if ((sort !== 'lastUpdated') &&
+        (sort !== 'dateCreated' &&
+            (sort !== undefined))) {
+        res.status(BAD_REQUEST)
+            .json('Invalid sort query.');
+        return;
+    }
+
+    if (((req.query.order as string) !== '1') &&
+        ((req.query.order as string) !== '-1') &&
+        ((req.query.order as string) !== undefined)) {
+        res.status(BAD_REQUEST)
+            .json('Invalid order query.');
+        return;
+    }
+
+    if (page < 0) {
+        res.status(BAD_REQUEST)
+            .json('Invalid page query.');
+        return;
+    }
+
+    if (limit < 0) {
+        res.status(BAD_REQUEST)
+            .json('Invalid limit query.');
+        return;
+    }
+
+    let order: 1 | -1;
+    if ((req.query.order as string) === '-1')
+        order = -1;
+    else
+        order = 1;
+
+    if (sort === undefined) {
+        searchJournal$(
+            req.params.id,
+            req.query.q as string,
+            page,
+            limit
+        ).subscribe((entries: JournalEntry[]) => {
+            if (entries.length === 0) {
+                res.status(NOT_FOUND)
+                    .json('No entries found.')
+                return;
+            }
+
+            userOwnsJournal$(
+                req.user as User,
+                entries[0].journal._id,
+                journal$
+            ).subscribe((ownsJournal) => {
+                if (!ownsJournal) {
+                    res.status(UNAUTHORIZED)
+                        .json(`Unauthorized access to journal ${req.query.id}`);
+                    return;
+                }
+                res.json(entries);
+            });
+        });
+        return;
+    }
+
+    if (sort === 'lastUpdated') {
+        searchJournalAndSortByLastUpdated$(
+            req.params.id,
+            req.query.q as string,
+            order,
+            page,
+            limit
+        ).subscribe((entries: JournalEntry[]) => {
+            if (entries.length === 0) {
+                res.status(NOT_FOUND)
+                    .json('No entries found.')
+                return;
+            }
+
+            userOwnsJournal$(
+                req.user as User,
+                entries[0].journal._id,
+                journal$
+            ).subscribe((ownsJournal) => {
+                if (!ownsJournal) {
+                    res.status(UNAUTHORIZED)
+                        .json(`Unauthorized access to journal ${req.query.id}`);
+                    return;
+                }
+                res.json(entries);
+            });
+        });
+        return;
+    }
+    
+    if (sort === 'dateCreated') {
+        searchJournalAndSortByDateCreated$(
+            req.params.id,
+            req.query.q as string,
+            order,
+            page,
+            limit
+        ).subscribe((entries: JournalEntry[]) => {
+            if (entries.length === 0) {
+                res.status(NOT_FOUND)
+                    .json('No entries found.')
+                return;
+            }
+
+            userOwnsJournal$(
+                req.user as User,
+                entries[0].journal._id,
+                journal$
+            ).subscribe((ownsJournal) => {
+                if (!ownsJournal) {
+                    res.status(UNAUTHORIZED)
+                        .json(`Unauthorized access to journal ${req.query.id}`);
+                    return;
+                }
+                res.json(entries);
+            });
+        });
+        return;
+    }
 };
 
 const getJournals: RequestHandler = async (req, res) => {
@@ -341,6 +488,7 @@ const updateJournal: RequestHandler = async (req, res) => {
 
 const journalsRouter: Router = Router();
 journalsRouter.get('/:id', getJournal);
+journalsRouter.get('/:id/search/', searchJournal);
 journalsRouter.get('/', getJournals);
 journalsRouter.post('/', createJournal);
 journalsRouter.delete('/:id', deleteJournal);
