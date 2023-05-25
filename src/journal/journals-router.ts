@@ -68,17 +68,7 @@ const sendJournalIfOwnedByUser = (res, req) => {
     };
 };
 
-const getJournal: RequestHandler = async (req, res) => {
-    if (!req.params.id) {
-        res.status(BAD_REQUEST)
-            .json('Journal id required.');
-        return;
-    }
-
-    journal$(req.params.id).subscribe(sendJournalIfOwnedByUser(res, req));
-};
-
-function sendEntriesIfOwnedByUser(res, req) {
+const sendEntriesIfOwnedByUser = (res, req) => {
     return (entries: JournalEntry[]) => {
         if (entries.length === 0) {
             res.status(NOT_FOUND)
@@ -99,7 +89,17 @@ function sendEntriesIfOwnedByUser(res, req) {
             res.json(entries);
         });
     };
-}
+};
+
+const getJournal: RequestHandler = async (req, res) => {
+    if (!req.params.id) {
+        res.status(BAD_REQUEST)
+            .json('Journal id required.');
+        return;
+    }
+
+    journal$(req.params.id).subscribe(sendJournalIfOwnedByUser(res, req));
+};
 
 const searchJournal: RequestHandler = (req, res) => {
     if (!req.params.id) {
@@ -186,7 +186,7 @@ const searchJournal: RequestHandler = (req, res) => {
     }
 };
 
-function sendJournalsIfOwnedByUser(res, req) {
+const sendJournalsIfOwnedByUser = (res, req) => {
     return (journals: JournalEntry[]) => {
         if (journals.length === 0) {
             res.status(NOT_FOUND)
@@ -207,7 +207,7 @@ function sendJournalsIfOwnedByUser(res, req) {
             res.json(journals);
         });
     };
-}
+};
 
 const searchJournals: RequestHandler = async (req, res) => {
     const sort: string | undefined = req.query.sort as string;
