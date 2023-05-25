@@ -265,6 +265,18 @@ const searchJournals: RequestHandler = async (req, res) => {
     }
 };
 
+const sendJournals = (res) => {
+    return (journals: Journal[]) => {
+        if (journals.length === 0) {
+            res.status(NOT_FOUND)
+                .json('No journals found.');
+            return;
+        }
+
+        res.json(journals);
+    };
+};
+
 const getJournals: RequestHandler = async (req, res) => {
     const sort: string | undefined = req.query.sort as string;
     const page: number = parseInt(req.query.page as string) || 1;
@@ -311,15 +323,7 @@ const getJournals: RequestHandler = async (req, res) => {
             (req.user as User)._id,
             page,
             limit
-        ).subscribe((journals: Journal[]) => {
-            if (journals.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No journals found.');
-                return;
-            }
-
-            res.json(journals);
-        });
+        ).subscribe(sendJournals(res));
         return;
     }
 
@@ -419,7 +423,7 @@ const deleteJournal: RequestHandler = (req, res) => {
                     }
 
                     deleteJournal$(req.params.id)
-                        .subscribe(sendJournal(res))
+                        .subscribe(sendJournal(res));
                 })
         });
 };
@@ -448,9 +452,7 @@ const updateJournal: RequestHandler = async (req, res) => {
                     }
 
                     updateJournal$(req.params.id, req.body.name)
-                        .subscribe((journal) => {
-                            res.json(journal);
-                        });
+                        .subscribe(sendJournal(res));
                 });
         });
 };
