@@ -333,14 +333,7 @@ const getJournals: RequestHandler = async (req, res) => {
             order,
             page,
             limit,
-        ).subscribe((journals) => {
-            if (journals.length === 0) {
-                res.status(NOT_FOUND)
-                    .json(`No journals found.`);
-                return;
-            }
-            res.json(journals);
-        });
+        ).subscribe(sendJournals(res));
         return;
     }
 
@@ -350,14 +343,7 @@ const getJournals: RequestHandler = async (req, res) => {
             order,
             page,
             limit
-        ).subscribe((journals: Journal[]) => {
-            if (journals.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No journals found.');
-                return;
-            }
-            res.json(journals);
-        });
+        ).subscribe(sendJournals(res));
         return;
     }
 
@@ -367,14 +353,7 @@ const getJournals: RequestHandler = async (req, res) => {
             order,
             page,
             limit
-        ).subscribe((journals) => {
-            if (journals.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No journals found.');
-                return;
-            }
-            res.json(journals);
-        });
+        ).subscribe(sendJournals(res));
         return;
     }
 };
