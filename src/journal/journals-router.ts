@@ -28,15 +28,8 @@ import {
     UNAUTHORIZED,
 } from "../utils/http-status-constants";
 
-const getJournal: RequestHandler = async (req, res) => {
-    if (!req.params.id) {
-        res.status(BAD_REQUEST)
-            .json('Journal id required.');
-        return;
-    }
-
-    journal$(req.params.id)
-    .subscribe((journal: Journal | undefined) => {
+const sendJournalIfOwnedByUser = (res, req) => {
+    return (journal: Journal | undefined) => {
         if (!journal) {
             res.status(NOT_FOUND)
                 .json(`Journal ${(req.params.id)} not found.`);
@@ -55,7 +48,17 @@ const getJournal: RequestHandler = async (req, res) => {
             }
             res.json(journal);
         });
-    });
+    };
+}
+
+const getJournal: RequestHandler = async (req, res) => {
+    if (!req.params.id) {
+        res.status(BAD_REQUEST)
+            .json('Journal id required.');
+        return;
+    }
+
+    journal$(req.params.id).subscribe(sendJournalIfOwnedByUser(res, req));
 };
 
 const searchJournal: RequestHandler = (req, res) => {
