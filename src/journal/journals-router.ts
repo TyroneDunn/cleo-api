@@ -68,15 +68,15 @@ const searchJournal: RequestHandler = (req, res) => {
         return;
     }
 
-    const sort: string | undefined = req.query.sort as string;
-    const page: number = parseInt(req.query.page as string) || 1;
-    const limit: number = parseInt(req.query.limit as string) || 0;
-
     if (!req.query.q) {
         res.status(BAD_REQUEST)
             .json('Query required.');
         return;
     }
+
+    const sort: string | undefined = req.query.sort as string;
+    const page: number = parseInt(req.query.page as string) || 1;
+    const limit: number = parseInt(req.query.limit as string) || 0;
 
     if ((sort !== 'lastUpdated') &&
         (sort !== 'dateCreated' &&
