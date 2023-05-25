@@ -9,6 +9,36 @@ export type Entries$ = (
     limit: number,
 ) => Observable<JournalEntry[]>;
 
+export type SearchJournal$ = (
+    id: string,
+    query: string,
+    page: number,
+    limit: number,
+) => Observable<JournalEntry[]>;
+
+export type SearchJournalAndSortBy$ = (
+    id: string,
+    query: string,
+    order: 1 | -1,
+    page: number,
+    limit: number,
+) => Observable<JournalEntry[]>;
+
+export type SearchEntries$ = (
+    id: string,
+    query: string,
+    page: number,
+    limit: number
+) => Observable<JournalEntry[]>;
+
+export type SearchEntriesAndSortBy$ = (
+    id: string,
+    query: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+) => Observable<JournalEntry[]>;
+
 export type CreateEntry$ = (
     id: string,
     body: string,
@@ -22,7 +52,6 @@ export type UpdateEntry$ = (
     id: string,
     content: string,
 ) => Observable<JournalEntry>;
-
 export type SortEntriesBy$ = (
     id: string,
     order: 1 | -1,
