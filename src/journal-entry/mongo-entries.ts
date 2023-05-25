@@ -83,6 +83,31 @@ export const searchJournalAndSortByLastUpdated$: SearchJournalAndSortBy$ = (
     });
 };
 
+export const searchJournalAndSortByDateCreated$: SearchJournalAndSortBy$ = (
+    id: string,
+    query: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+): Observable<JournalEntry[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({journal: id})
+            .sort({dateCreated: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
+
 export const entries$: Entries$ = (
     id: string,
     page: number,
