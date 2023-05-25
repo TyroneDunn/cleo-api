@@ -169,6 +169,29 @@ const searchJournal: RequestHandler = (req, res) => {
     }
 };
 
+function sendJournalsIfOwnedByUser(res, req) {
+    return (journals: JournalEntry[]) => {
+        if (journals.length === 0) {
+            res.status(NOT_FOUND)
+                .json('No journals found.');
+            return;
+        }
+
+        userOwnsJournal$(
+            req.user as User,
+            journals[0]._id,
+            journal$
+        ).subscribe((ownsJournal) => {
+            if (!ownsJournal) {
+                res.status(UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${req.params.id}`);
+                return;
+            }
+            res.json(journals);
+        });
+    };
+}
+
 const searchJournals: RequestHandler = async (req, res) => {
     const sort: string | undefined = req.query.sort as string;
     const page: number = parseInt(req.query.page as string) || 1;
@@ -215,14 +238,7 @@ const searchJournals: RequestHandler = async (req, res) => {
             req.query.q as string,
             page,
             limit
-        ).subscribe((journals) => {
-            if (journals.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No journals found.');
-                return;
-            }
-            res.json(journals);
-        });
+        ).subscribe(sendJournalsIfOwnedByUser(res, req));
         return;
     }
 
@@ -233,14 +249,7 @@ const searchJournals: RequestHandler = async (req, res) => {
             order,
             page,
             limit
-        ).subscribe((journals) => {
-            if (journals.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No entries found.');
-                return;
-            }
-            res.json(journals);
-        });
+        ).subscribe(sendJournalsIfOwnedByUser(req, res));
         return;
     }
 
@@ -251,14 +260,7 @@ const searchJournals: RequestHandler = async (req, res) => {
             order,
             page,
             limit
-        ).subscribe((journals) => {
-            if (journals.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No journals found.');
-                return;
-            }
-            res.json(journals);
-        });
+        ).subscribe(sendJournalsIfOwnedByUser(req, res));
         return;
     }
 };
