@@ -43,7 +43,7 @@ export const searchJournal$: SearchJournal$ = (
 ): Observable<JournalEntry[]> => {
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({journal: id})
+        JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
             .skip(skip)
             .limit(limit)
             .exec((error, entries: JournalEntry[]) => {
@@ -67,7 +67,7 @@ export const searchJournalAndSortByLastUpdated$: SearchJournalAndSortBy$ = (
 ): Observable<JournalEntry[]> => {
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({journal: id})
+        JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
             .sort({lastUpdated: order})
             .skip(skip)
             .limit(limit)
@@ -92,7 +92,7 @@ export const searchJournalAndSortByDateCreated$: SearchJournalAndSortBy$ = (
 ): Observable<JournalEntry[]> => {
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({journal: id})
+        JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
             .sort({dateCreated: order})
             .skip(skip)
             .limit(limit)
