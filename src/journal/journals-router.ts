@@ -61,6 +61,29 @@ const getJournal: RequestHandler = async (req, res) => {
     journal$(req.params.id).subscribe(sendJournalIfOwnedByUser(res, req));
 };
 
+function sendEntriesIfOwnedByUser(res, req) {
+    return (entries: JournalEntry[]) => {
+        if (entries.length === 0) {
+            res.status(NOT_FOUND)
+                .json('No entries found.');
+            return;
+        }
+
+        userOwnsJournal$(
+            req.user as User,
+            entries[0].journal._id,
+            journal$
+        ).subscribe((ownsJournal) => {
+            if (!ownsJournal) {
+                res.status(UNAUTHORIZED)
+                    .json(`Unauthorized access to journal ${req.query.id}`);
+                return;
+            }
+            res.json(entries);
+        });
+    };
+}
+
 const searchJournal: RequestHandler = (req, res) => {
     if (!req.params.id) {
         res.status(BAD_REQUEST)
@@ -119,26 +142,7 @@ const searchJournal: RequestHandler = (req, res) => {
             req.query.q as string,
             page,
             limit
-        ).subscribe((entries: JournalEntry[]) => {
-            if (entries.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No entries found.');
-                return;
-            }
-
-            userOwnsJournal$(
-                req.user as User,
-                entries[0].journal._id,
-                journal$
-            ).subscribe((ownsJournal) => {
-                if (!ownsJournal) {
-                    res.status(UNAUTHORIZED)
-                        .json(`Unauthorized access to journal ${req.query.id}`);
-                    return;
-                }
-                res.json(entries);
-            });
-        });
+        ).subscribe(sendEntriesIfOwnedByUser(res, req));
         return;
     }
 
@@ -149,26 +153,7 @@ const searchJournal: RequestHandler = (req, res) => {
             order,
             page,
             limit
-        ).subscribe((entries: JournalEntry[]) => {
-            if (entries.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No entries found.');
-                return;
-            }
-
-            userOwnsJournal$(
-                req.user as User,
-                entries[0].journal._id,
-                journal$
-            ).subscribe((ownsJournal) => {
-                if (!ownsJournal) {
-                    res.status(UNAUTHORIZED)
-                        .json(`Unauthorized access to journal ${req.query.id}`);
-                    return;
-                }
-                res.json(entries);
-            });
-        });
+        ).subscribe(sendEntriesIfOwnedByUser(req, res));
         return;
     }
 
@@ -179,26 +164,7 @@ const searchJournal: RequestHandler = (req, res) => {
             order,
             page,
             limit
-        ).subscribe((entries: JournalEntry[]) => {
-            if (entries.length === 0) {
-                res.status(NOT_FOUND)
-                    .json('No entries found.');
-                return;
-            }
-
-            userOwnsJournal$(
-                req.user as User,
-                entries[0].journal._id,
-                journal$
-            ).subscribe((ownsJournal) => {
-                if (!ownsJournal) {
-                    res.status(UNAUTHORIZED)
-                        .json(`Unauthorized access to journal ${req.query.id}`);
-                    return;
-                }
-                res.json(entries);
-            });
-        });
+        ).subscribe(sendEntriesIfOwnedByUser(res, req));
         return;
     }
 };
