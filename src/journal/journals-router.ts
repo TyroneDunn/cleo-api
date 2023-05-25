@@ -28,6 +28,23 @@ import {
     UNAUTHORIZED,
 } from "../utils/http-status-constants";
 
+const sendJournals = (res) => {
+    return (journals: Journal[]) => {
+        if (journals.length === 0) {
+            res.status(NOT_FOUND)
+                .json('No journals found.');
+            return;
+        }
+        res.json(journals);
+    };
+};
+
+const sendJournal = (res) => {
+    return (journal: Journal) => {
+        res.json(journal);
+    };
+};
+
 const sendJournalIfOwnedByUser = (res, req) => {
     return (journal: Journal | undefined) => {
         if (!journal) {
@@ -265,18 +282,6 @@ const searchJournals: RequestHandler = async (req, res) => {
     }
 };
 
-const sendJournals = (res) => {
-    return (journals: Journal[]) => {
-        if (journals.length === 0) {
-            res.status(NOT_FOUND)
-                .json('No journals found.');
-            return;
-        }
-
-        res.json(journals);
-    };
-};
-
 const getJournals: RequestHandler = async (req, res) => {
     const sort: string | undefined = req.query.sort as string;
     const page: number = parseInt(req.query.page as string) || 1;
@@ -370,12 +375,6 @@ const createJournal: RequestHandler = async (req, res) => {
             res.status(CREATED)
                 .json(journal);
         });
-};
-
-const sendJournal = (res) => {
-    return (journal: Journal) => {
-        res.json(journal);
-    };
 };
 
 const deleteJournal: RequestHandler = (req, res) => {
