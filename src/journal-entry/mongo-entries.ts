@@ -1,11 +1,15 @@
 import {JournalEntry} from "./journal-entry.type";
 import {
     Entry$,
+    SearchJournal$,
+    SearchJournalAndSortBy$,
     Entries$,
+    SearchEntries$,
+    SearchEntriesAndSortBy$,
     SortEntriesBy$,
     DeleteEntry$,
     UpdateEntry$,
-} from "./entries$.type";
+} from "./entries.type";
 import JournalEntryModel  from "./mongo-journal-entry-model";
 import {isValidObjectId} from "../utils/isValidObjectId";
 import {Observable} from "rxjs";
@@ -31,6 +35,79 @@ export const entry$: Entry$ = (id: string) => {
     });
 };
 
+export const searchJournal$: SearchJournal$ = (
+    id: string,
+    query: string,
+    page: number,
+    limit: number
+): Observable<JournalEntry[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
+
+export const searchJournalAndSortByLastUpdated$: SearchJournalAndSortBy$ = (
+    id: string,
+    query: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+): Observable<JournalEntry[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
+            .sort({lastUpdated: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
+
+export const searchJournalAndSortByDateCreated$: SearchJournalAndSortBy$ = (
+    id: string,
+    query: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+): Observable<JournalEntry[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
+            .sort({dateCreated: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
+
 export const entries$: Entries$ = (
     id: string,
     page: number,
@@ -45,6 +122,79 @@ export const entries$: Entries$ = (
         }
 
         JournalEntryModel.find({journal: id})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
+
+export const searchEntries$: SearchEntries$ = (
+    id: string,
+    query: string,
+    page: number,
+    limit: number
+): Observable<JournalEntry[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
+
+export const searchEntriesAndSortByLastUpdated$: SearchEntriesAndSortBy$ = (
+    id: string,
+    query: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+): Observable<JournalEntry[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
+            .sort({lastUpdated: order})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
+    });
+};
+
+export const searchEntriesAndSortByDateCreated$: SearchEntriesAndSortBy$ = (
+    id: string,
+    query: string,
+    order: 1 | -1,
+    page: number,
+    limit: number
+): Observable<JournalEntry[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
+            .sort({dateCreated: order})
             .skip(skip)
             .limit(limit)
             .exec((error, entries: JournalEntry[]) => {
