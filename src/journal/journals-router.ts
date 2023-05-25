@@ -387,6 +387,12 @@ const createJournal: RequestHandler = async (req, res) => {
         });
 };
 
+const sendJournal = (res) => {
+    return (journal: Journal) => {
+        res.json(journal);
+    };
+};
+
 const deleteJournal: RequestHandler = (req, res) => {
     if (!req.params.id) {
         res.status(BAD_REQUEST)
@@ -411,9 +417,7 @@ const deleteJournal: RequestHandler = (req, res) => {
                     }
 
                     deleteJournal$(req.params.id)
-                        .subscribe((journal: Journal) => {
-                            res.json(journal);
-                        })
+                        .subscribe(sendJournal(res))
                 })
         });
 };
