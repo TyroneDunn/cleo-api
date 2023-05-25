@@ -227,10 +227,10 @@ const searchJournals: RequestHandler = async (req, res) => {
     }
 
     let order: 1 | -1;
-    if ((req.query.order as string) === '-1')
-        order = -1;
-    else
+    if ((req.query.order as string) === '1')
         order = 1;
+    else
+        order = -1;
 
     if (sort === undefined) {
         searchUsersJournals$(
