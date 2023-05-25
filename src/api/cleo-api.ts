@@ -6,7 +6,7 @@ import {sessionMiddleware} from "./session/session-config";
 import passport = require("passport");
 require("./passport/passport-config");
 import authRouter from "../user/auth-router";
-import authGuard from "../user/auth-guard";
+import {authGuard} from "../user/auth-guard";
 import journalsRouter from "../journal/journals-router";
 import journalEntriesRouter from "../journal-entry/journal-entries-router";
 import {API_TITLE} from "../utils/environment";

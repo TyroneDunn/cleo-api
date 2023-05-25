@@ -120,7 +120,7 @@ const searchJournal: RequestHandler = (req, res) => {
 
     if ((sort !== 'lastUpdated') &&
         (sort !== 'dateCreated' &&
-            (sort !== undefined))) {
+        (sort !== undefined))) {
         res.status(BAD_REQUEST)
             .json('Invalid sort query.');
         return;
@@ -217,7 +217,7 @@ const searchJournals: RequestHandler = async (req, res) => {
     if ((sort !== 'name') &&
         (sort !== 'lastUpdated') &&
         (sort !== 'dateCreated' &&
-            (sort !== undefined))) {
+        (sort !== undefined))) {
         res.status(BAD_REQUEST)
             .json('Invalid sort query.');
         return;
