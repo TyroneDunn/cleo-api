@@ -408,7 +408,7 @@ const getJournals: RequestHandler = async (req, res) => {
         });
         return;
     }
-}
+};
 
 const createJournal: RequestHandler = async (req, res) => {
     if (!(req.body.name as string)){
