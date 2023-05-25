@@ -1,6 +1,8 @@
 import {JournalEntry} from "./journal-entry.type";
 import {
     Entry$,
+    SearchJournal$,
+    SearchJournalAndSortBy$,
     Entries$,
     SearchEntries$,
     SearchEntriesAndSortBy$,
@@ -30,6 +32,29 @@ export const entry$: Entry$ = (id: string) => {
             subscriber.next(entry);
             subscriber.complete();
         });
+    });
+};
+
+export const searchJournal$: SearchJournal$ = (
+    id: string,
+    query: string,
+    page: number,
+    limit: number
+): Observable<JournalEntry[]> => {
+    return new Observable((subscriber) => {
+        const skip = (page - 1) * limit;
+        JournalEntryModel.find({journal: id})
+            .skip(skip)
+            .limit(limit)
+            .exec((error, entries: JournalEntry[]) => {
+                if (error) {
+                    subscriber.error(error);
+                    subscriber.complete();
+                    return;
+                }
+                subscriber.next(entries);
+                subscriber.complete();
+            });
     });
 };
 
