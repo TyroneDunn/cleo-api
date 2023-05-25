@@ -344,7 +344,7 @@ const getJournals: RequestHandler = async (req, res) => {
             order,
             page,
             limit
-        ).subscribe((journals) => {
+        ).subscribe((journals: Journal[]) => {
             if (journals.length === 0) {
                 res.status(NOT_FOUND)
                     .json('No journals found.');
@@ -401,15 +401,15 @@ const deleteJournal: RequestHandler = (req, res) => {
     }
 
     journal$(req.params.id)
-        .subscribe((entry) => {
-            if (!entry) {
+        .subscribe((journal) => {
+            if (!journal) {
                 res.status(NOT_FOUND)
                     .json(`Journal ${(req.params.id)} not found.`);
                 return;
             }
 
             userOwnsJournal$((req.user as User), req.params.id, journal$)
-                .subscribe(ownsJournal => {
+                .subscribe((ownsJournal: boolean) => {
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
                             .json(`Unauthorized access to journal ${req.params.id}`)
