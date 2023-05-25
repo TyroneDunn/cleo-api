@@ -219,7 +219,7 @@ const searchJournal: RequestHandler = (req, res) => {
         ).subscribe((entries: JournalEntry[]) => {
             if (entries.length === 0) {
                 res.status(NOT_FOUND)
-                    .json('No entries found.')
+                    .json('No entries found.');
                 return;
             }
 
@@ -249,7 +249,7 @@ const searchJournal: RequestHandler = (req, res) => {
         ).subscribe((entries: JournalEntry[]) => {
             if (entries.length === 0) {
                 res.status(NOT_FOUND)
-                    .json('No entries found.')
+                    .json('No entries found.');
                 return;
             }
 
@@ -268,7 +268,7 @@ const searchJournal: RequestHandler = (req, res) => {
         });
         return;
     }
-    
+
     if (sort === 'dateCreated') {
         searchJournalAndSortByDateCreated$(
             req.params.id,
@@ -279,7 +279,7 @@ const searchJournal: RequestHandler = (req, res) => {
         ).subscribe((entries: JournalEntry[]) => {
             if (entries.length === 0) {
                 res.status(NOT_FOUND)
-                    .json('No entries found.')
+                    .json('No entries found.');
                 return;
             }
 
@@ -484,7 +484,7 @@ const updateJournal: RequestHandler = async (req, res) => {
                         });
                 });
         });
-}
+};
 
 const journalsRouter: Router = Router();
 journalsRouter.get('/:id', getJournal);
