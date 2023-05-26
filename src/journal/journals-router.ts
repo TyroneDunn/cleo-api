@@ -9,6 +9,9 @@ import {
     updateJournal,
 } from "./mongo-journals-request-handler";
 
+// For DB polymorphism
+// export type JournalsRequestHandler = {};
+
 const journalsRouter: Router = Router();
 journalsRouter.get('/search/', searchJournals);
 journalsRouter.get('/:id', getJournal);
