@@ -1,6 +1,6 @@
 import {CorsOptions} from "cors";
-
 const CLEO_APP_URL = `https://localhost:4200`;
+
 export const corsOptions: CorsOptions = {
     origin: [
         '*',
