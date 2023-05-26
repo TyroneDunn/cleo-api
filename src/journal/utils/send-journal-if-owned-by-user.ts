@@ -4,7 +4,7 @@ import {Request, Response} from "express";
 import {userOwnsJournal} from '../../utils/user-owns-journal';
 import {NOT_FOUND, UNAUTHORIZED} from "../../utils/http-status-constants";
 
-export const sendJournalIfOwnedByUser = (req: Request, res: Response) => {
+export const sendJournalIfOwnedByUser = (req: Request, res: Response): void => {
     return (journal: Journal | undefined) => {
         if (!journal) {
             res.status(NOT_FOUND)

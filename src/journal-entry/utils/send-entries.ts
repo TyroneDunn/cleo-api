@@ -2,7 +2,7 @@ import {Entry} from "../entry.type";
 import {Response} from "express";
 import {NOT_FOUND} from "../../utils/http-status-constants";
 
-export const sendEntries = (res: Response) => {
+export const sendEntries = (res: Response): void => {
     return (entries: Entry[]) => {
         if (entries.length === 0) {
             res.status(NOT_FOUND)

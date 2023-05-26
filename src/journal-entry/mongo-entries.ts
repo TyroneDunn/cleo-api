@@ -247,7 +247,7 @@ export const sortEntriesByDateCreated$ = (
     });
 };
 
-export const createEntry$ = (journalId: string, body: string) => {
+export const createEntry$ = (journalId: string, body: string): Observable<Entry> => {
     return new Observable<Entry>((subscriber) => {
         new JournalEntryModel({
             body: body,
