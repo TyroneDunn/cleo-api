@@ -24,7 +24,7 @@ import {sendJournals} from "./send-journals";
 import {sendJournalIfOwnedByUser} from "./send-journal-if-owned-by-user";
 import {sendEntriesIfOwnedByUser} from "./send-entries-if-owned-by-user";
 import {userOwnsJournal} from "../utils/user-owns-journal";
-import {BAD_REQUEST, CREATED, NOT_FOUND, UNAUTHORIZED,} from "../utils/http-status-constants";
+import {BAD_REQUEST, CREATED, NOT_FOUND, UNAUTHORIZED} from "../utils/http-status-constants";
 
 export const getJournal: RequestHandler = (req: Request, res: Response): void => {
     if (!req.params.id) {
