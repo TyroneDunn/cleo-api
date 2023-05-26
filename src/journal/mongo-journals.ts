@@ -7,8 +7,8 @@ import {isValidObjectId} from "../utils/is-valid-object-id";
 import {now, ObjectId} from "mongoose";
 import {Observable} from "rxjs";
 
-export const journal$ = (id: string): Observable<Journal> => {
-    return new Observable<Journal>((subscriber) => {
+export const journal$ = (id: string): Observable<Journal | undefined> => {
+    return new Observable<Journal | undefined>((subscriber) => {
         if (!isValidObjectId(id)) {
             subscriber.next(undefined);
             subscriber.complete();
