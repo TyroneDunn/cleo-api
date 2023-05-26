@@ -1,5 +1,3 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 
-export const isValidObjectId = (id: string): boolean => {
-    return ObjectId.isValid(id);
-}
+export const isValidObjectId = (id: string): boolean => ObjectId.isValid(id);
