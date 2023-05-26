@@ -1,5 +1,5 @@
 import {Entry} from "./entry.type";
-import JournalEntryModel  from "./mongo-journal-entry-model";
+import EntryModel  from "./mongo-journal-entry-model";
 import {isValidObjectId} from "../utils/is-valid-object-id";
 import {Observable} from "rxjs";
 import {now} from "mongoose";
@@ -12,7 +12,7 @@ export const entry$ = (id: string): Observable<Entry> =>
             return;
         }
 
-        JournalEntryModel.findById(id, (error, entry: Entry) => {
+        EntryModel.findById(id, (error, entry: Entry) => {
             if (error) {
                 subscriber.error(error);
                 subscriber.complete();
@@ -32,7 +32,7 @@ export const searchJournal$ = (
 ): Observable<Entry[]> =>
     new Observable<Entry[]>((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
+        EntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
             .skip(skip)
             .limit(limit)
             .exec((error, entries: Entry[]) => {
@@ -55,7 +55,7 @@ export const searchJournalAndSortByLastUpdated$ = (
 ): Observable<Entry[]> =>
     new Observable<Entry[]>((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
+        EntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
             .sort({lastUpdated: order})
             .skip(skip)
             .limit(limit)
@@ -79,7 +79,7 @@ export const searchJournalAndSortByDateCreated$ = (
 ): Observable<Entry[]> =>
     new Observable<Entry[]>((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
+        EntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
             .sort({dateCreated: order})
             .skip(skip)
             .limit(limit)
@@ -107,7 +107,7 @@ export const journalEntries$ = (
             return;
         }
 
-        JournalEntryModel.find({journal: id})
+        EntryModel.find({journal: id})
             .skip(skip)
             .limit(limit)
             .exec((error, entries: Entry[]) => {
@@ -129,7 +129,7 @@ export const searchUserEntries$= (
 ): Observable<Entry[]> =>
     new Observable<Entry[]>((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
+        EntryModel.find({body: {$regex: query, $options: 'i'}})
             .skip(skip)
             .limit(limit)
             .exec((error, entries: Entry[]) => {
@@ -152,7 +152,7 @@ export const searchUserEntriesAndSortByLastUpdated$ = (
 ): Observable<Entry[]> =>
     new Observable<Entry[]>((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
+        EntryModel.find({body: {$regex: query, $options: 'i'}})
             .sort({lastUpdated: order})
             .skip(skip)
             .limit(limit)
@@ -176,7 +176,7 @@ export const searchUserEntriesAndSortByDateCreated$ = (
 ): Observable<Entry[]> => 
     new Observable<Entry[]>((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
+        EntryModel.find({body: {$regex: query, $options: 'i'}})
             .sort({dateCreated: order})
             .skip(skip)
             .limit(limit)
@@ -199,7 +199,7 @@ export const sortEntriesByLastUpdated$ = (
 ): Observable<Entry[]> =>
     new Observable<Entry[]>((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({journal: id})
+        EntryModel.find({journal: id})
             .sort({lastUpdated: order})
             .skip(skip)
             .limit(limit)
@@ -222,7 +222,7 @@ export const sortEntriesByDateCreated$ = (
 ): Observable<Entry[]> =>
     new Observable<Entry[]>((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalEntryModel.find({journal: id})
+        EntryModel.find({journal: id})
             .sort({dateCreated: order})
             .skip(skip)
             .limit(limit)
@@ -239,7 +239,7 @@ export const sortEntriesByDateCreated$ = (
 
 export const createEntry$ = (journalId: string, body: string): Observable<Entry> =>
     new Observable<Entry>((subscriber) => {
-        new JournalEntryModel({
+        new EntryModel({
             body: body,
             journal: journalId,
             dateCreated: now(),
@@ -257,7 +257,7 @@ export const createEntry$ = (journalId: string, body: string): Observable<Entry>
 
 export const deleteEntry$ = (id: string): Observable<Entry> =>
     new Observable<Entry>((subscriber) => {
-        JournalEntryModel.findByIdAndDelete(id, (error, entry) => {
+        EntryModel.findByIdAndDelete(id, (error, entry) => {
             if (error) {
                 subscriber.error(error)
                 subscriber.complete();
@@ -270,7 +270,7 @@ export const deleteEntry$ = (id: string): Observable<Entry> =>
 
 export const updateEntry$ = (id: string, body: string): Observable<Entry> =>
     new Observable<Entry>((subscriber) => {
-        JournalEntryModel.findByIdAndUpdate(
+        EntryModel.findByIdAndUpdate(
             id,
             {
                 body: body,

@@ -30,5 +30,5 @@ const EntrySchema = new Schema({
     },
 });
 
-const JournalEntryModel = database.model<EntryDocument>('JournalEntry', EntrySchema);
-export default JournalEntryModel;
+const EntryModel = database.model<EntryDocument>('Entry', EntrySchema);
+export default EntryModel;
