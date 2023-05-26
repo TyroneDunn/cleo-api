@@ -8,7 +8,7 @@ export interface JournalDocument extends Document, Journal {
   author: Schema.Types.ObjectId;
   dateCreated: Date,
   lastUpdated: Date,
-}
+};
 
 const journalSchema = new Schema<JournalDocument>({
   name: {

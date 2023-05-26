@@ -4,4 +4,4 @@ export type Journal = {
     author: any,
     dateCreated: Date,
     lastUpdated: Date,
-}
+};
