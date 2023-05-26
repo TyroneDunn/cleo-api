@@ -13,5 +13,6 @@ const options: SessionOptions = {
         maxAge: 21 * (24 * (60 * ( 1000 * 60 ))),
         httpOnly: false,
     },
-}
+};
+
 export const sessionMiddleware = session(options);
