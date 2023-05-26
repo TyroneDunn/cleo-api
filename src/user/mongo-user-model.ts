@@ -6,7 +6,7 @@ interface UserDocument extends Document, User {
     _id: string,
     username: string,
     hash: string,
-}
+};
 
 const userSchema = new Schema<UserDocument>({
     username: {
