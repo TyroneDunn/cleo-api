@@ -1,27 +1,17 @@
 import {JournalEntry} from "./journal-entry.type";
-import {
-    Entry$,
-    SearchJournal$,
-    SearchJournalAndSortBy$,
-    Entries$,
-    SearchEntries$,
-    SearchEntriesAndSortBy$,
-    SortEntriesBy$,
-    DeleteEntry$,
-    UpdateEntry$,
-} from "./entries.type";
 import JournalEntryModel  from "./mongo-journal-entry-model";
 import {isValidObjectId} from "../utils/is-valid-object-id";
 import {Observable} from "rxjs";
 import {now} from "mongoose";
 
-export const entry$: Entry$ = (id: string) => {
-    return new Observable((subscriber) => {
+export const entry$ = (id: string): Observable<JournalEntry> => {
+    return new Observable<JournalEntry | undefined>((subscriber) => {
         if (!isValidObjectId(id)) {
             subscriber.next(undefined);
             subscriber.complete();
             return;
         }
+
         JournalEntryModel.findById(id, (error, entry: JournalEntry) => {
             if (error) {
                 subscriber.error(error);
@@ -35,13 +25,13 @@ export const entry$: Entry$ = (id: string) => {
     });
 };
 
-export const searchJournal$: SearchJournal$ = (
+export const searchJournal$ = (
     id: string,
     query: string,
     page: number,
     limit: number
 ): Observable<JournalEntry[]> => {
-    return new Observable((subscriber) => {
+    return new Observable<JournalEntry[]>((subscriber) => {
         const skip = (page - 1) * limit;
         JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
             .skip(skip)
@@ -58,14 +48,14 @@ export const searchJournal$: SearchJournal$ = (
     });
 };
 
-export const searchJournalAndSortByLastUpdated$: SearchJournalAndSortBy$ = (
+export const searchJournalAndSortByLastUpdated$ = (
     id: string,
     query: string,
     order: 1 | -1,
     page: number,
     limit: number
 ): Observable<JournalEntry[]> => {
-    return new Observable((subscriber) => {
+    return new Observable<JournalEntry[]>((subscriber) => {
         const skip = (page - 1) * limit;
         JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
             .sort({lastUpdated: order})
@@ -83,14 +73,14 @@ export const searchJournalAndSortByLastUpdated$: SearchJournalAndSortBy$ = (
     });
 };
 
-export const searchJournalAndSortByDateCreated$: SearchJournalAndSortBy$ = (
+export const searchJournalAndSortByDateCreated$ = (
     id: string,
     query: string,
     order: 1 | -1,
     page: number,
     limit: number
 ): Observable<JournalEntry[]> => {
-    return new Observable((subscriber) => {
+    return new Observable<JournalEntry[]>((subscriber) => {
         const skip = (page - 1) * limit;
         JournalEntryModel.find({journal: id, body: {$regex: query, $options: 'i'}})
             .sort({dateCreated: order})
@@ -108,12 +98,12 @@ export const searchJournalAndSortByDateCreated$: SearchJournalAndSortBy$ = (
     });
 };
 
-export const entries$: Entries$ = (
+export const entries$ = (
     id: string,
     page: number,
     limit: number,
-) => {
-    return new Observable((subscriber) => {
+): Observable<JournalEntry[]> => {
+    return new Observable<JournalEntry[]>((subscriber) => {
         const skip = (page - 1) * limit;
         if (!isValidObjectId(id)) {
             subscriber.next(undefined);
@@ -136,13 +126,13 @@ export const entries$: Entries$ = (
     });
 };
 
-export const searchEntries$: SearchEntries$ = (
+export const searchEntries$= (
     id: string,
     query: string,
     page: number,
     limit: number
 ): Observable<JournalEntry[]> => {
-    return new Observable((subscriber) => {
+    return new Observable<JournalEntry[]>((subscriber) => {
         const skip = (page - 1) * limit;
         JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
             .skip(skip)
@@ -159,14 +149,14 @@ export const searchEntries$: SearchEntries$ = (
     });
 };
 
-export const searchEntriesAndSortByLastUpdated$: SearchEntriesAndSortBy$ = (
+export const searchEntriesAndSortByLastUpdated$ = (
     id: string,
     query: string,
     order: 1 | -1,
     page: number,
     limit: number
 ): Observable<JournalEntry[]> => {
-    return new Observable((subscriber) => {
+    return new Observable<JournalEntry[]>((subscriber) => {
         const skip = (page - 1) * limit;
         JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
             .sort({lastUpdated: order})
@@ -184,14 +174,14 @@ export const searchEntriesAndSortByLastUpdated$: SearchEntriesAndSortBy$ = (
     });
 };
 
-export const searchEntriesAndSortByDateCreated$: SearchEntriesAndSortBy$ = (
+export const searchEntriesAndSortByDateCreated$ = (
     id: string,
     query: string,
     order: 1 | -1,
     page: number,
     limit: number
 ): Observable<JournalEntry[]> => {
-    return new Observable((subscriber) => {
+    return new Observable<JournalEntry[]>((subscriber) => {
         const skip = (page - 1) * limit;
         JournalEntryModel.find({body: {$regex: query, $options: 'i'}})
             .sort({dateCreated: order})
@@ -209,13 +199,13 @@ export const searchEntriesAndSortByDateCreated$: SearchEntriesAndSortBy$ = (
     });
 };
 
-export const sortEntriesByLastUpdated$: SortEntriesBy$ = (
+export const sortEntriesByLastUpdated$ = (
     id: string,
     order: 1 | -1,
     page: number,
     limit: number
-) => {
-    return new Observable((subscriber) => {
+): Observable<JournalEntry[]> => {
+    return new Observable<JournalEntry[]>((subscriber) => {
         const skip = (page - 1) * limit;
         JournalEntryModel.find({journal: id})
             .sort({lastUpdated: order})
@@ -233,13 +223,13 @@ export const sortEntriesByLastUpdated$: SortEntriesBy$ = (
     });
 };
 
-export const sortEntriesByDateCreated$: SortEntriesBy$ = (
+export const sortEntriesByDateCreated$ = (
     id: string,
     order: 1 | -1,
     page: number,
     limit: number
-) => {
-    return new Observable((subscriber) => {
+): Observable<JournalEntry[]> => {
+    return new Observable<JournalEntry[]>((subscriber) => {
         const skip = (page - 1) * limit;
         JournalEntryModel.find({journal: id})
             .sort({dateCreated: order})
@@ -276,8 +266,8 @@ export const createEntry$ = (journalId: string, body: string) => {
     });
 };
 
-export const deleteEntry$: DeleteEntry$ = (id: string) => {
-    return new Observable((subscriber) => {
+export const deleteEntry$ = (id: string): Observable<JournalEntry> => {
+    return new Observable<JournalEntry>((subscriber) => {
         JournalEntryModel.findByIdAndDelete(id, (error, entry) => {
             if (error) {
                 subscriber.error(error)
@@ -290,8 +280,8 @@ export const deleteEntry$: DeleteEntry$ = (id: string) => {
     });
 };
 
-export const updateEntry$: UpdateEntry$ = (id: string, body: string) => {
-    return new Observable((subscriber) => {
+export const updateEntry$ = (id: string, body: string): Observable<JournalEntry> => {
+    return new Observable<JournalEntry>((subscriber) => {
         JournalEntryModel.findByIdAndUpdate(
             id,
             {
