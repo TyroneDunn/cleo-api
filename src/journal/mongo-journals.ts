@@ -13,7 +13,7 @@ import {JournalEntry} from "../journal-entry/journal-entry.type";
 import JournalModel from './mongo-journal-model';
 import JournalEntryModel
     from "../journal-entry/mongo-journal-entry-model";
-import {isValidObjectId} from "../utils/isValidObjectId";
+import {isValidObjectId} from "../utils/is-valid-object-id";
 import {now, ObjectId} from "mongoose";
 import {Observable} from "rxjs";
 
