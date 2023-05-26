@@ -1,5 +1,9 @@
-import {HASHING_ALGORITHM, HASHING_ITERATIONS, PASSWORD_LENGTH, PASSWORD_SALT} from "./environment";
-
+import {
+    HASHING_ALGORITHM,
+    HASHING_ITERATIONS,
+    PASSWORD_LENGTH,
+    PASSWORD_SALT
+} from "./environment";
 const crypto = require('crypto');
 
 const encrypt = (password: string): string =>
