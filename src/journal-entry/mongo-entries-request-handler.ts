@@ -12,7 +12,7 @@ import {
     deleteEntry$,
     updateEntry$,
 } from "./mongo-entries";
-import {userOwnsJournal$} from '../utils/userOwnsJournal$';
+import {userOwnsJournal} from '../utils/user-owns-journal';
 import {journal$} from "../journal/mongo-journals";
 import {RequestHandler, Router} from "express";
 import {
