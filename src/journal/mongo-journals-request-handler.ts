@@ -18,7 +18,7 @@ import {
     searchJournal$,
     searchJournalAndSortByDateCreated$,
     searchJournalAndSortByLastUpdated$,
-} from "../journal-entry/mongo-entries";
+} from "../entry/mongo-entries";
 import {sendJournal} from "./utils/send-journal";
 import {sendJournals} from "./utils/send-journals";
 import {sendJournalIfOwnedByUser} from "./utils/send-journal-if-owned-by-user";

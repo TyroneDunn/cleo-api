@@ -8,7 +8,7 @@ require("./passport/passport-config");
 import authRouter from "../user/auth-router";
 import {authGuard} from "../user/auth-guard";
 import journalsRouter from "../journal/journals-router";
-import entriesRouter from "../journal-entry/entries-router";
+import entriesRouter from "../entry/entries-router";
 import {API_TITLE} from "../utils/environment";
 
 const cleoHomeRoute = (req, res): RequestHandler =>

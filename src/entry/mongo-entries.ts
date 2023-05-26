@@ -1,5 +1,5 @@
 import {Entry} from "./entry.type";
-import EntryModel  from "./mongo-journal-entry-model";
+import EntryModel  from "./mongo-entry-model";
 import {isValidObjectId} from "../utils/is-valid-object-id";
 import {Observable} from "rxjs";
 import {now} from "mongoose";

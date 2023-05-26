@@ -1,7 +1,7 @@
 import {Journal} from "./journal.type"
 import JournalModel from './mongo-journal-model';
 import JournalEntryModel
-    from "../journal-entry/mongo-journal-entry-model";
+    from "../entry/mongo-entry-model";
 import {isValidObjectId} from "../utils/is-valid-object-id";
 import {now, ObjectId} from "mongoose";
 import {Observable} from "rxjs";

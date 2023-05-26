@@ -1,4 +1,4 @@
-import {Entry} from "../../journal-entry/entry.type";
+import {Entry} from "../../entry/entry.type";
 import {User} from "../../user/user.type";
 import {userOwnsJournal} from "../../utils/user-owns-journal";
 import {Request, Response} from "express";
