@@ -4,7 +4,7 @@ import {userOwnsJournal} from "../../utils/user-owns-journal";
 import {Request, Response} from "express";
 import {NOT_FOUND, UNAUTHORIZED} from "../../utils/http-status-constants";
 
-export const sendEntriesIfOwnedByUser = (req: Request, res: Response) => {
+export const sendEntriesIfOwnedByUser = (req: Request, res: Response): void => {
     return (entries: Entry[]) => {
         if (entries.length === 0) {
             res.status(NOT_FOUND)

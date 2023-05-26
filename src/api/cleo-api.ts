@@ -27,7 +27,7 @@ app.use('/auth/', authRouter);
 app.use('/journals/', authGuard, journalsRouter);
 app.use('/entries/', authGuard, entriesRouter);
 
-export const run = (port: number) => {
+export const run = (port: number): void => {
     app.listen(port, () => {
         console.log(`${API_TITLE} \n\tport: ${port}`);
     });
