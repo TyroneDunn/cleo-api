@@ -1,6 +1,6 @@
 import {User} from "./user.type";
 import {registerUser$, userExists$} from "./mongo-users";
-import {RequestHandler} from "express";
+import {RequestHandler, Request, Response} from "express";
 import {authGuard} from "./auth-guard";
 import {
    BAD_REQUEST,
@@ -12,7 +12,7 @@ const express = require('express');
 import passport = require("passport");
 const authenticateUserMiddleware = passport.authenticate('local');
 
-const register = async (req, res) => {
+const register: RequestHandler = (req: Request, res: Response): void => {
    if (!req.body.username) {
       res.status(BAD_REQUEST).json('Username required.');
       return;
@@ -23,38 +23,36 @@ const register = async (req, res) => {
       return;
    }
 
-   userExists$(req.body.username).subscribe((userExists) => {
+   userExists$(req.body.username).subscribe((userExists: boolean): void => {
       if (userExists) {
-         res.status(CONFLICT).json('Username already taken.');
+         res.status(CONFLICT).json('Username taken.');
          return;
       }
 
-      registerUser$(req.body.username, req.body.password).subscribe((user) => {
-         res.status(CREATED).json(user);
+      registerUser$(req.body.username, req.body.password).subscribe((user): void => {
+         res.status(CREATED).json(`New user, ${req.body.username}, created.`);
       });
    });
 };
 
-const login: RequestHandler = (req, res) => {
+const login: RequestHandler = (req: Request, res: Response): void => {
    res.json(`Logged in as ${(req.user as User).username}`);
 };
 
-const logout = (req, res) => {
-   req.logout(
-       (error) => {
-          if (error) {
-             res.status(INTERNAL_SERVER_ERROR)
-                 .json('Log out failed.');
-             return;
-          }
+const logout: RequestHandler = (req: Request, res: Response): void => {
+   req.logout((error) => {
+       if (error) {
+          res.status(INTERNAL_SERVER_ERROR)
+              .json('Log out failed.');
+          return;
+       }
 
-          res.json('Logged out successfuly.');
-       });
+       res.json('Logged out successfuly.');
+   });
 };
 
-const authenticate = (req, res) => {
+const authenticate: RequestHandler = (req: Request, res: Response) =>
    res.json(`Authenticated as ${(req.user as User).username}`);
-};
 
 const authRouter = express.Router();
 
