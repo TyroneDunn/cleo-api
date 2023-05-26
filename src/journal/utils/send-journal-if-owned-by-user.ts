@@ -1,8 +1,8 @@
-import {Journal} from "./journal.type";
-import {User} from "../user/user.type";
+import {Journal} from "../journal.type";
+import {User} from "../../user/user.type";
 import {Request, Response} from "express";
-import {userOwnsJournal} from '../utils/user-owns-journal';
-import {NOT_FOUND, UNAUTHORIZED} from "../utils/http-status-constants";
+import {userOwnsJournal} from '../../utils/user-owns-journal';
+import {NOT_FOUND, UNAUTHORIZED} from "../../utils/http-status-constants";
 
 export const sendJournalIfOwnedByUser = (req: Request, res: Response) => {
     return (journal: Journal | undefined) => {

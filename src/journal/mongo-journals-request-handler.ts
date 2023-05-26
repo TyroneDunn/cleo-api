@@ -19,10 +19,10 @@ import {
     searchJournalAndSortByDateCreated$,
     searchJournalAndSortByLastUpdated$,
 } from "../journal-entry/mongo-entries";
-import {sendJournal} from "./send-journal";
-import {sendJournals} from "./send-journals";
-import {sendJournalIfOwnedByUser} from "./send-journal-if-owned-by-user";
-import {sendEntriesIfOwnedByUser} from "./send-entries-if-owned-by-user";
+import {sendJournal} from "./utils/send-journal";
+import {sendJournals} from "./utils/send-journals";
+import {sendJournalIfOwnedByUser} from "./utils/send-journal-if-owned-by-user";
+import {sendEntriesIfOwnedByUser} from "./utils/send-entries-if-owned-by-user";
 import {userOwnsJournal} from "../utils/user-owns-journal";
 import {BAD_REQUEST, CREATED, NOT_FOUND, UNAUTHORIZED} from "../utils/http-status-constants";
 

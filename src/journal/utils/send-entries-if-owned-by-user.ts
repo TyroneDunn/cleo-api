@@ -1,8 +1,8 @@
-import {JournalEntry} from "../journal-entry/journal-entry.type";
-import {User} from "../user/user.type";
-import {userOwnsJournal} from "../utils/user-owns-journal";
+import {JournalEntry} from "../../journal-entry/journal-entry.type";
+import {User} from "../../user/user.type";
+import {userOwnsJournal} from "../../utils/user-owns-journal";
 import {Request, Response} from "express";
-import {NOT_FOUND, UNAUTHORIZED} from "../utils/http-status-constants";
+import {NOT_FOUND, UNAUTHORIZED} from "../../utils/http-status-constants";
 
 export const sendEntriesIfOwnedByUser = (req: Request, res: Response) => {
     return (entries: JournalEntry[]) => {

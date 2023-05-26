@@ -1,6 +1,6 @@
-import {Journal} from "./journal.type";
+import {Journal} from "../journal.type";
 import {Response} from "express";
-import {NOT_FOUND} from "../utils/http-status-constants";
+import {NOT_FOUND} from "../../utils/http-status-constants";
 
 export const sendJournals = (res: Response) => {
     return (journals: Journal[]): void => {
