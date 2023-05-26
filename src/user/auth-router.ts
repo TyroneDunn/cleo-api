@@ -8,10 +8,8 @@ import {
    CREATED,
    INTERNAL_SERVER_ERROR,
 } from "../utils/http-status-constants";
-
 const express = require('express');
 import passport = require("passport");
-
 const authenticateUserMiddleware = passport.authenticate('local');
 
 const register = async (req, res) => {
