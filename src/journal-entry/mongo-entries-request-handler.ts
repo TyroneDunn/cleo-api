@@ -188,7 +188,7 @@ export const getJournalEntries: RequestHandler = (req: Request, res: Response): 
     }
 };
 
-export const createEntry: RequestHandler = async (req, res) => {
+export const createEntry: RequestHandler = (req: Request, res: Response): void => {
     if (!req.params.id) {
         res.status(BAD_REQUEST).json('Journal id required.');
         return;
@@ -214,7 +214,7 @@ export const createEntry: RequestHandler = async (req, res) => {
     });
 };
 
-export const deleteEntry: RequestHandler = async (req, res) => {
+export const deleteEntry: RequestHandler = (req: Request, res: Response): void => {
     if (!req.params.id) {
         res.status(BAD_REQUEST).json('Entry id required.');
         return;
@@ -240,7 +240,7 @@ export const deleteEntry: RequestHandler = async (req, res) => {
         });
 };
 
-export const updateEntry: RequestHandler = async (req, res) => {
+export const updateEntry: RequestHandler = (req: Request, res: Response): void => {
     if (!req.params.id) {
         res.status(BAD_REQUEST).json('Entry id required.');
         return;

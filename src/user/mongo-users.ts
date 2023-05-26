@@ -22,7 +22,7 @@ export const registerUser$ = (username: string, password: string): Observable<Us
 
 export const userExists$ = (username: string): Observable<boolean> => {
     return new Observable((subscriber) => {
-        UserModel.findOne({username: username}, (error, user) => {
+        UserModel.findOne({username: username}, (error, user: User) => {
             if (error) {
                 subscriber.error(error);
                 subscriber.complete();
