@@ -11,7 +11,7 @@ import {
     UpdateEntry$,
 } from "./entries.type";
 import JournalEntryModel  from "./mongo-journal-entry-model";
-import {isValidObjectId} from "../utils/isValidObjectId";
+import {isValidObjectId} from "../utils/is-valid-object-id";
 import {Observable} from "rxjs";
 import {now} from "mongoose";
 

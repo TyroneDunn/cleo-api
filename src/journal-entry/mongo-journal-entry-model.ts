@@ -8,7 +8,7 @@ interface JournalEntryDocument extends Document, JournalEntry {
     journal: Schema.Types.ObjectId;
     dateCreated: Date,
     lastUpdated: Date,
-}
+};
 
 const journalEntrySchema = new Schema({
     body: {

@@ -4,4 +4,4 @@ export type JournalEntry = {
     journal: any,
     lastUpdated: Date,
     dateCreated: Date,
-}
+};
