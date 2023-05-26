@@ -98,7 +98,7 @@ export const searchJournalAndSortByDateCreated$ = (
     });
 };
 
-export const entries$ = (
+export const journalEntries$ = (
     id: string,
     page: number,
     limit: number,
@@ -126,7 +126,7 @@ export const entries$ = (
     });
 };
 
-export const searchEntries$= (
+export const searchUserEntries$= (
     id: string,
     query: string,
     page: number,
@@ -149,7 +149,7 @@ export const searchEntries$= (
     });
 };
 
-export const searchEntriesAndSortByLastUpdated$ = (
+export const searchUserEntriesAndSortByLastUpdated$ = (
     id: string,
     query: string,
     order: 1 | -1,
@@ -174,7 +174,7 @@ export const searchEntriesAndSortByLastUpdated$ = (
     });
 };
 
-export const searchEntriesAndSortByDateCreated$ = (
+export const searchUserEntriesAndSortByDateCreated$ = (
     id: string,
     query: string,
     order: 1 | -1,
