@@ -1,2 +1,2 @@
 # Cleo API
-A Reactive Journal Repository API
+A Functional Reactive Journal Repository API
