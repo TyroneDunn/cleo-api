@@ -1,16 +1,16 @@
-import {JournalEntry} from "./journal-entry.type";
+import {Entry} from "./entry.type";
 import {Document, Schema} from 'mongoose';
 import database from "../utils/mongoose-database";
 
-interface JournalEntryDocument extends Document, JournalEntry {
+interface EntryDocument extends Document, Entry {
     _id: string,
     body: string,
     journal: Schema.Types.ObjectId;
     dateCreated: Date,
     lastUpdated: Date,
-}
+};
 
-const journalEntrySchema = new Schema({
+const EntrySchema = new Schema({
     body: {
         type: String,
         required: true
@@ -30,5 +30,5 @@ const journalEntrySchema = new Schema({
     },
 });
 
-const JournalEntryModel = database.model<JournalEntryDocument>('JournalEntry', journalEntrySchema);
+const JournalEntryModel = database.model<EntryDocument>('JournalEntry', EntrySchema);
 export default JournalEntryModel;
