@@ -1,11 +1,11 @@
-import {JournalEntry} from "../../journal-entry/journal-entry.type";
+import {Entry} from "../../journal-entry/entry.type";
 import {User} from "../../user/user.type";
 import {userOwnsJournal} from "../../utils/user-owns-journal";
 import {Request, Response} from "express";
 import {NOT_FOUND, UNAUTHORIZED} from "../../utils/http-status-constants";
 
 export const sendEntriesIfOwnedByUser = (req: Request, res: Response) => {
-    return (entries: JournalEntry[]) => {
+    return (entries: Entry[]) => {
         if (entries.length === 0) {
             res.status(NOT_FOUND)
                 .json('No entries found.');

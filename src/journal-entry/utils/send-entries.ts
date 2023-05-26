@@ -1,9 +1,9 @@
-import {JournalEntry} from "../journal-entry.type";
+import {Entry} from "../entry.type";
 import {Response} from "express";
 import {NOT_FOUND} from "../../utils/http-status-constants";
 
 export const sendEntries = (res: Response) => {
-    return (entries: JournalEntry[]) => {
+    return (entries: Entry[]) => {
         if (entries.length === 0) {
             res.status(NOT_FOUND)
                 .json('No entries found.');

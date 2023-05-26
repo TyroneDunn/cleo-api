@@ -1,4 +1,4 @@
-import {JournalEntry} from "../journal-entry.type";
+import {Entry} from "../entry.type";
 import {Journal} from "../../journal/journal.type";
 import {journal$} from "../../journal/mongo-journals";
 import {User} from "../../user/user.type";
@@ -7,7 +7,7 @@ import {userOwnsJournal} from "../../utils/user-owns-journal";
 import {NOT_FOUND, UNAUTHORIZED} from "../../utils/http-status-constants";
 
 export const sendEntriesIfOwnedByUser = (req: Request, res: Response) => {
-    return (entries: JournalEntry[]): void => {
+    return (entries: Entry[]): void => {
         if (entries.length === 0) {
             res.status(NOT_FOUND)
                 .json('No entries found.')

@@ -1,4 +1,4 @@
-import {JournalEntry} from "../journal-entry.type";
+import {Entry} from "../entry.type";
 import {Journal} from "../../journal/journal.type";
 import {journal$} from "../../journal/mongo-journals";
 import {User} from "../../user/user.type";
@@ -7,7 +7,7 @@ import {Response, Request} from "express";
 import {NOT_FOUND, UNAUTHORIZED} from "../../utils/http-status-constants";
 
 export const sendEntryIfOwnedByUser = (res: Response, req: Request) => {
-    return (entry: JournalEntry | undefined): void => {
+    return (entry: Entry | undefined): void => {
         if (!entry) {
             res.status(NOT_FOUND)
                 .json(`Journal entry ${req.params.id} not found.`);

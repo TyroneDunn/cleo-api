@@ -1,6 +1,6 @@
 import {User} from "../user/user.type";
 import {Journal} from "../journal/journal.type";
-import {JournalEntry} from "./journal-entry.type";
+import {Entry} from "./entry.type";
 import {
     createEntry$,
     deleteEntry$,
@@ -221,7 +221,7 @@ export const deleteEntry: RequestHandler = (req: Request, res: Response): void =
     }
 
     entry$(req.params.id)
-        .subscribe((entry: JournalEntry) => {
+        .subscribe((entry: Entry) => {
             if (!entry) {
                 res.status(NOT_FOUND)
                     .json(`Journal entry ${req.params.id} not found.`);
@@ -252,7 +252,7 @@ export const updateEntry: RequestHandler = (req: Request, res: Response): void =
     }
 
     entry$(req.params.id)
-        .subscribe((entry: JournalEntry) => {
+        .subscribe((entry: Entry) => {
             if (!entry) {
                 res.status(NOT_FOUND)
                     .json(`Journal entry ${req.params.id} not found.`);
