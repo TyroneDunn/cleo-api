@@ -24,17 +24,6 @@ import {Request, RequestHandler, Response, Router} from "express";
 import {BAD_REQUEST, CREATED, NOT_FOUND, UNAUTHORIZED,} from "../utils/http-status-constants";
 import {sendJournal} from "./send-journal";
 
-const sendJournals = (res) => {
-    return (journals: Journal[]) => {
-        if (journals.length === 0) {
-            res.status(NOT_FOUND)
-                .json('No journals found.');
-            return;
-        }
-        res.json(journals);
-    };
-};
-
 const sendJournalIfOwnedByUser = (req: Request, res: Response) => {
     return (journal: Journal | undefined) => {
         if (!journal) {
