@@ -3,24 +3,24 @@ import {JournalEntry} from "../journal-entry/journal-entry.type";
 import {User} from "../user/user.type";
 import {userOwnsJournal$} from '../utils/userOwnsJournal$';
 import {
+    createJournal$,
+    deleteJournal$,
     journal$,
     journals$,
     searchUsersJournals$,
-    searchUsersJournalsAndSortByLastUpdated$,
     searchUsersJournalsAndSortByDateCreated$,
-    createJournal$,
-    deleteJournal$,
-    updateJournal$,
-    sortUsersJournalsByName$,
+    searchUsersJournalsAndSortByLastUpdated$,
     sortUsersJournalsByDateCreated$,
-    sortUsersJournalsByLastUpdated$
+    sortUsersJournalsByLastUpdated$,
+    sortUsersJournalsByName$,
+    updateJournal$
 } from "./mongo-journals";
 import {
     searchJournal$,
-    searchJournalAndSortByLastUpdated$,
     searchJournalAndSortByDateCreated$,
+    searchJournalAndSortByLastUpdated$,
 } from "../journal-entry/mongo-entries";
-import {RequestHandler, Router} from "express";
+import {RequestHandler, Router, Request, Response} from "express";
 import {
     BAD_REQUEST,
     CREATED,
@@ -45,7 +45,7 @@ const sendJournal = (res) => {
     };
 };
 
-const sendJournalIfOwnedByUser = (res, req) => {
+const sendJournalIfOwnedByUser = (req: Request, res: Response) => {
     return (journal: Journal | undefined) => {
         if (!journal) {
             res.status(NOT_FOUND)
@@ -54,7 +54,7 @@ const sendJournalIfOwnedByUser = (res, req) => {
         }
 
         userOwnsJournal$(
-            req.user as User,
+            (req.user as User)._id.toString(),
             journal._id,
             journal$,
         ).subscribe((ownsJournal) => {
@@ -77,7 +77,7 @@ const sendEntriesIfOwnedByUser = (res, req) => {
         }
 
         userOwnsJournal$(
-            req.user as User,
+            (req.user as User)._id.toString(),
             entries[0].journal._id,
             journal$
         ).subscribe((ownsJournal) => {
@@ -98,7 +98,7 @@ const getJournal: RequestHandler = async (req, res) => {
         return;
     }
 
-    journal$(req.params.id).subscribe(sendJournalIfOwnedByUser(res, req));
+    journal$(req.params.id).subscribe(sendJournalIfOwnedByUser(req, res));
 };
 
 const searchJournal: RequestHandler = (req, res) => {
@@ -186,30 +186,7 @@ const searchJournal: RequestHandler = (req, res) => {
     }
 };
 
-const sendJournalsIfOwnedByUser = (res, req) => {
-    return (journals: JournalEntry[]) => {
-        if (journals.length === 0) {
-            res.status(NOT_FOUND)
-                .json('No journals found.');
-            return;
-        }
-
-        userOwnsJournal$(
-            req.user as User,
-            journals[0]._id,
-            journal$
-        ).subscribe((ownsJournal) => {
-            if (!ownsJournal) {
-                res.status(UNAUTHORIZED)
-                    .json(`Unauthorized access to journal ${req.params.id}`);
-                return;
-            }
-            res.json(journals);
-        });
-    };
-};
-
-const searchJournals: RequestHandler = async (req, res) => {
+const searchJournals: RequestHandler = (req: Request, res: Response) => {
     const sort: string | undefined = req.query.sort as string;
     const page: number = parseInt(req.query.page as string) || 1;
     const limit: number = parseInt(req.query.limit as string) || 0;
@@ -251,11 +228,19 @@ const searchJournals: RequestHandler = async (req, res) => {
 
     if (sort === undefined) {
         searchUsersJournals$(
-            ((req.user as User)._id as string),
+            ((req.user as User)._id.toString()),
             req.query.q as string,
             page,
             limit
-        ).subscribe(sendJournalsIfOwnedByUser(res, req));
+        ).subscribe((journals: Journal[]) => {
+            if (journals.length === 0) {
+                res.status(NOT_FOUND)
+                    .json('No journals found.');
+                return;
+            }
+
+            res.json(journals);
+        });
         return;
     }
 
@@ -266,7 +251,15 @@ const searchJournals: RequestHandler = async (req, res) => {
             order,
             page,
             limit
-        ).subscribe(sendJournalsIfOwnedByUser(req, res));
+        ).subscribe((journals: Journal[]) => {
+            if (journals.length === 0) {
+                res.status(NOT_FOUND)
+                    .json('No journals found.');
+                return;
+            }
+
+            res.json(journals);
+        });
         return;
     }
 
@@ -277,7 +270,15 @@ const searchJournals: RequestHandler = async (req, res) => {
             order,
             page,
             limit
-        ).subscribe(sendJournalsIfOwnedByUser(req, res));
+        ).subscribe((journals: Journal[]) => {
+            if (journals.length === 0) {
+                res.status(NOT_FOUND)
+                    .json('No journals found.');
+                return;
+            }
+
+            res.json(journals);
+        });
         return;
     }
 };
@@ -370,7 +371,7 @@ const createJournal: RequestHandler = async (req, res) => {
         return;
     }
 
-    createJournal$((req.user as User)._id, req.body.name)
+    createJournal$((req.user as User)._id.toString(), req.body.name)
         .subscribe((journal: Journal) => {
             res.status(CREATED)
                 .json(journal);
@@ -392,7 +393,7 @@ const deleteJournal: RequestHandler = (req, res) => {
                 return;
             }
 
-            userOwnsJournal$((req.user as User), req.params.id, journal$)
+            userOwnsJournal$((req.user as User)._id.toString(), req.params.id, journal$)
                 .subscribe((ownsJournal: boolean) => {
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
@@ -414,14 +415,14 @@ const updateJournal: RequestHandler = async (req, res) => {
     }
 
     journal$(req.params.id)
-        .subscribe((entry) => {
-            if (!entry) {
+        .subscribe((journal) => {
+            if (!journal) {
                 res.status(NOT_FOUND)
                     .json(`Journal ${(req.params.id)} not found.`);
                 return;
             }
 
-            userOwnsJournal$((req.user as User), req.params.id, journal$)
+            userOwnsJournal$((req.user as User)._id.toString(), req.params.id, journal$)
                 .subscribe((ownsJournal) => {
                     if (!ownsJournal) {
                         res.status(UNAUTHORIZED)
