@@ -20,13 +20,9 @@ import {
     searchJournalAndSortByDateCreated$,
     searchJournalAndSortByLastUpdated$,
 } from "../journal-entry/mongo-entries";
-import {RequestHandler, Router, Request, Response} from "express";
-import {
-    BAD_REQUEST,
-    CREATED,
-    NOT_FOUND,
-    UNAUTHORIZED,
-} from "../utils/http-status-constants";
+import {Request, RequestHandler, Response, Router} from "express";
+import {BAD_REQUEST, CREATED, NOT_FOUND, UNAUTHORIZED,} from "../utils/http-status-constants";
+import {sendJournal} from "./send-journal";
 
 const sendJournals = (res) => {
     return (journals: Journal[]) => {
@@ -36,12 +32,6 @@ const sendJournals = (res) => {
             return;
         }
         res.json(journals);
-    };
-};
-
-const sendJournal = (res) => {
-    return (journal: Journal) => {
-        res.json(journal);
     };
 };
 
