@@ -67,7 +67,7 @@ export const searchUsersJournals$: SearchUsersJournals$ = (
 ): Observable<Journal[]> => {
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalModel.find({name: {$regex: query, $options: 'i'}})
+        JournalModel.find({author: id, name: {$regex: query, $options: 'i'}})
             .skip(skip)
             .limit(limit)
             .exec((error, journals: Journal[]) => {
@@ -91,7 +91,7 @@ export const searchUsersJournalsAndSortByLastUpdated$: SearchUsersJournalsAndSor
 ): Observable<Journal[]> => {
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalModel.find({name: {$regex: query, $options: 'i'}})
+        JournalModel.find({author: id, name: {$regex: query, $options: 'i'}})
             .sort({lastUpdated: order})
             .skip(skip)
             .limit(limit)
@@ -116,7 +116,7 @@ export const searchUsersJournalsAndSortByDateCreated$: SearchUsersJournalsAndSor
 ): Observable<Journal[]> => {
     return new Observable((subscriber) => {
         const skip = (page - 1) * limit;
-        JournalModel.find({name: {$regex: query, $options: 'i'}})
+        JournalModel.find({author: id, name: {$regex: query, $options: 'i'}})
             .sort({dateCreated: order})
             .skip(skip)
             .limit(limit)
