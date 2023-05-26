@@ -51,7 +51,7 @@ const logout: RequestHandler = (req: Request, res: Response): void => {
    });
 };
 
-const authenticate: RequestHandler = (req: Request, res: Response): void =>
+const authenticate: RequestHandler = (req: Request, res: Response) =>
    res.json(`Authenticated as ${(req.user as User).username}`);
 
 const authRouter = express.Router();
