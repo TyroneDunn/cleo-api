@@ -4,8 +4,8 @@ import {Journal$} from "../journal/journals$.type"
 import {map, Observable} from "rxjs";
 
 export const userOwnsJournal$ = (
-    user: User, 
-    journalId: string, 
+    userId: string,
+    journalId: string,
     journal$: Journal$,
 ): Observable<boolean> => {
     return journal$(journalId).pipe(
@@ -13,7 +13,7 @@ export const userOwnsJournal$ = (
             if (!journal)
                 return false;
 
-            return(journal.author.toString() === user._id.toString());
+            return(journal.author.toString() === userId);
         })
     );
 }
