@@ -1,6 +1,6 @@
 import {Entry} from "../entry.type";
 import {Journal} from "../../journal/journal.type";
-import {journal$} from "../../journal/mongo-journals";
+import {journal$} from "../../journal/mongo-journals-repository";
 import {User} from "../../user/user.type";
 import {userOwnsJournal} from "../../utils/user-owns-journal";
 import {Response, Request} from "express";

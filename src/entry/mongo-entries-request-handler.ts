@@ -13,7 +13,7 @@ import {
     sortEntriesByLastUpdated$,
     updateEntry$,
 } from "./mongo-entries";
-import {journal$} from "../journal/mongo-journals";
+import {journal$} from "../journal/mongo-journals-repository";
 import {Request, RequestHandler, Response} from "express";
 import {BAD_REQUEST, CREATED, NOT_FOUND, UNAUTHORIZED} from "../utils/http-status-constants";
 import {sendEntries} from "./utils/send-entries";

@@ -1,19 +1,7 @@
 import {Journal} from "./journal.type";
 import {User} from "../user/user.type";
 import {Request, RequestHandler, Response} from "express";
-import {
-    createJournal$,
-    deleteJournal$,
-    journal$,
-    journals$,
-    searchUsersJournals$,
-    searchUsersJournalsAndSortByDateCreated$,
-    searchUsersJournalsAndSortByLastUpdated$,
-    sortUsersJournalsByDateCreated$,
-    sortUsersJournalsByLastUpdated$,
-    sortUsersJournalsByName$,
-    updateJournal$
-} from "./mongo-journals";
+import {MongoJournalRepository} from "./mongo-journals-repository";
 import {
     searchJournal$,
     searchJournalAndSortByDateCreated$,
@@ -33,7 +21,7 @@ export const getJournal: RequestHandler = (req: Request, res: Response): void =>
         return;
     }
 
-    journal$(req.params.id).subscribe(sendJournalIfOwnedByUser(req, res));
+    MongoJournalRepository.journal$(req.params.id).subscribe(sendJournalIfOwnedByUser(req, res));
 };
 
 export const searchJournal: RequestHandler = (req: Request, res: Response): void => {
@@ -162,7 +150,7 @@ export const searchJournals: RequestHandler = (req: Request, res: Response): voi
         order = -1;
 
     if (sort === undefined) {
-        searchUsersJournals$(
+        MongoJournalRepository.searchUsersJournals$(
             ((req.user as User)._id.toString()),
             req.query.q as string,
             page,
@@ -180,7 +168,7 @@ export const searchJournals: RequestHandler = (req: Request, res: Response): voi
     }
 
     if (sort === 'lastUpdated') {
-        searchUsersJournalsAndSortByLastUpdated$(
+        MongoJournalRepository.searchUsersJournalsAndSortByLastUpdated$(
             ((req.user as User)._id as string),
             req.query.q as string,
             order,
@@ -199,7 +187,7 @@ export const searchJournals: RequestHandler = (req: Request, res: Response): voi
     }
 
     if (sort === 'dateCreated') {
-        searchUsersJournalsAndSortByDateCreated$(
+        MongoJournalRepository.searchUsersJournalsAndSortByDateCreated$(
             ((req.user as User)._id as string),
             req.query.q as string,
             order,
@@ -260,7 +248,7 @@ export const getJournals: RequestHandler = (req: Request, res: Response): void =
 
 
     if (sort === undefined) {
-        journals$(
+        MongoJournalRepository.journals$(
             (req.user as User)._id,
             page,
             limit
@@ -269,7 +257,7 @@ export const getJournals: RequestHandler = (req: Request, res: Response): void =
     }
 
     if (sort === 'name') {
-        sortUsersJournalsByName$(
+        MongoJournalRepository.sortUsersJournalsByName$(
             ((req.user as User)._id as string),
             order,
             page,
@@ -279,7 +267,7 @@ export const getJournals: RequestHandler = (req: Request, res: Response): void =
     }
 
     if (sort === 'lastUpdated') {
-        sortUsersJournalsByLastUpdated$(
+        MongoJournalRepository.sortUsersJournalsByLastUpdated$(
             ((req.user as User)._id as string),
             order,
             page,
@@ -289,7 +277,7 @@ export const getJournals: RequestHandler = (req: Request, res: Response): void =
     }
 
     if (sort === 'dateCreated') {
-        sortUsersJournalsByDateCreated$(
+        MongoJournalRepository.sortUsersJournalsByDateCreated$(
             ((req.user as User)._id as string),
             order,
             page,
@@ -306,7 +294,7 @@ export const createJournal: RequestHandler = (req: Request, res: Response): void
         return;
     }
 
-    createJournal$((req.user as User)._id.toString(), req.body.name)
+    MongoJournalRepository.createJournal$((req.user as User)._id.toString(), req.body.name)
         .subscribe((journal: Journal) => {
             res.status(CREATED)
                 .json(journal);
@@ -320,7 +308,7 @@ export const deleteJournal: RequestHandler = (req: Request, res: Response): void
         return;
     }
 
-    journal$(req.params.id)
+    MongoJournalRepository.journal$(req.params.id)
         .subscribe((journal) => {
             if (!journal) {
                 res.status(NOT_FOUND)
@@ -334,7 +322,7 @@ export const deleteJournal: RequestHandler = (req: Request, res: Response): void
                 return;
             }
 
-            deleteJournal$(req.params.id)
+            MongoJournalRepository.deleteJournal$(req.params.id)
                 .subscribe(sendJournal(res));
         });
 };
@@ -346,7 +334,7 @@ export const updateJournal: RequestHandler = (req: Request, res: Response): void
         return;
     }
 
-    journal$(req.params.id)
+    MongoJournalRepository.journal$(req.params.id)
         .subscribe((journal) => {
             if (!journal) {
                 res.status(NOT_FOUND)
@@ -361,7 +349,7 @@ export const updateJournal: RequestHandler = (req: Request, res: Response): void
                 return;
             }
 
-            updateJournal$(req.params.id, req.body.name)
+            MongoJournalRepository.updateJournal$(req.params.id, req.body.name)
                 .subscribe(sendJournal(res));
         });
 };
