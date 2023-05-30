@@ -8,17 +8,19 @@ import {
     deleteJournal,
     updateJournal,
 } from "./mongo-journals-request-handler";
+import {JOURNALS_REPOSITORY} from "../utils/config";
 
-// For DB polymorphism
-// export type JournalsRequestHandler = {};
+const journalsRouter = {
+    router: Router(),
+    repository: JOURNALS_REPOSITORY,
+};
 
-const journalsRouter: Router = Router();
-journalsRouter.get('/search/', searchJournals);
-journalsRouter.get('/:id', getJournal);
-journalsRouter.get('/:id/:search/', searchJournal);
-journalsRouter.get('/', getJournals);
-journalsRouter.post('/', createJournal);
-journalsRouter.delete('/:id', deleteJournal);
-journalsRouter.patch('/:id', updateJournal);
+journalsRouter.router.get('/search/', searchJournals);
+journalsRouter.router.get('/:id', getJournal);
+journalsRouter.router.get('/:id/:search/', searchJournal);
+journalsRouter.router.get('/', getJournals);
+journalsRouter.router.post('/', createJournal);
+journalsRouter.router.delete('/:id', deleteJournal);
+journalsRouter.router.patch('/:id', updateJournal);
 
 export default journalsRouter;
