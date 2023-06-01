@@ -1,3 +1,3 @@
-import {MongoJournalRepository} from "../journal/mongo-journals-repository";
+import {MongoJournalsRepository} from "../journal/mongo-journals-repository";
 
-export const JOURNALS_REPOSITORY = MongoJournalRepository;
+export const JOURNALS_REPOSITORY = MongoJournalsRepository;
