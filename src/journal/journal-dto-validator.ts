@@ -24,11 +24,20 @@ export const validateGetJournalDTO = async (dto: GetJournalDTO): Promise<Validat
         return {status: false, error: new UnauthorizedError(`Unauthorized access to journal ${dto.id}`)};
     return {status: true};
 };
+
 export const validateGetJournalsDTO = async (dto: GetJournalsDTO): Promise<ValidationResult> => {
 };
+
 export const validateCreateJournalDTO = async (dto: CreateJournalDTO): Promise<ValidationResult> => {
+    if (!dto.userId)
+        return {status: false, error: new BadRequestError('User ID required.')};
+    if (!dto.name)
+        return {status: false, error: new BadRequestError('Journal name required.')};
+    return {status: true};
 };
+
 export const validateDeleteJournalDTO = async (dto: DeleteJournalDTO): Promise<ValidationResult> => {
 };
+
 export const validateUpdateJournalDTO = async (dto: UpdateJournalDTO): Promise<ValidationResult> => {
 };
