@@ -57,8 +57,7 @@ export const MongoJournalsRepository: JournalsRepository = {
             author: args.author,
             dateCreated: now(),
             lastUpdated: now(),
-        }).save()
-    ,
+        }).save(),
 
     deleteJournal: async (args: QueryArgs): Promise<Journal> => {
         await deleteJournalEntries(args.id);
