@@ -1,247 +1,77 @@
 import {Journal} from "./journal.type"
 import JournalModel from './mongo-journal-model';
-import JournalEntryModel
-    from "../entry/mongo-entry-model";
-import {isValidObjectId} from "../utils/is-valid-object-id";
-import {now, ObjectId} from "mongoose";
-import {Observable} from "rxjs";
+import JournalEntryModel from "../entry/mongo-entry-model";
+import {now} from "mongoose";
+import {
+    FilterArgs,
+    JournalsRepository,
+    PaginationArgs,
+    QueryArgs,
+    SortArgs
+} from "./journals-repository";
 
-export const MongoJournalRepository = {
-     journal$: (id: string): Observable<Journal | undefined> =>
-        new Observable<Journal | undefined>((subscriber) => {
-            if (!isValidObjectId(id)) {
-                subscriber.next(undefined);
-                subscriber.complete();
-                return;
-            }
+const buildGetJournalsOptions = (queryArgs: QueryArgs, filterArgs: FilterArgs) => {
+    let options;
+    if (queryArgs.author) options.author = queryArgs.author;
+    if (queryArgs.name) options.name = queryArgs.name;
+    if (queryArgs.idRegex) options.id = {$regex: queryArgs.idRegex, $options: 'i'};
+    if (queryArgs.authorRegex) options.id = {$regex: queryArgs.authorRegex, $options: 'i'};
+    if (queryArgs.nameRegex) options.id = {$regex: queryArgs.nameRegex, $options: 'i'};
 
-            JournalModel.findById(id, (error, journal: Journal) => {
-                if (error) {
-                    subscriber.error(error);
-                    subscriber.complete();
-                    return;
-                }
-                subscriber.next(journal);
-                subscriber.complete();
-            });
-        }),
+    if (filterArgs.startDate && !filterArgs.endDate)
+        options.dateCreated = {$gt: filterArgs.startDate}
 
-    journals$: (
-        userId: string,
-        page: number,
-        limit: number
-    ): Observable<Journal[]> =>
-        new Observable<Journal[]>((subscriber) => {
-            const skip = (page - 1) * limit;
-            JournalModel.find({author: userId})
-                .skip(skip)
-                .limit(limit)
-                .exec((error, journals: Journal[]) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journals);
-                    subscriber.complete();
-                });
-        }),
+    if (!filterArgs.startDate && filterArgs.endDate)
+        options.dateCreated = {$lt: filterArgs.endDate}
 
-    searchUsersJournals$: (
-        id: string,
-        query: string,
-        page: number,
-        limit: number
-    ): Observable<Journal[]> =>
-        new Observable<Journal[]>((subscriber) => {
-            const skip = (page - 1) * limit;
-            JournalModel.find({author: id, name: {$regex: query, $options: 'i'}})
-                .skip(skip)
-                .limit(limit)
-                .exec((error, journals: Journal[]) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journals);
-                    subscriber.complete();
-                });
-        }),
+    if (filterArgs.startDate && filterArgs.endDate)
+        options.dateCreated = {$gte: filterArgs.startDate, $lte: filterArgs.endDate}
 
-    searchUsersJournalsAndSortByLastUpdated$: (
-        id: string,
-        query: string,
-        order: 1 | -1,
-        page: number,
-        limit: number
-    ): Observable<Journal[]> =>
-        new Observable<Journal[]>((subscriber) => {
-            const skip = (page - 1) * limit;
-            JournalModel.find({author: id, name: {$regex: query, $options: 'i'}})
-                .sort({lastUpdated: order})
-                .skip(skip)
-                .limit(limit)
-                .exec((error, journals: Journal[]) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journals);
-                    subscriber.complete();
-                });
-        }),
+    return options;
+};
 
-    searchUsersJournalsAndSortByDateCreated$: (
-        id: string,
-        query: string,
-        order: 1 | -1,
-        page: number,
-        limit: number
-    ): Observable<Journal[]> =>
-        new Observable<Journal[]>((subscriber) => {
-            const skip = (page - 1) * limit;
-            JournalModel.find({author: id, name: {$regex: query, $options: 'i'}})
-                .sort({dateCreated: order})
-                .skip(skip)
-                .limit(limit)
-                .exec((error, journals: Journal[]) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journals);
-                    subscriber.complete();
-                });
-        }),
-
-    sortUsersJournalsByName$: (
-        id: string,
-        order: 1 | -1,
-        page: number,
-        limit: number
-    ): Observable<Journal[]> =>
-        new Observable<Journal[]>((subscriber) => {
-            const skip = (page - 1) * limit;
-            JournalModel.find({author: id})
-                .sort({name: order})
-                .skip(skip)
-                .limit(limit)
-                .exec((error, journals: Journal[]) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journals);
-                    subscriber.complete();
-                });
-        }),
-
-    sortUsersJournalsByLastUpdated$: (
-        id: string,
-        order: 1 | -1,
-        page: number,
-        limit: number,
-    ): Observable<Journal[]> =>
-        new Observable<Journal[]>((subscriber) => {
-            const skip = (page - 1) * limit;
-            JournalModel.find({author: id})
-                .sort({dateCreated: order})
-                .skip(skip)
-                .limit(limit)
-                .exec((error, journals: Journal[]) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journals);
-                    subscriber.complete();
-                });
-        }),
-
-    sortUsersJournalsByDateCreated$: (
-        id: string,
-        order: 1 | -1,
-        page: number,
-        limit: number
-    ): Observable<Journal[]> =>
-        new Observable<Journal[]>((subscriber) => {
-            const skip = (page - 1) * limit;
-            JournalModel.find({author: id})
-                .sort({dateCreated: order})
-                .skip(skip)
-                .limit(limit)
-                .exec((error, journals: Journal[]) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journals);
-                    subscriber.complete();
-                });
-        }),
-
-    createJournal$: (userId: string, name: string): Observable<Journal> =>
-        new Observable<Journal>((subscriber) => {
-            new JournalModel({
-                name: name,
-                author: userId,
-                dateCreated: now(),
-                lastUpdated: now(),
-            }).save((error, journal: Journal) => {
-                if (error) {
-                    subscriber.error(error);
-                    subscriber.complete();
-                    return;
-                }
-                subscriber.next(journal)
-                subscriber.complete();
-            });
-        }),
-
-    deleteJournal$: (id: string): Observable<Journal> =>
-        new Observable<Journal>((subscriber) => {
-            deleteJournalEntries$(id).subscribe();
-            JournalModel.findByIdAndDelete(id, (error, journal: Journal) => {
-                if (error) {
-                    subscriber.error(error);
-                    subscriber.complete();
-                    return;
-                }
-                subscriber.next(journal);
-                subscriber.complete();
-            });
-        }),
-
-    updateJournal$: (id: string, name: string): Observable<Journal> =>
-        new Observable<Journal>((subscriber) => {
-            JournalModel.findByIdAndUpdate(
-                id,
-                {name: name, lastUpdated: now()},
-                {new: true},
-                (error, journal) => {
-                    if (error) {
-                        subscriber.error(error);
-                        subscriber.complete();
-                        return;
-                    }
-                    subscriber.next(journal);
-                    subscriber.complete();
-                });
-        }),
+const deleteJournalEntries = async (journalID: string): Promise<void> => {
+    await JournalEntryModel.deleteMany({journal: journalID});
 }
 
-const deleteJournalEntries$ = (journalID: string): Observable<void> =>
-    new Observable<void>((subscriber) => {
-        JournalEntryModel.deleteMany({journal: journalID}, (error, result) => {
-            if (error)
-                subscriber.error(error);
-            subscriber.complete();
-        });
-    });
+export const MongoJournalsRepository: JournalsRepository = {
+    getJournal: async (args: QueryArgs): Promise<Journal> =>
+        JournalModel.findById(args.id),
 
+    getJournals: async (
+        queryArgs: QueryArgs,
+        sortArgs: SortArgs,
+        filterArgs: FilterArgs,
+        paginationArgs: PaginationArgs): Promise<Journal[]> => {
+        const skip = (paginationArgs.page - 1) * paginationArgs.limit;
+        const options = buildGetJournalsOptions(queryArgs, filterArgs);
+        return JournalModel.find(options)
+            .sort({[sortArgs.sort]: sortArgs.order})
+            .skip(skip)
+            .limit(paginationArgs.limit);
+    },
+
+    createJournal: async (args: QueryArgs): Promise<Journal> =>
+         new JournalModel({
+            name: args.name,
+            author: args.author,
+            dateCreated: now(),
+            lastUpdated: now(),
+        }).save()
+    ,
+
+    deleteJournal: async (args: QueryArgs): Promise<Journal> => {
+        await deleteJournalEntries(args.id);
+        return JournalModel.findByIdAndDelete(args.id);
+    },
+
+    updateJournal: async (args: QueryArgs): Promise<Journal> =>
+        JournalModel.findByIdAndUpdate(
+            args.id,
+            {
+                name: args.name,
+                lastUpdated: now()
+            },
+            {new: true}
+        ),
+}
