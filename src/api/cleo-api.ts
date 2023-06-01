@@ -23,7 +23,7 @@ app.use(passport.session());
 
 app.get('/', cleoHomeRoute);
 app.use('/auth/', authRouter);
-app.use('/journals/', authGuard, journalsRouter.router);
+app.use('/journals/', authGuard, journalsRouter);
 app.use('/entries/', authGuard, entriesRouter);
 
 export const run = (port: number): void => {
