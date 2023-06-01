@@ -35,4 +35,6 @@ export type JournalsRepository = {
     createJournal: (args: QueryArgs) => Promise<Journal>,
     deleteJournal: (args: QueryArgs) => Promise<Journal>,
     updateJournal: (args: QueryArgs) => Promise<Journal>,
+    exists: (args: QueryArgs) => Promise<boolean>,
+    ownsJournal: (args: QueryArgs) => Promise<boolean>,
 };
