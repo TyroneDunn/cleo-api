@@ -12,11 +12,11 @@ export type GetJournalsDTO = {
     author?: string,
     authorRegex?: string,
     sort?: 'id' | 'name' | 'author' | 'dateCreated' | 'lastUpdated',
-    order: 1 | -1,
+    order?: 1 | -1,
     startDate?: Date,
     endDate?: Date,
-    page: number,
-    limit: number,
+    page?: number,
+    limit?: number,
 };
 
 export type CreateJournalDTO = {

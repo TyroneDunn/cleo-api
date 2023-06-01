@@ -46,7 +46,6 @@ const mapRequest = {
     }),
 }
 
-
 const getJournal: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const dto: GetJournalDTO = mapRequest.toGetJournalDTO(req);
