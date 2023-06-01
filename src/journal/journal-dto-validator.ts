@@ -5,6 +5,8 @@ import {
     GetJournalsDTO,
     UpdateJournalDTO
 } from "./journal-dtos";
+import {BadRequestError, NotFoundError, UnauthorizedError} from "../utils/errors";
+import {JOURNALS_REPOSITORY} from "../utils/config"
 
 export type ValidationResult = {
     status: boolean,
@@ -12,6 +14,15 @@ export type ValidationResult = {
 };
 
 export const validateGetJournalDTO = async (dto: GetJournalDTO): Promise<ValidationResult> => {
+    if (!dto.userId)
+        return {status: false, error: new BadRequestError('User ID required.')};
+    if (!dto.id)
+        return {status: false, error: new BadRequestError('Journal ID required.')};
+    if (!(await JOURNALS_REPOSITORY.exists({id: dto.id})))
+        return {status: false, error: new NotFoundError(`Journal ${dto.id} not found.`)};
+    if (!(await JOURNALS_REPOSITORY.ownsJournal({author: dto.userId, id: dto.id})))
+        return {status: false, error: new UnauthorizedError(`Unauthorized access to journal ${dto.id}`)};
+    return {status: true};
 };
 export const validateGetJournalsDTO = async (dto: GetJournalsDTO): Promise<ValidationResult> => {
 };
