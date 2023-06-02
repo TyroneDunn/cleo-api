@@ -21,7 +21,7 @@ export type GetEntriesDTO = {
 export type CreateEntryDTO = {
     userId: string,
     journal: string,
-    name: string,
+    body: string,
 };
 
 export type DeleteEntryDTO = {

@@ -22,7 +22,15 @@ export const EntriesController = {
     },
 
     getEntries: async (dto: GetEntriesDTO): Promise<Entry> => {},
-    createEntry: async (dto: CreateEntryDTO): Promise<Entry> => {},
+    createEntry: async (dto: CreateEntryDTO): Promise<Entry> => {
+        const validationResult: ValidationResult = await validateCreateEntryDTO(dto);
+        if (!validationResult.status)
+            throw validationResult.error;
+
+        const args: QueryArgs = {journal: dto.journal, body: dto.body};
+        return repository.createEntry(args);
+    },
+
     deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> => {},
     updateEntry: async (dto: UpdateEntryDTO): Promise<Entry> => {},
 };
