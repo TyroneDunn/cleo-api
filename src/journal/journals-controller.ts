@@ -1,5 +1,5 @@
 import {Journal} from "./journal.type";
-import {JOURNALS_REPOSITORY} from "../utils/config";
+import {JOURNALS_REPOSITORY} from "../config";
 import {
     FilterArgs,
     JournalsRepository,

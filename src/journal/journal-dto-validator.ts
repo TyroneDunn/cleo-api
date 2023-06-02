@@ -6,7 +6,7 @@ import {
     UpdateJournalDTO
 } from "./journal-dtos";
 import {BadRequestError, NotFoundError, UnauthorizedError} from "../utils/errors";
-import {JOURNALS_REPOSITORY} from "../utils/config"
+import {JOURNALS_REPOSITORY} from "../config"
 
 export type ValidationResult = {
     status: boolean,
