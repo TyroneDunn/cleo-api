@@ -1,5 +1,5 @@
 import {Entry} from "./entry.type";
-import {EntriesRepository} from "./entries-repository";
+import {EntriesRepository, QueryArgs} from "./entries-repository";
 import {ENTRIES_REPOSITORY} from "../config";
 import {
     CreateEntryDTO,
@@ -8,10 +8,19 @@ import {
     GetEntryDTO,
     UpdateEntryDTO
 } from "./entry-dtos";
+import {ValidationResult} from "../utils/validation-result";
 const repository: EntriesRepository = ENTRIES_REPOSITORY;
 
 export const EntriesController = {
-    getEntry: async (dto: GetEntryDTO): Promise<Entry> => {},
+    getEntry: async (dto: GetEntryDTO): Promise<Entry> => {
+        const validationResult: ValidationResult = await validateGetEntryDTO(dto);
+        if (!validationResult.status)
+            throw validationResult.error;
+
+        const args: QueryArgs = {id: dto.id};
+        return repository.getEntry(args);
+    },
+
     getEntries: async (dto: GetEntriesDTO): Promise<Entry> => {},
     createEntry: async (dto: CreateEntryDTO): Promise<Entry> => {},
     deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> => {},
