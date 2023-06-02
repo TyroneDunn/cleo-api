@@ -1,7 +1,7 @@
 const passportConfig = require('passport');
 import LocalStrategy = require('passport-local');
-import {User} from "../user/user.type";
-import UserModel from "../user/mongo-user-model"
+import {User} from "../auth/user.type";
+import UserModel from "../auth/mongo-user-model"
 import {validatePassword} from "../utils/password-utils";
 
 const userField = {
