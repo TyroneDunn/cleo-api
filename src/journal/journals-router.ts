@@ -42,9 +42,37 @@ const mapRequest = {
         userId: (req.user as User)._id.toString(),
         id: req.params.id,
     }),
-    toGetJournalsDTO: (req: Request): GetJournalsDTO => ({
-        userId: (req.user as User)._id.toString(),
-    }),
+
+    toGetJournalsDTO: (req: Request): GetJournalsDTO => {
+        const dto: GetJournalsDTO = {userId: (req.user as User)._id.toString()}
+        if (req.query.name)
+            dto.name = req.query.name as string;
+        if (req.query.nameRegex)
+            dto.nameRegex = req.query.nameRegex as string;
+        if (req.query.sort) {
+            if (req.query.sort === 'id')
+                dto.sort = 'id';
+            if (req.query.sort === 'name')
+                dto.sort = 'name';
+            if (req.query.sort === 'author')
+                dto.sort = 'author';
+            if (req.query.sort === 'dateCreated')
+                dto.sort = 'dateCreated';
+            if (req.query.sort === 'lastUpdated')
+                dto.sort = 'lastUpdated';
+        }
+        if (req.query.order)
+            req.query.order === '-1'? dto.order = -1: dto.order = 1;
+        if (req.query.page)
+            dto.page = parseInt(req.query.page as string);
+        if (req.query.limit)
+            dto.limit = parseInt(req.query.limit as string);
+        if (req.query.startDate)
+            dto.startDate = new Date(req.query.startdate as string)
+        if (req.query.endDate)
+            dto.endDate = new Date(req.query.enddate as string)
+        return dto;
+    },
 
     toCreateJournalDTO: (req: Request): CreateJournalDTO => ({
         userId: (req.user as User)._id.toString(),
