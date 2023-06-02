@@ -5,7 +5,6 @@ export type GetJournalDTO = {
 
 export type GetJournalsDTO = {
     userId: string,
-    id?: string,
     idRegex?: string,
     name?: string,
     nameRegex?: string,
