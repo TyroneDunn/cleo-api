@@ -11,8 +11,7 @@ const repository: JournalsRepository = JOURNALS_REPOSITORY;
 import {
     validateCreateJournalDTO, validateDeleteJournalDTO,
     validateGetJournalDTO,
-    validateGetJournalsDTO, validateUpdateJournalDTO,
-    ValidationResult
+    validateGetJournalsDTO, validateUpdateJournalDTO
 } from "./journal-dto-validator";
 import {
     CreateJournalDTO,
@@ -21,8 +20,9 @@ import {
     GetJournalsDTO,
     UpdateJournalDTO
 } from "./journal-dtos";
+import {ValidationResult} from "../utils/validation-result";
 
-const buildGetJournalsQueryArgs = (dto: GetJournalsDTO) => {
+const buildQueryArgs = (dto: GetJournalsDTO) => {
     let queryArgs: QueryArgs = {author: dto.userId}
     if (dto.idRegex)
         queryArgs.idRegex = dto.idRegex
@@ -37,7 +37,7 @@ const buildGetJournalsQueryArgs = (dto: GetJournalsDTO) => {
     return queryArgs;
 };
 
-const buildGetJournalsSortArgs = (dto: GetJournalsDTO) => {
+const buildSortArgs = (dto: GetJournalsDTO) => {
     const sortArgs: SortArgs = {};
     if (dto.sort)
         sortArgs.sort = dto.sort
@@ -45,7 +45,7 @@ const buildGetJournalsSortArgs = (dto: GetJournalsDTO) => {
     return sortArgs;
 };
 
-const buildGetJournalsFilterArgs = (dto: GetJournalsDTO) => {
+const buildFilterArgs = (dto: GetJournalsDTO) => {
     const filterArgs: FilterArgs = {};
     if (dto.startDate)
         filterArgs.startDate = dto.startDate;
@@ -75,9 +75,9 @@ export const JournalsController = {
         const validationResult: ValidationResult = await validateGetJournalsDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-        const queryArgs = buildGetJournalsQueryArgs(dto);
-        const sortArgs = buildGetJournalsSortArgs(dto);
-        const filterArgs = buildGetJournalsFilterArgs(dto);
+        const queryArgs = buildQueryArgs(dto);
+        const sortArgs = buildSortArgs(dto);
+        const filterArgs = buildFilterArgs(dto);
         const paginationArgs = buildPaginationArgs(dto);
         return repository.getJournals(queryArgs, sortArgs, filterArgs, paginationArgs);
     },
