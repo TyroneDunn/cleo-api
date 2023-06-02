@@ -21,3 +21,11 @@ export class UnauthorizedError implements Error {
     message: string;
     name: string;
 }
+
+export class ConflictError implements Error {
+    constructor(message: string) {
+        this.message = message;
+    }
+    message: string;
+    name: string;
+}
