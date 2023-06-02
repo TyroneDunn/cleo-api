@@ -15,6 +15,11 @@ import {
     UpdateEntryDTO
 } from "./entries-dtos";
 import {ValidationResult} from "../utils/validation-result";
+import {
+    validateCreateEntryDTO, validateDeleteEntryDTO,
+    validateGetEntriesDTO,
+    validateGetEntryDTO, validateUpdateEntryDTO
+} from "./entries-dto-validator";
 const repository: EntriesRepository = ENTRIES_REPOSITORY;
 
 const buildQueryArgs = (dto: GetEntriesDTO): QueryArgs => {
