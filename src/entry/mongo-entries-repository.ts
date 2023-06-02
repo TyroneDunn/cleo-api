@@ -93,7 +93,7 @@ export const MongoEntriesRepository: EntriesRepository = {
         try {
             const entry: Entry = await EntryModel.findById(args.id);
             const journal: Journal = await JournalModel.findById(entry.journal);
-            return journal.author === args.userId;
+            return journal.author.toString() === args.userId;
         } catch (error) {
             return false;
         }
