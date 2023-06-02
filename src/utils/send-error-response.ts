@@ -1,6 +1,12 @@
 import {Response} from "express";
-import {BadRequestError, NotFoundError, UnauthorizedError} from "./errors";
-import {BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED} from "./http-status-constants";
+import {BadRequestError, ConflictError, NotFoundError, UnauthorizedError} from "./errors";
+import {
+    BAD_REQUEST,
+    CONFLICT,
+    INTERNAL_SERVER_ERROR,
+    NOT_FOUND,
+    UNAUTHORIZED
+} from "./http-status-constants";
 
 export const sendErrorResponse = (error: Error, res: Response): void => {
     if (error instanceof BadRequestError) {
@@ -13,6 +19,10 @@ export const sendErrorResponse = (error: Error, res: Response): void => {
     }
     if (error instanceof UnauthorizedError) {
         res.status(UNAUTHORIZED).json(error.message)
+        return;
+    }
+    if (error instanceof ConflictError) {
+        res.status(CONFLICT).json(error.message)
         return;
     }
 
