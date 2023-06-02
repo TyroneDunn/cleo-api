@@ -82,7 +82,12 @@ export const MongoJournalsRepository: JournalsRepository = {
         }
     },
 
-    ownsJournal(args: QueryArgs): Promise<boolean> {
-        return Promise.resolve(false);
-    }
+    ownsJournal: async (args: QueryArgs): Promise<boolean> => {
+        try {
+            const journal: Journal = await JournalModel.findOne({_id: args.id});
+            return journal.author === args.author;
+        } catch (error) {
+            return false;
+        }
+    },
 }
