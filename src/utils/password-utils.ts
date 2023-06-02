@@ -19,7 +19,7 @@ export const generateHash = (password: string): string =>
     encrypt(password);
 
 export const validatePassword = (password: string, hash: string): boolean => 
-    (hash === encrypt(password));
+    hash === encrypt(password);
 
 // Tool for the developer to generate new salt.
 // export const generateSalt = () => crypto.randomBytes(256).toString('hex');

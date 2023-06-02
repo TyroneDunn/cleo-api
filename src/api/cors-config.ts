@@ -1,10 +1,10 @@
 import {CorsOptions} from "cors";
-const CLEO_APP_URL = `https://localhost:4200`;
+import {APP_URL} from "../environment";
 
 export const corsOptions: CorsOptions = {
     origin: [
         '*',
-        CLEO_APP_URL,
+        APP_URL,
     ],
     allowedHeaders: `Content-Type,credentials`,
     credentials: true,
