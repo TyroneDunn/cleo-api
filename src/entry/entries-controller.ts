@@ -31,6 +31,14 @@ export const EntriesController = {
         return repository.createEntry(args);
     },
 
-    deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> => {},
+    deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> => {
+        const validationResult: ValidationResult = await validateDeleteEntryDTO(dto);
+        if (!validationResult.status)
+            throw validationResult.error;
+
+        const args: QueryArgs = {id: dto.id};
+        return repository.deleteEntry(args);
+    },
+
     updateEntry: async (dto: UpdateEntryDTO): Promise<Entry> => {},
 };
