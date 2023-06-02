@@ -7,35 +7,8 @@ import {
     GetJournalsDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
-import {
-    BadRequestError,
-    NotFoundError,
-    UnauthorizedError
-} from "../utils/errors";
-import {
-    BAD_REQUEST,
-    INTERNAL_SERVER_ERROR,
-    NOT_FOUND,
-    UNAUTHORIZED
-} from "../utils/http-status-constants";
 import {User} from "../user/user.type";
-
-const sendErrorResponse = (error: Error, res: Response): void => {
-    if (error instanceof BadRequestError) {
-        res.status(BAD_REQUEST).json(error.message)
-        return;
-    }
-    if (error instanceof NotFoundError) {
-        res.status(NOT_FOUND).json(error.message)
-        return;
-    }
-    if (error instanceof UnauthorizedError) {
-        res.status(UNAUTHORIZED).json(error.message)
-        return;
-    }
-
-    res.status(INTERNAL_SERVER_ERROR).json(error.message)
-};
+import {sendErrorResponse} from "../utils/send-error-response";
 
 const mapRequest = {
     toGetJournalDTO: (req: Request): GetJournalDTO => ({
