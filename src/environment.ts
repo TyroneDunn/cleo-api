@@ -1,4 +1,5 @@
 require('dotenv').config();
+export const NODE_ENV: string = process.env.NODE_ENV;
 export const API_TITLE: string = process.env.TITLE;
 export const API_PORT: number = parseInt(process.env.CLEO_PORT);
 export const APP_URL = process.env.APP_URL;
