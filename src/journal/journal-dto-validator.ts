@@ -26,6 +26,11 @@ export const validateGetJournalDTO = async (dto: GetJournalDTO): Promise<Validat
 };
 
 export const validateGetJournalsDTO = async (dto: GetJournalsDTO): Promise<ValidationResult> => {
+    if ((dto.name && dto.nameRegex) ||
+        (dto.author && dto.authorRegex)) {
+        return {status: false, error: new BadRequestError('Invalid query.')};
+    }
+    return {status: true};
 };
 
 export const validateCreateJournalDTO = async (dto: CreateJournalDTO): Promise<ValidationResult> => {
