@@ -10,7 +10,7 @@ export type GetEntriesDTO = {
     bodyRegex?: string,
     journal?: string,
     journalRegex?: string,
-    sort?: 'id' | 'name' | 'author' | 'dateCreated' | 'lastUpdated',
+    sort?: 'id' | 'body' | 'journal' | 'dateCreated' | 'lastUpdated',
     order?: 1 | -1,
     startDate?: Date,
     endDate?: Date,
