@@ -7,11 +7,7 @@ import {
 } from "./journal-dtos";
 import {BadRequestError, NotFoundError, UnauthorizedError} from "../utils/errors";
 import {JOURNALS_REPOSITORY} from "../config"
-
-export type ValidationResult = {
-    status: boolean,
-    error?: Error,
-};
+import {ValidationResult} from "../utils/validation-result";
 
 export const validateGetJournalDTO = async (dto: GetJournalDTO): Promise<ValidationResult> => {
     if (!dto.userId)

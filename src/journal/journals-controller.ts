@@ -12,7 +12,7 @@ import {
     validateCreateJournalDTO, validateDeleteJournalDTO,
     validateGetJournalDTO,
     validateGetJournalsDTO, validateUpdateJournalDTO
-} from "./journal-dto-validator";
+} from "./journals-dto-validator";
 import {
     CreateJournalDTO,
     DeleteJournalDTO,
