@@ -1,10 +1,10 @@
 import {Application, RequestHandler} from "express";
 const express = require("express");
-import {corsOptions} from "./cors/cors-config";
+import {corsOptions} from "./cors-config";
 const cors = require('cors');
-import {sessionMiddleware} from "./session/session-config";
+import {sessionMiddleware} from "./session-config";
 import passport = require("passport");
-require("./passport/passport-config");
+require("./passport-config");
 import authRouter from "../user/auth-router";
 import {authGuard} from "../user/auth-guard";
 import journalsRouter from "../journal/journals-router";
