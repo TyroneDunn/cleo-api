@@ -22,10 +22,18 @@ export const validateGetEntryDTO = async (dto: GetEntryDTO): Promise<ValidationR
 };
 
 export const validateGetEntriesDTO = async (dto: GetEntriesDTO): Promise<ValidationResult> => {
+    if (!dto.userId)
+        return {status: false, error: new BadRequestError('User ID required.')};
     if ((dto.body && dto.bodyRegex) ||
         (dto.body && dto.bodyRegex) ||
         (dto.journal && dto.journalRegex)) {
         return {status: false, error: new BadRequestError('Invalid query.')};
+    }
+    if (dto.journal) {
+        if (!(await JOURNALS_REPOSITORY.exists({id: dto.journal})))
+            return {status: false, error: new NotFoundError(`Journal ${dto.journal} not found.`)};
+        if (!(await JOURNALS_REPOSITORY.ownsJournal({author: dto.userId, id: dto.journal})))
+            return {status: false, error: new UnauthorizedError(`Unauthorized access to journal ${dto.journal}`)};
     }
     return {status: true};
 };
