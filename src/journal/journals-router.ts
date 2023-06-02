@@ -6,7 +6,7 @@ import {
     GetJournalDTO,
     GetJournalsDTO,
     UpdateJournalDTO
-} from "./journal-dtos";
+} from "./journals-dtos";
 import {
     BadRequestError,
     NotFoundError,

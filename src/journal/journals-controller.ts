@@ -19,7 +19,7 @@ import {
     GetJournalDTO,
     GetJournalsDTO,
     UpdateJournalDTO
-} from "./journal-dtos";
+} from "./journals-dtos";
 import {ValidationResult} from "../utils/validation-result";
 
 const buildQueryArgs = (dto: GetJournalsDTO) => {

@@ -4,7 +4,7 @@ import {
     GetJournalDTO,
     GetJournalsDTO,
     UpdateJournalDTO
-} from "./journal-dtos";
+} from "./journals-dtos";
 import {BadRequestError, NotFoundError, UnauthorizedError} from "../utils/errors";
 import {JOURNALS_REPOSITORY} from "../config"
 import {ValidationResult} from "../utils/validation-result";
