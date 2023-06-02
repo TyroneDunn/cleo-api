@@ -37,7 +37,6 @@ const deleteJournalEntries = async (journalID: string): Promise<void> => {
 export const MongoJournalsRepository: JournalsRepository = {
     getJournal: async (args: QueryArgs): Promise<Journal> =>
         JournalModel.findById(args.id),
-
     getJournals: async (
         queryArgs: QueryArgs,
         sortArgs: SortArgs,
@@ -73,4 +72,17 @@ export const MongoJournalsRepository: JournalsRepository = {
             },
             {new: true}
         ),
+
+    exists: async (args: QueryArgs): Promise<boolean> => {
+        try {
+            const journal = await JournalModel.findOne({_id: args.id});
+            return !!journal;
+        } catch (error) {
+            return false;
+        }
+    },
+
+    ownsJournal(args: QueryArgs): Promise<boolean> {
+        return Promise.resolve(false);
+    }
 }
