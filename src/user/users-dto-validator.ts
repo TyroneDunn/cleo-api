@@ -1,4 +1,4 @@
-import {RegisterUserDTO} from "./users-dtos";
+import {ExistsDTO, RegisterUserDTO} from "./users-dtos";
 import {ValidationResult} from "../utils/validation-result";
 import {BadRequestError} from "../utils/errors";
 
@@ -10,7 +10,7 @@ export const validateRegisterUserDTO = async (dto: RegisterUserDTO): Promise<Val
     return {status: true};
 };
 
-export const validateExistsDTO = async (dto: RegisterUserDTO): Promise<ValidationResult> => {
+export const validateExistsDTO = async (dto: ExistsDTO): Promise<ValidationResult> => {
     if (!dto.username)
         return {status: false, error: new BadRequestError('Username required.')};
     return {status: true};
