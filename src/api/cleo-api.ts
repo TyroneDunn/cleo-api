@@ -9,7 +9,7 @@ import authRouter from "../user/auth-router";
 import {authGuard} from "../user/auth-guard";
 import journalsRouter from "../journal/journals-router";
 import entriesRouter from "../entry/entries-router";
-import {API_TITLE} from "../utils/environment";
+import {API_TITLE} from "../environment";
 
 const cleoHomeRoute = (req, res): RequestHandler =>
     res.send(API_TITLE || 'Cleo-Server:v.1.3.x');

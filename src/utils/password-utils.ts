@@ -3,7 +3,7 @@ import {
     HASHING_ITERATIONS,
     PASSWORD_LENGTH,
     PASSWORD_SALT
-} from "./environment";
+} from "../environment";
 const crypto = require('crypto');
 
 const encrypt = (password: string): string =>

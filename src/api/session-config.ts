@@ -1,7 +1,7 @@
 import session = require("express-session");
 import {SessionOptions} from "express-session";
 import {mongoSessionStore} from "./mongo-session-store-config";
-import {SESSION_SECRET} from "../utils/environment";
+import {SESSION_SECRET} from "../environment";
 
 const options: SessionOptions = {
     secret: SESSION_SECRET,
