@@ -13,7 +13,7 @@ import {
     GetEntriesDTO,
     GetEntryDTO,
     UpdateEntryDTO
-} from "./entry-dtos";
+} from "./entries-dtos";
 import {ValidationResult} from "../utils/validation-result";
 const repository: EntriesRepository = ENTRIES_REPOSITORY;
 
