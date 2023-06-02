@@ -33,4 +33,5 @@ export type UpdateEntryDTO = {
     userId: string,
     id: string,
     body: string,
+    journal: string,
 };
