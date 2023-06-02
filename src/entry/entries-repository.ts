@@ -2,6 +2,7 @@ import {Entry} from "./entry.type";
 
 export type QueryArgs = {
     id?: string,
+    userId?: string,
     idRegex?: string,
     body?: string,
     bodyRegex?: string,
