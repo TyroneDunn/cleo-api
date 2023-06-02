@@ -11,7 +11,7 @@ export type QueryArgs = {
 
 export type SortArgs = {
     sort?: 'id' | 'name' | 'author' | 'dateCreated' | 'lastUpdated',
-    order: 1 | -1,
+    order?: 1 | -1,
 }
 
 export type FilterArgs = {
@@ -20,8 +20,8 @@ export type FilterArgs = {
 };
 
 export type PaginationArgs = {
-    page: number,
-    limit: number,
+    page?: number,
+    limit?: number,
 };
 
 export type JournalsRepository = {
