@@ -7,7 +7,7 @@ import {
     GetEntryDTO,
     UpdateEntryDTO
 } from "./entries-dtos";
-import {User} from "../auth/user.type";
+import {User} from "../user/user.type";
 import {sendErrorResponse} from "../utils/send-error-response";
 
 const mapRequest = {

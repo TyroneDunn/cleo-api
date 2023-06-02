@@ -1,5 +1,5 @@
-import {User} from "./user.type";
-import {registerUser$, userExists$} from "./mongo-users";
+import {User} from "../user/user.type";
+import {registerUser$, userExists$} from "../user/mongo-users";
 import {RequestHandler, Request, Response} from "express";
 import {authGuard} from "./auth-guard";
 import {
@@ -47,7 +47,7 @@ const logout: RequestHandler = (req: Request, res: Response): void => {
           return;
        }
 
-       res.json('Logged out successfuly.');
+       res.json('Logged out successfully.');
    });
 };
 
