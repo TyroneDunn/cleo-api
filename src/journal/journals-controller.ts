@@ -37,29 +37,29 @@ const buildGetJournalsQueryArgs = (dto: GetJournalsDTO) => {
     return queryArgs;
 };
 
-function buildGetJournalsSortArgs(dto: GetJournalsDTO) {
+const buildGetJournalsSortArgs = (dto: GetJournalsDTO) => {
     const sortArgs: SortArgs = {};
     if (dto.sort)
         sortArgs.sort = dto.sort
     dto.order ? sortArgs.order = dto.order : sortArgs.order = 1;
     return sortArgs;
-}
+};
 
-function buildGetJournalsFilterArgs(dto: GetJournalsDTO) {
+const buildGetJournalsFilterArgs = (dto: GetJournalsDTO) => {
     const filterArgs: FilterArgs = {};
     if (dto.startDate)
         filterArgs.startDate = dto.startDate;
     if (dto.endDate)
         filterArgs.endDate = dto.endDate;
     return filterArgs;
-}
+};
 
-function buildPaginationArgs(dto: GetJournalsDTO) {
+const buildPaginationArgs = (dto: GetJournalsDTO) => {
     const paginationArgs: PaginationArgs = {};
     dto.page ? paginationArgs.page = dto.page : paginationArgs.page = 1;
     dto.limit ? paginationArgs.limit = dto.limit : paginationArgs.limit = 32;
     return paginationArgs;
-}
+};
 
 export const JournalsController = {
     getJournal: async (dto: GetJournalDTO): Promise<Journal> => {
