@@ -10,23 +10,33 @@ import {
     SortArgs
 } from "./journals-repository";
 
+type GetJournalsOptions = {
+    _id?: any,
+    author: any,
+    name?: any,
+    dateCreated?: any,
+    lastUpdated?: any,
+}
+
 const buildGetJournalsOptions = (queryArgs: QueryArgs, filterArgs: FilterArgs) => {
-    let options;
-    if (queryArgs.author) options.author = queryArgs.author;
-    if (queryArgs.name) options.name = queryArgs.name;
-    if (queryArgs.idRegex) options.id = {$regex: queryArgs.idRegex, $options: 'i'};
-    if (queryArgs.authorRegex) options.id = {$regex: queryArgs.authorRegex, $options: 'i'};
-    if (queryArgs.nameRegex) options.id = {$regex: queryArgs.nameRegex, $options: 'i'};
+    let options: GetJournalsOptions = {author: queryArgs.author};
 
+    if (queryArgs.name)
+        options.name = queryArgs.name;
+    if (queryArgs.nameRegex)
+        options.name = {$regex: queryArgs.nameRegex, $options: 'i'};
+    if (queryArgs.id)
+        options._id = queryArgs.id;
+    if (queryArgs.idRegex)
+        options._id = {$regex: queryArgs.idRegex, $options: 'i'};
+    if (queryArgs.authorRegex)
+        options.author = {$regex: queryArgs.authorRegex, $options: 'i'};
     if (filterArgs.startDate && !filterArgs.endDate)
-        options.dateCreated = {$gt: filterArgs.startDate}
-
+        options.dateCreated = {$gt: filterArgs.startDate};
     if (!filterArgs.startDate && filterArgs.endDate)
-        options.dateCreated = {$lt: filterArgs.endDate}
-
+        options.dateCreated = {$lt: filterArgs.endDate};
     if (filterArgs.startDate && filterArgs.endDate)
-        options.dateCreated = {$gte: filterArgs.startDate, $lte: filterArgs.endDate}
-
+        options.dateCreated = {$gte: filterArgs.startDate, $lte: filterArgs.endDate};
     return options;
 };
 
@@ -37,6 +47,7 @@ const deleteJournalEntries = async (journalID: string): Promise<void> => {
 export const MongoJournalsRepository: JournalsRepository = {
     getJournal: async (args: QueryArgs): Promise<Journal> =>
         JournalModel.findById(args.id),
+
     getJournals: async (
         queryArgs: QueryArgs,
         sortArgs: SortArgs,
