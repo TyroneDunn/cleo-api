@@ -1,10 +1,10 @@
 export type GetUserDTO = {
-    userId: string,
+    senderId: string,
     id: string,
 };
 
 export type GetUsersDTO = {
-    userId: string,
+    senderId: string,
     id?: string,
     idRegex?: string,
     username?: string,
@@ -23,12 +23,13 @@ export type RegisterUserDTO = {
 };
 
 export type DeleteUserDTO = {
-    userId: string,
+    senderId: string,
     id: string,
 };
 
 export type UpdateUserDTO = {
-    userId: string,
+    senderId: string,
+    id: string,
     username?: string,
     password?: string,
 };
