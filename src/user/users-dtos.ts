@@ -8,7 +8,7 @@ export type GetUsersDTO = {
     id?: string,
     idRegex?: string,
     username?: string,
-    usernameRegex: string,
+    usernameRegex?: string,
     sort?: 'id' | 'username' | 'dateCreated' | 'lastUpdated',
     order?: 1 | -1,
     startDate?: Date,
@@ -29,7 +29,7 @@ export type DeleteUserDTO = {
 
 export type UpdateUserDTO = {
     senderId: string,
-    id: string,
+    id?: string,
     username?: string,
     password?: string,
 };
