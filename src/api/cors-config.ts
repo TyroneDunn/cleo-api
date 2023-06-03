@@ -1,5 +1,6 @@
 import {CorsOptions} from "cors";
 import {APP_URL} from "../environment";
+import {OK} from "../utils/http-status-constants";
 
 export const corsOptions: CorsOptions = {
     origin: [
@@ -8,6 +9,6 @@ export const corsOptions: CorsOptions = {
     ],
     allowedHeaders: `Content-Type,credentials`,
     credentials: true,
-    optionsSuccessStatus: 200,
+    optionsSuccessStatus: OK,
     methods: ["GET", "POST", "DELETE", "PATCH"],
 };
