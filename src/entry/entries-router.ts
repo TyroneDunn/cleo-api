@@ -10,12 +10,12 @@ import {
 import {User} from "../user/user";
 import {sendErrorResponse} from "../utils/send-error-response";
 
-const mapRequestToGetEntryDTO = (req: Request): GetEntryDTO => ({
+const mapToGetEntryDTO = (req: Request): GetEntryDTO => ({
     userId: (req.user as User)._id.toString(),
     id: req.params.id,
 });
 
-const mapRequestToGetEntriesDTO = (req: Request): GetEntriesDTO => {
+const mapToGetEntriesDTO = (req: Request): GetEntriesDTO => {
     const dto: GetEntriesDTO = {userId: (req.user as User)._id.toString()}
     if (req.query.id)
         dto.journal = req.query.id as string;
@@ -48,18 +48,18 @@ const mapRequestToGetEntriesDTO = (req: Request): GetEntriesDTO => {
     return dto;
 };
 
-const mapRequestToCreateEntryDTO = (req: Request): CreateEntryDTO => ({
+const mapToCreateEntryDTO = (req: Request): CreateEntryDTO => ({
     userId: (req.user as User)._id.toString(),
     journal: req.params.id,
     body: req.body.body,
 });
 
-const mapRequestToDeleteEntryDTO = (req: Request): DeleteEntryDTO => ({
+const mapToDeleteEntryDTO = (req: Request): DeleteEntryDTO => ({
     userId: (req.user as User)._id.toString(),
     id: req.params.id,
 });
 
-const mapRequestToUpdateEntryDTO = (req: Request): UpdateEntryDTO => ({
+const mapToUpdateEntryDTO = (req: Request): UpdateEntryDTO => ({
     userId: (req.user as User)._id.toString(),
     id: req.params.id,
     journal: req.body.journal,
@@ -68,8 +68,9 @@ const mapRequestToUpdateEntryDTO = (req: Request): UpdateEntryDTO => ({
 
 const getEntry: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: GetEntryDTO = mapRequestToGetEntryDTO(req);
-        res.json(await EntriesController.getEntry(dto));
+        const dto: GetEntryDTO = mapToGetEntryDTO(req);
+        const entry = await EntriesController.getEntry(dto);
+        res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);
     }
@@ -77,7 +78,7 @@ const getEntry: RequestHandler = async (req: Request, res: Response) => {
 
 const getEntries: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: GetEntriesDTO = mapRequestToGetEntriesDTO(req);
+        const dto: GetEntriesDTO = mapToGetEntriesDTO(req);
         let entries = await EntriesController.getEntries(dto);
         res.json(entries);
     } catch (error) {
@@ -87,8 +88,9 @@ const getEntries: RequestHandler = async (req: Request, res: Response) => {
 
 const createEntry: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: CreateEntryDTO = mapRequestToCreateEntryDTO(req);
-        res.json(await EntriesController.createEntry(dto));
+        const dto: CreateEntryDTO = mapToCreateEntryDTO(req);
+        const entry = await EntriesController.createEntry(dto);
+        res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);
     }
@@ -96,8 +98,9 @@ const createEntry: RequestHandler = async (req: Request, res: Response) => {
 
 const deleteEntry: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteEntryDTO = mapRequestToDeleteEntryDTO(req);
-        res.json(await EntriesController.deleteEntry(dto));
+        const dto: DeleteEntryDTO = mapToDeleteEntryDTO(req);
+        const entry = await EntriesController.deleteEntry(dto);
+        res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);
     }
@@ -105,8 +108,9 @@ const deleteEntry: RequestHandler = async (req: Request, res: Response) => {
 
 const updateEntry: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: UpdateEntryDTO = mapRequestToUpdateEntryDTO(req);
-        res.json(await EntriesController.updateEntry(dto));
+        const dto: UpdateEntryDTO = mapToUpdateEntryDTO(req);
+        const entry = await EntriesController.updateEntry(dto);
+        res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);
     }

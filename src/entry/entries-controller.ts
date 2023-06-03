@@ -16,13 +16,16 @@ import {
 } from "./entries-dtos";
 import {ValidationResult} from "../utils/validation-result";
 import {
-    validateCreateEntryDTO, validateDeleteEntryDTO,
+    validateCreateEntryDTO,
+    validateDeleteEntryDTO,
     validateGetEntriesDTO,
-    validateGetEntryDTO, validateUpdateEntryDTO
+    validateGetEntryDTO,
+    validateUpdateEntryDTO
 } from "./entries-dto-validator";
+
 const repository: EntriesRepository = ENTRIES_REPOSITORY;
 
-const buildQueryArgs = (dto: GetEntriesDTO): QueryArgs => {
+const mapToGetEntriesQueryArgs = (dto: GetEntriesDTO): QueryArgs => {
     let queryArgs: QueryArgs = {}
     if (dto.idRegex)
         queryArgs.idRegex = dto.idRegex;
@@ -37,7 +40,7 @@ const buildQueryArgs = (dto: GetEntriesDTO): QueryArgs => {
     return queryArgs;
 };
 
-const buildSortArgs = (dto: GetEntriesDTO): SortArgs => {
+const mapToGetEntriesSortArgs = (dto: GetEntriesDTO): SortArgs => {
     const sortArgs: SortArgs = {};
     if (dto.sort)
         sortArgs.sort = dto.sort
@@ -45,7 +48,7 @@ const buildSortArgs = (dto: GetEntriesDTO): SortArgs => {
     return sortArgs;
 };
 
-const buildFilterArgs = (dto: GetEntriesDTO): FilterArgs => {
+const mapToGetEntriesFilterArgs = (dto: GetEntriesDTO): FilterArgs => {
     const filterArgs: FilterArgs = {};
     if (dto.startDate)
         filterArgs.startDate = dto.startDate;
@@ -54,20 +57,37 @@ const buildFilterArgs = (dto: GetEntriesDTO): FilterArgs => {
     return filterArgs;
 };
 
-const buildPaginationArgs = (dto: GetEntriesDTO): PaginationArgs => {
+const mapToGetEntriesPaginationArgs = (dto: GetEntriesDTO): PaginationArgs => {
     const paginationArgs: PaginationArgs = {};
     dto.page ? paginationArgs.page = dto.page : paginationArgs.page = 1;
     dto.limit ? paginationArgs.limit = dto.limit : paginationArgs.limit = 32;
     return paginationArgs;
 };
 
+const mapToCreateEntryQueryArgs = (dto: CreateEntryDTO): QueryArgs =>
+    ({journal: dto.journal, body: dto.body});
+
+const mapToDeleteEntryQueryArgs = (dto: DeleteEntryDTO): QueryArgs =>
+    ({id: dto.id});
+
+const mapToUpdateEntryQueryArgs = (dto: UpdateEntryDTO): QueryArgs => {
+    let args: QueryArgs = {id: dto.id};
+    if (dto.journal)
+        args.journal = dto.journal;
+    if (dto.body)
+        args.body = dto.body;
+    return args;
+};
+
+const mapToGetEntryQueryArgs = (dto: GetEntryDTO): QueryArgs =>
+    ({id: dto.id});
+
 export const EntriesController = {
     getEntry: async (dto: GetEntryDTO): Promise<Entry> => {
         const validationResult: ValidationResult = await validateGetEntryDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-
-        const args: QueryArgs = {id: dto.id};
+        const args = mapToGetEntryQueryArgs(dto);
         return repository.getEntry(args);
     },
 
@@ -75,10 +95,10 @@ export const EntriesController = {
         const validationResult: ValidationResult = await validateGetEntriesDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-        const queryArgs = buildQueryArgs(dto);
-        const sortArgs = buildSortArgs(dto);
-        const filterArgs = buildFilterArgs(dto);
-        const paginationArgs = buildPaginationArgs(dto);
+        const queryArgs = mapToGetEntriesQueryArgs(dto);
+        const sortArgs = mapToGetEntriesSortArgs(dto);
+        const filterArgs = mapToGetEntriesFilterArgs(dto);
+        const paginationArgs = mapToGetEntriesPaginationArgs(dto);
         return repository.getEntries(queryArgs, sortArgs, filterArgs, paginationArgs);
     },
 
@@ -86,8 +106,7 @@ export const EntriesController = {
         const validationResult: ValidationResult = await validateCreateEntryDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-
-        const args: QueryArgs = {journal: dto.journal, body: dto.body};
+        const args: QueryArgs = mapToCreateEntryQueryArgs(dto);
         return repository.createEntry(args);
     },
 
@@ -95,8 +114,7 @@ export const EntriesController = {
         const validationResult: ValidationResult = await validateDeleteEntryDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-
-        const args: QueryArgs = {id: dto.id};
+        const args: QueryArgs = mapToDeleteEntryQueryArgs(dto);
         return repository.deleteEntry(args);
     },
 
@@ -104,13 +122,7 @@ export const EntriesController = {
         const validationResult: ValidationResult = await validateUpdateEntryDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-
-        let args: QueryArgs = {id: dto.id};
-        if (dto.journal)
-            args.journal = dto.journal;
-        if (dto.body)
-            args.body = dto.body;
-
+        const args: QueryArgs = mapToUpdateEntryQueryArgs(dto);
         return repository.updateEntry(args);
     },
 };

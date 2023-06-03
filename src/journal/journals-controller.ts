@@ -7,11 +7,12 @@ import {
     QueryArgs,
     SortArgs
 } from "./journals-repository";
-const repository: JournalsRepository = JOURNALS_REPOSITORY;
 import {
-    validateCreateJournalDTO, validateDeleteJournalDTO,
+    validateCreateJournalDTO,
+    validateDeleteJournalDTO,
     validateGetJournalDTO,
-    validateGetJournalsDTO, validateUpdateJournalDTO
+    validateGetJournalsDTO,
+    validateUpdateJournalDTO
 } from "./journals-dto-validator";
 import {
     CreateJournalDTO,
@@ -22,7 +23,9 @@ import {
 } from "./journals-dtos";
 import {ValidationResult} from "../utils/validation-result";
 
-const buildQueryArgs = (dto: GetJournalsDTO) => {
+const repository: JournalsRepository = JOURNALS_REPOSITORY;
+
+const mapToGetJournalsQueryArgs = (dto: GetJournalsDTO): QueryArgs => {
     let queryArgs: QueryArgs = {author: dto.userId}
     if (dto.idRegex)
         queryArgs.idRegex = dto.idRegex
@@ -37,7 +40,7 @@ const buildQueryArgs = (dto: GetJournalsDTO) => {
     return queryArgs;
 };
 
-const buildSortArgs = (dto: GetJournalsDTO) => {
+const mapToGetJournalsSortArgs = (dto: GetJournalsDTO): SortArgs => {
     const sortArgs: SortArgs = {};
     if (dto.sort)
         sortArgs.sort = dto.sort
@@ -45,7 +48,7 @@ const buildSortArgs = (dto: GetJournalsDTO) => {
     return sortArgs;
 };
 
-const buildFilterArgs = (dto: GetJournalsDTO) => {
+const mapToGetJournalsFilterArgs = (dto: GetJournalsDTO): FilterArgs => {
     const filterArgs: FilterArgs = {};
     if (dto.startDate)
         filterArgs.startDate = dto.startDate;
@@ -54,19 +57,35 @@ const buildFilterArgs = (dto: GetJournalsDTO) => {
     return filterArgs;
 };
 
-const buildPaginationArgs = (dto: GetJournalsDTO) => {
+const mapToGetJournalsPaginationArgs = (dto: GetJournalsDTO): PaginationArgs => {
     const paginationArgs: PaginationArgs = {};
     dto.page ? paginationArgs.page = dto.page : paginationArgs.page = 1;
     dto.limit ? paginationArgs.limit = dto.limit : paginationArgs.limit = 32;
     return paginationArgs;
 };
 
+const mapToGetJournalQueryArgs = (dto: GetJournalDTO): QueryArgs =>
+    ({id: dto.id});
+
+const mapToCreateJournalQueryArgs = (dto: CreateJournalDTO): QueryArgs => ({
+    author: dto.userId,
+    name: dto.name
+});
+
+const mapToDeleteJournalQueryArgs = (dto: DeleteJournalDTO): QueryArgs =>
+    ({id: dto.id});
+
+const mapToUpdateJournalQueryArgs = (dto: UpdateJournalDTO): QueryArgs => ({
+    id: dto.id,
+    name: dto.name
+});
+
 export const JournalsController = {
     getJournal: async (dto: GetJournalDTO): Promise<Journal> => {
         const validationResult: ValidationResult = await validateGetJournalDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-        const args: QueryArgs = {id: dto.id};
+        const args: QueryArgs = mapToGetJournalQueryArgs(dto);
         return repository.getJournal(args);
     },
 
@@ -74,10 +93,10 @@ export const JournalsController = {
         const validationResult: ValidationResult = await validateGetJournalsDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-        const queryArgs = buildQueryArgs(dto);
-        const sortArgs = buildSortArgs(dto);
-        const filterArgs = buildFilterArgs(dto);
-        const paginationArgs = buildPaginationArgs(dto);
+        const queryArgs: QueryArgs = mapToGetJournalsQueryArgs(dto);
+        const sortArgs: SortArgs = mapToGetJournalsSortArgs(dto);
+        const filterArgs: FilterArgs = mapToGetJournalsFilterArgs(dto);
+        const paginationArgs: PaginationArgs = mapToGetJournalsPaginationArgs(dto);
         return repository.getJournals(queryArgs, sortArgs, filterArgs, paginationArgs);
     },
     
@@ -85,7 +104,7 @@ export const JournalsController = {
         const validationResult: ValidationResult = await validateCreateJournalDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-        const args: QueryArgs = {author: dto.userId, name: dto.name};
+        const args: QueryArgs = mapToCreateJournalQueryArgs(dto);
         return repository.createJournal(args)
     },
     
@@ -93,7 +112,7 @@ export const JournalsController = {
         const validationResult: ValidationResult = await validateDeleteJournalDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-        const args: QueryArgs = {id: dto.id};
+        const args: QueryArgs = mapToDeleteJournalQueryArgs(dto);
         return repository.deleteJournal(args);
     },
     
@@ -101,7 +120,7 @@ export const JournalsController = {
         const validationResult: ValidationResult = await validateUpdateJournalDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-        const args: QueryArgs = {id: dto.id, name: dto.name};
+        const args: QueryArgs = mapToUpdateJournalQueryArgs(dto);
         return repository.updateJournal(args);
     },
 };
