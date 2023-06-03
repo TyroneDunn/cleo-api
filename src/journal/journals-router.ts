@@ -10,63 +10,61 @@ import {
 import {User} from "../user/user.type";
 import {sendErrorResponse} from "../utils/send-error-response";
 
-const mapRequest = {
-    toGetJournalDTO: (req: Request): GetJournalDTO => ({
+const mapRequestToGetJournalDTO = (req: Request): GetJournalDTO =>  ({
         userId: (req.user as User)._id.toString(),
         id: req.params.id,
-    }),
+    });
 
-    toGetJournalsDTO: (req: Request): GetJournalsDTO => {
-        const dto: GetJournalsDTO = {userId: (req.user as User)._id.toString()}
-        if (req.query.name)
-            dto.name = req.query.name as string;
-        if (req.query.nameRegex)
-            dto.nameRegex = req.query.nameRegex as string;
-        if (req.query.sort) {
-            if (req.query.sort === 'id')
-                dto.sort = 'id';
-            if (req.query.sort === 'name')
-                dto.sort = 'name';
-            if (req.query.sort === 'author')
-                dto.sort = 'author';
-            if (req.query.sort === 'dateCreated')
-                dto.sort = 'dateCreated';
-            if (req.query.sort === 'lastUpdated')
-                dto.sort = 'lastUpdated';
-        }
-        if (req.query.order)
-            req.query.order === '-1'? dto.order = -1: dto.order = 1;
-        if (req.query.page)
-            dto.page = parseInt(req.query.page as string);
-        if (req.query.limit)
-            dto.limit = parseInt(req.query.limit as string);
-        if (req.query.startDate)
-            dto.startDate = new Date(req.query.startdate as string)
-        if (req.query.endDate)
-            dto.endDate = new Date(req.query.enddate as string)
-        return dto;
-    },
+const mapRequestToGetJournalsDTO = (req: Request): GetJournalsDTO => {
+    const dto: GetJournalsDTO = {userId: (req.user as User)._id.toString()}
+    if (req.query.name)
+        dto.name = req.query.name as string;
+    if (req.query.nameRegex)
+        dto.nameRegex = req.query.nameRegex as string;
+    if (req.query.sort) {
+        if (req.query.sort === 'id')
+            dto.sort = 'id';
+        if (req.query.sort === 'name')
+            dto.sort = 'name';
+        if (req.query.sort === 'author')
+            dto.sort = 'author';
+        if (req.query.sort === 'dateCreated')
+            dto.sort = 'dateCreated';
+        if (req.query.sort === 'lastUpdated')
+            dto.sort = 'lastUpdated';
+    }
+    if (req.query.order)
+        req.query.order === '-1'? dto.order = -1: dto.order = 1;
+    if (req.query.page)
+        dto.page = parseInt(req.query.page as string);
+    if (req.query.limit)
+        dto.limit = parseInt(req.query.limit as string);
+    if (req.query.startDate)
+        dto.startDate = new Date(req.query.startdate as string)
+    if (req.query.endDate)
+        dto.endDate = new Date(req.query.enddate as string)
+    return dto;
+};
 
-    toCreateJournalDTO: (req: Request): CreateJournalDTO => ({
-        userId: (req.user as User)._id.toString(),
-        name: req.body.name,
-    }),
+const mapRequestToCreateJournalDTO = (req: Request): CreateJournalDTO => ({
+    userId: (req.user as User)._id.toString(),
+    name: req.body.name,
+});
 
-    toDeleteJournalDTO: (req: Request): DeleteJournalDTO => ({
-        userId: (req.user as User)._id.toString(),
-        id: req.params.id,
-    }),
+const mapRequestToDeleteJournalDTO = (req: Request): DeleteJournalDTO => ({
+    userId: (req.user as User)._id.toString(),
+    id: req.params.id,
+});
 
-    toUpdateJournalDTO: (req: Request): UpdateJournalDTO => ({
-        userId: (req.user as User)._id.toString(),
-        id: req.params.id,
-        name: req.body.name,
-    }),
-}
+const mapRequestToUpdateJournalDTO = (req: Request): UpdateJournalDTO => ({
+    userId: (req.user as User)._id.toString(),
+    id: req.params.id,
+    name: req.body.name,
+});
 
 const getJournal: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: GetJournalDTO = mapRequest.toGetJournalDTO(req);
+        const dto: GetJournalDTO = mapRequestToGetJournalDTO(req);
         res.json(await JournalsController.getJournal(dto));
     } catch (error) {
         sendErrorResponse(error, res);
@@ -75,7 +73,7 @@ const getJournal: RequestHandler = async (req: Request, res: Response): Promise<
 
 const getJournals: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: GetJournalsDTO = mapRequest.toGetJournalsDTO(req);
+        const dto: GetJournalsDTO = mapRequestToGetJournalsDTO(req);
         res.json(await JournalsController.getJournals(dto));
     } catch (error) {
         sendErrorResponse(error, res);
@@ -84,7 +82,7 @@ const getJournals: RequestHandler = async (req: Request, res: Response): Promise
 
 const createJournal: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: CreateJournalDTO = mapRequest.toCreateJournalDTO(req);
+        const dto: CreateJournalDTO = mapRequestToCreateJournalDTO(req);
         res.json(await JournalsController.createJournal(dto));
     } catch (error) {
         sendErrorResponse(error, res);
@@ -93,7 +91,7 @@ const createJournal: RequestHandler = async (req: Request, res: Response) => {
 
 const deleteJournal: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteJournalDTO = mapRequest.toDeleteJournalDTO(req);
+        const dto: DeleteJournalDTO = mapRequestToDeleteJournalDTO(req);
         res.json(await JournalsController.deleteJournal(dto));
     } catch (error) {
         sendErrorResponse(error, res);
@@ -102,7 +100,7 @@ const deleteJournal: RequestHandler = async (req: Request, res: Response) => {
 
 const updateJournal: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: UpdateJournalDTO = mapRequest.toUpdateJournalDTO(req);
+        const dto: UpdateJournalDTO = mapRequestToUpdateJournalDTO(req);
         res.json(await JournalsController.updateJournal(dto));
     } catch (error) {
         sendErrorResponse(error, res);
