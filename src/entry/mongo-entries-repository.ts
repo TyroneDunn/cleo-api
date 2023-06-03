@@ -21,7 +21,6 @@ type GetEntriesOptions = {
 
 const buildGetEntriesOptions = (queryArgs: QueryArgs, filterArgs: FilterArgs) => {
     let options: GetEntriesOptions = {};
-
     if (queryArgs.journal)
         options.journal = queryArgs.journal;
     if (queryArgs.journalRegex)
@@ -47,7 +46,12 @@ export const MongoEntriesRepository: EntriesRepository = {
     getEntry: async (args: QueryArgs): Promise<Entry> =>
         EntryModel.findById(args.id),
 
-    getEntries: async (queryArgs: QueryArgs, sortArgs: SortArgs, filterArgs: FilterArgs, paginationArgs: PaginationArgs): Promise<Entry[]> => {
+    getEntries: async (
+        queryArgs: QueryArgs,
+        sortArgs: SortArgs,
+        filterArgs: FilterArgs,
+        paginationArgs: PaginationArgs
+    ): Promise<Entry[]> => {
         const skip = (paginationArgs.page - 1) * paginationArgs.limit;
         const options = buildGetEntriesOptions(queryArgs, filterArgs);
         return EntryModel.find(options)
