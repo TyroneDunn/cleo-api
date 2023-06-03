@@ -1,38 +1,27 @@
 import {User} from "../user/user.type";
-import {registerUser$, userExists$} from "../user/mongo-users";
 import {RequestHandler, Request, Response} from "express";
 import {authGuard} from "./auth-guard";
 import {
-   BAD_REQUEST,
-   CONFLICT,
    CREATED,
    INTERNAL_SERVER_ERROR,
 } from "../utils/http-status-constants";
 const express = require('express');
 import passport = require("passport");
 const authenticateUserMiddleware = passport.authenticate('local');
+import {UsersController} from "../user/users-controller";
+import {RegisterUserDTO} from "../user/users-dtos";
+import {sendErrorResponse} from "../utils/send-error-response";
 
-const register: RequestHandler = (req: Request, res: Response): void => {
-   if (!req.body.username) {
-      res.status(BAD_REQUEST).json('Username required.');
-      return;
+const register: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+   try {
+      const dto: RegisterUserDTO = {
+         username: req.body.username,
+         password: req.body.password,
+      };
+      res.status(CREATED).json(await UsersController.registerUser(dto));
+   } catch (error) {
+      sendErrorResponse(error, res);
    }
-
-   if (!req.body.password) {
-      res.status(BAD_REQUEST).json('Password required.');
-      return;
-   }
-
-   userExists$(req.body.username).subscribe((userExists: boolean): void => {
-      if (userExists) {
-         res.status(CONFLICT).json('Username taken.');
-         return;
-      }
-
-      registerUser$(req.body.username, req.body.password).subscribe((user): void => {
-         res.status(CREATED).json(`New user, ${req.body.username}, created.`);
-      });
-   });
 };
 
 const login: RequestHandler = (req: Request, res: Response): void => {
@@ -51,14 +40,13 @@ const logout: RequestHandler = (req: Request, res: Response): void => {
    });
 };
 
-const authenticate: RequestHandler = (req: Request, res: Response) =>
+const authorizedStatus: RequestHandler = (req: Request, res: Response) =>
    res.json(`Authenticated as ${(req.user as User).username}`);
 
 const authRouter = express.Router();
-
 authRouter.post('/register/', register);
 authRouter.post('/login/', authenticateUserMiddleware, login);
 authRouter.post('/logout/', authGuard, logout);
-authRouter.get('/protected/', authGuard, authenticate);
+authRouter.get('/protected/', authGuard, authorizedStatus);
 
 export default authRouter;
