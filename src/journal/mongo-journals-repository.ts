@@ -85,7 +85,7 @@ export const MongoJournalsRepository: JournalsRepository = {
 
     exists: async (args: QueryArgs): Promise<boolean> => {
         try {
-            const journal = await JournalModel.findOne({_id: args.id});
+            const journal = await JournalModel.findById(args.id);
             return !!journal;
         } catch (error) {
             return false;
@@ -94,7 +94,7 @@ export const MongoJournalsRepository: JournalsRepository = {
 
     ownsJournal: async (args: QueryArgs): Promise<boolean> => {
         try {
-            const journal: Journal = await JournalModel.findOne({_id: args.id});
+            const journal: Journal = await JournalModel.findById(args.id);
             return journal.author.toString() === args.author;
         } catch (error) {
             return false;
