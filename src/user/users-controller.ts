@@ -7,7 +7,8 @@ import {
     validateDeleteUserDTO,
     validateGetUserDTO,
     validateGetUsersDTO,
-    validateRegisterUserDTO, validateUpdateUserDTO
+    validateRegisterUserDTO,
+    validateUpdateUserDTO
 } from "./users-dto-validator";
 import {ValidationResult} from "../utils/validation-result";
 
@@ -48,7 +49,7 @@ const mapToGetUsersPaginationArgs = (dto: GetUsersDTO): PaginationArgs => {
     return paginationArgs;
 };
 
-const mapToUpdateUserQueryArgs = (dto: UpdateUserDTO) => {
+const mapToUpdateUserQueryArgs = (dto: UpdateUserDTO): QueryArgs => {
     const args: QueryArgs = {id: dto.senderId};
     if (dto.username)
         args.username = dto.username;
@@ -57,24 +58,17 @@ const mapToUpdateUserQueryArgs = (dto: UpdateUserDTO) => {
     return args;
 };
 
-const mapToDeleteUserQueryArgs = (dto: DeleteUserDTO) => {
-    const args: QueryArgs = {id: dto.id};
-    return args;
-};
+const mapToDeleteUserQueryArgs = (dto: DeleteUserDTO): QueryArgs =>
+    ({id: dto.id});
 
-const mapToRegisterUserQueryArgs = (dto: RegisterUserDTO) => {
-    const args: QueryArgs = {
+const mapToRegisterUserQueryArgs = (dto: RegisterUserDTO): QueryArgs => ({
         username: dto.username,
         hash: generateHash(dto.password),
         isAdmin: false,
-    };
-    return args;
-};
+});
 
-const mapToGetUserQueryArgs = (dto: GetUserDTO) => {
-    const args: QueryArgs = {id: dto.id};
-    return args;
-};
+const mapToGetUserQueryArgs = (dto: GetUserDTO): QueryArgs =>
+    ({id: dto.id});
 
 export const UsersController = {
     getUser: async (dto: GetUserDTO): Promise<User> => {
