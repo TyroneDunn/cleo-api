@@ -1,5 +1,5 @@
 import {User} from "./user.type";
-import {USERS_REPOSITORY} from "../config";
+import {USERS_REPOSITORY} from "../repositories-config";
 import {FilterArgs, PaginationArgs, QueryArgs, SortArgs} from "./users-repository";
 import {DeleteUserDTO, GetUserDTO, GetUsersDTO, RegisterUserDTO, UpdateUserDTO} from "./users-dtos";
 import {generateHash} from "../utils/password-utils";

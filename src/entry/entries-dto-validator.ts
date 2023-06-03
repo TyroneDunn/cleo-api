@@ -7,7 +7,7 @@ import {
 } from "./entries-dtos";
 import {ValidationResult} from "../utils/validation-result";
 import {BadRequestError, NotFoundError, UnauthorizedError} from "../utils/errors";
-import {ENTRIES_REPOSITORY, JOURNALS_REPOSITORY} from "../config";
+import {ENTRIES_REPOSITORY, JOURNALS_REPOSITORY} from "../repositories-config";
 
 export const validateGetEntryDTO = async (dto: GetEntryDTO): Promise<ValidationResult> => {
     if (!dto.userId)

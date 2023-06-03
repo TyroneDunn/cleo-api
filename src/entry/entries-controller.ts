@@ -6,7 +6,7 @@ import {
     QueryArgs,
     SortArgs
 } from "./entries-repository";
-import {ENTRIES_REPOSITORY} from "../config";
+import {ENTRIES_REPOSITORY} from "../repositories-config";
 import {
     CreateEntryDTO,
     DeleteEntryDTO,

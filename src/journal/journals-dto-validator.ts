@@ -6,7 +6,7 @@ import {
     UpdateJournalDTO
 } from "./journals-dtos";
 import {BadRequestError, NotFoundError, UnauthorizedError} from "../utils/errors";
-import {JOURNALS_REPOSITORY} from "../config"
+import {JOURNALS_REPOSITORY} from "../repositories-config"
 import {ValidationResult} from "../utils/validation-result";
 
 export const validateGetJournalDTO = async (dto: GetJournalDTO): Promise<ValidationResult> => {

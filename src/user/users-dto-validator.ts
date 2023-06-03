@@ -1,7 +1,7 @@
 import {DeleteUserDTO, GetUserDTO, GetUsersDTO, RegisterUserDTO, UpdateUserDTO} from "./users-dtos";
 import {ValidationResult} from "../utils/validation-result";
 import {BadRequestError, ConflictError, ForbiddenError, NotFoundError} from "../utils/errors";
-import {USERS_REPOSITORY} from "../config";
+import {USERS_REPOSITORY} from "../repositories-config";
 
 export const validateRegisterUserDTO = async (dto: RegisterUserDTO): Promise<ValidationResult> => {
     if (!dto.username)
