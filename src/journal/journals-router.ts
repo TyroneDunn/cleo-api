@@ -10,12 +10,12 @@ import {
 import {User} from "../user/user";
 import {sendErrorResponse} from "../utils/send-error-response";
 
-const mapRequestToGetJournalDTO = (req: Request): GetJournalDTO =>  ({
+const mapToGetJournalDTO = (req: Request): GetJournalDTO =>  ({
         userId: (req.user as User)._id.toString(),
         id: req.params.id,
     });
 
-const mapRequestToGetJournalsDTO = (req: Request): GetJournalsDTO => {
+const mapToGetJournalsDTO = (req: Request): GetJournalsDTO => {
     const dto: GetJournalsDTO = {userId: (req.user as User)._id.toString()}
     if (req.query.name)
         dto.name = req.query.name as string;
@@ -46,17 +46,17 @@ const mapRequestToGetJournalsDTO = (req: Request): GetJournalsDTO => {
     return dto;
 };
 
-const mapRequestToCreateJournalDTO = (req: Request): CreateJournalDTO => ({
+const mapToCreateJournalDTO = (req: Request): CreateJournalDTO => ({
     userId: (req.user as User)._id.toString(),
     name: req.body.name,
 });
 
-const mapRequestToDeleteJournalDTO = (req: Request): DeleteJournalDTO => ({
+const mapToDeleteJournalDTO = (req: Request): DeleteJournalDTO => ({
     userId: (req.user as User)._id.toString(),
     id: req.params.id,
 });
 
-const mapRequestToUpdateJournalDTO = (req: Request): UpdateJournalDTO => ({
+const mapToUpdateJournalDTO = (req: Request): UpdateJournalDTO => ({
     userId: (req.user as User)._id.toString(),
     id: req.params.id,
     name: req.body.name,
@@ -64,7 +64,7 @@ const mapRequestToUpdateJournalDTO = (req: Request): UpdateJournalDTO => ({
 
 const getJournal: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: GetJournalDTO = mapRequestToGetJournalDTO(req);
+        const dto: GetJournalDTO = mapToGetJournalDTO(req);
         const journal = await JournalsController.getJournal(dto);
         res.json(journal);
     } catch (error) {
@@ -74,7 +74,7 @@ const getJournal: RequestHandler = async (req: Request, res: Response): Promise<
 
 const getJournals: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: GetJournalsDTO = mapRequestToGetJournalsDTO(req);
+        const dto: GetJournalsDTO = mapToGetJournalsDTO(req);
         const journals = await JournalsController.getJournals(dto);
         res.json(journals);
     } catch (error) {
@@ -84,7 +84,7 @@ const getJournals: RequestHandler = async (req: Request, res: Response): Promise
 
 const createJournal: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: CreateJournalDTO = mapRequestToCreateJournalDTO(req);
+        const dto: CreateJournalDTO = mapToCreateJournalDTO(req);
         const journal = await JournalsController.createJournal(dto);
         res.json(journal);
     } catch (error) {
@@ -94,7 +94,7 @@ const createJournal: RequestHandler = async (req: Request, res: Response) => {
 
 const deleteJournal: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteJournalDTO = mapRequestToDeleteJournalDTO(req);
+        const dto: DeleteJournalDTO = mapToDeleteJournalDTO(req);
         const journal = await JournalsController.deleteJournal(dto);
         res.json(journal);
     } catch (error) {
@@ -104,7 +104,7 @@ const deleteJournal: RequestHandler = async (req: Request, res: Response) => {
 
 const updateJournal: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: UpdateJournalDTO = mapRequestToUpdateJournalDTO(req);
+        const dto: UpdateJournalDTO = mapToUpdateJournalDTO(req);
         const journal = await JournalsController.updateJournal(dto);
         res.json(journal);
     } catch (error) {
