@@ -31,11 +31,9 @@ const login: RequestHandler = (req: Request, res: Response): void => {
 const logout: RequestHandler = (req: Request, res: Response): void => {
    req.logout((error) => {
        if (error) {
-          res.status(INTERNAL_SERVER_ERROR)
-              .json('Log out failed.');
+          res.status(INTERNAL_SERVER_ERROR).json('Log out failed.');
           return;
        }
-
        res.json('Logged out successfully.');
    });
 };

@@ -41,7 +41,7 @@ const buildGetJournalsQuery = (queryArgs: QueryArgs, filterArgs: FilterArgs) => 
 
 const deleteJournalEntries = async (journalID: string): Promise<void> => {
     await JournalEntryModel.deleteMany({journal: journalID});
-}
+};
 
 export const MongoJournalsRepository: JournalsRepository = {
     getJournal: async (args: QueryArgs): Promise<Journal> =>
