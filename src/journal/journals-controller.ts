@@ -66,7 +66,6 @@ export const JournalsController = {
         const validationResult: ValidationResult = await validateGetJournalDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-
         const args: QueryArgs = {id: dto.id};
         return repository.getJournal(args);
     },

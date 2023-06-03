@@ -12,7 +12,7 @@ export type QueryArgs = {
 export type SortArgs = {
     sort?: 'id' | 'name' | 'author' | 'dateCreated' | 'lastUpdated',
     order?: 1 | -1,
-}
+};
 
 export type FilterArgs = {
     startDate?: Date,

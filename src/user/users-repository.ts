@@ -10,7 +10,7 @@ export type QueryArgs = {
 };
 
 export type SortArgs = {
-    sort?: 'id' | 'username' | 'hash',
+    sort?: 'id' | 'username' | 'dateCreated' | 'lastUpdated',
     order?: 1 | -1,
 };
 
