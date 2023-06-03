@@ -13,4 +13,5 @@ export type UsersRepository = {
     deleteUser: (args: QueryArgs) => Promise<User>,
     updateUser: (args: QueryArgs) => Promise<User>,
     exists: (args: QueryArgs) => Promise<boolean>,
+    isPrivileged: (args: QueryArgs) => Promise<boolean>,
 };
