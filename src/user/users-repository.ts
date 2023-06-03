@@ -7,10 +7,11 @@ export type QueryArgs = {
     usernameRegex?: string,
     hash?: string,
     hashRegex?: string,
+    isAdmin?: boolean,
 };
 
 export type SortArgs = {
-    sort?: 'id' | 'username' | 'dateCreated' | 'lastUpdated',
+    sort?: 'id' | 'username' | 'dateCreated' | 'lastUpdated' | 'isAdmin',
     order?: 1 | -1,
 };
 
@@ -36,5 +37,5 @@ export type UsersRepository = {
     deleteUser: (args: QueryArgs) => Promise<User>,
     updateUser: (args: QueryArgs) => Promise<User>,
     exists: (args: QueryArgs) => Promise<boolean>,
-    isPrivileged: (args: QueryArgs) => Promise<boolean>,
+    isAdmin: (args: QueryArgs) => Promise<boolean>,
 };

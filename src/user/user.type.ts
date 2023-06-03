@@ -4,4 +4,5 @@ export type User = {
     hash: string,
     dateCreated: Date,
     lastUpdated: Date,
+    isAdmin: boolean,
 };

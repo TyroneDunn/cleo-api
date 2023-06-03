@@ -14,7 +14,7 @@ export const validateRegisterUserDTO = async (dto: RegisterUserDTO): Promise<Val
 };
 
 export const validateGetUserDTO = async (dto: GetUserDTO): Promise<ValidationResult> => {
-    if (!(await USERS_REPOSITORY.isPrivileged({id: dto.senderId})))
+    if (!(await USERS_REPOSITORY.isAdmin({id: dto.senderId})))
         return {status: false, error: new ForbiddenError('Unauthorized.')};
     if (!dto.senderId)
         return {status: false, error: new BadRequestError('Request user ID required.')};
@@ -26,7 +26,7 @@ export const validateGetUserDTO = async (dto: GetUserDTO): Promise<ValidationRes
 };
 
 export const validateGetUsersDTO = async (dto: GetUsersDTO): Promise<ValidationResult> => {
-    if (!(await USERS_REPOSITORY.isPrivileged({id: dto.senderId})))
+    if (!(await USERS_REPOSITORY.isAdmin({id: dto.senderId})))
         return {status: false, error: new ForbiddenError('Unauthorized.')};
     if ((dto.id && dto.idRegex) ||
         (dto.username && dto.usernameRegex)) {
@@ -36,7 +36,7 @@ export const validateGetUsersDTO = async (dto: GetUsersDTO): Promise<ValidationR
 };
 
 export const validateDeleteUserDTO = async (dto: DeleteUserDTO): Promise<ValidationResult> => {
-    if (!(await USERS_REPOSITORY.isPrivileged({id: dto.senderId})))
+    if (!(await USERS_REPOSITORY.isAdmin({id: dto.senderId})))
         return {status: false, error: new ForbiddenError('Unauthorized.')};
     if (!dto.senderId)
         return {status: false, error: new BadRequestError('Sender ID required.')};
@@ -54,7 +54,7 @@ export const validateUpdateUserDTO = async (dto: UpdateUserDTO): Promise<Validat
     if (!dto.id)
         return {status: false, error: new BadRequestError('User ID required.')};
     if (dto.senderId !== dto.id &&
-        !(await USERS_REPOSITORY.isPrivileged({id: dto.senderId})))
+        !(await USERS_REPOSITORY.isAdmin({id: dto.senderId})))
         return {status: false, error: new ForbiddenError('Unauthorized.')};
     if (!(await USERS_REPOSITORY.exists({id: dto.id}))) {
         return {status: false, error: new NotFoundError(`User ${dto.id} not found.`)};
