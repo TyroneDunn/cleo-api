@@ -1,10 +1,9 @@
 import session = require("express-session");
 import {SessionOptions} from "express-session";
-import {mongoSessionStore} from "./mongo-session-store-config";
 import {NODE_ENV, SESSION_SECRET} from "../environment";
+import {mongoSessionStore} from "./mongo-session-store-config";
 
-let httpOnly: boolean;
-NODE_ENV === 'development'? httpOnly = false: httpOnly = true;
+const httpOnly: boolean = !(NODE_ENV === 'development');
 
 const options: SessionOptions = {
     secret: SESSION_SECRET,
