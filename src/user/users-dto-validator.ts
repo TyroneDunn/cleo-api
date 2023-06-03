@@ -18,8 +18,8 @@ export const validateGetUserDTO = async (dto: GetUserDTO): Promise<ValidationRes
         return {status: false, error: new ForbiddenError('Unauthorized.')};
     if (!dto.senderId)
         return {status: false, error: new BadRequestError('Request user ID required.')};
-    if (!dto.id)
-        return {status: false, error: new BadRequestError('User ID required.')};
+    if (!dto.id && !dto.username)
+        return {status: false, error: new BadRequestError('User ID or username required.')};
     if (!(await USERS_REPOSITORY.exists({username: dto.id})))
         return {status: false, error: new NotFoundError('User not found.')};
     return {status: true};

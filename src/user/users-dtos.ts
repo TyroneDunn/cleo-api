@@ -1,6 +1,7 @@
 export type GetUserDTO = {
     senderId: string,
-    id: string,
+    id?: string,
+    username?: string,
 };
 
 export type GetUsersDTO = {
