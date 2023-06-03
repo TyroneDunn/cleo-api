@@ -10,34 +10,33 @@ import {
     SortArgs
 } from "./journals-repository";
 
-type GetJournalsOptions = {
+type GetJournalsQuery = {
     _id?: any,
     author: any,
     name?: any,
     dateCreated?: any,
     lastUpdated?: any,
-}
+};
 
-const buildGetJournalsOptions = (queryArgs: QueryArgs, filterArgs: FilterArgs) => {
-    let options: GetJournalsOptions = {author: queryArgs.author};
-
+const buildGetJournalsQuery = (queryArgs: QueryArgs, filterArgs: FilterArgs) => {
+    let query: GetJournalsQuery = {author: queryArgs.author};
     if (queryArgs.name)
-        options.name = queryArgs.name;
+        query.name = queryArgs.name;
     if (queryArgs.nameRegex)
-        options.name = {$regex: queryArgs.nameRegex, $options: 'i'};
+        query.name = {$regex: queryArgs.nameRegex, $options: 'i'};
     if (queryArgs.id)
-        options._id = queryArgs.id;
+        query._id = queryArgs.id;
     if (queryArgs.idRegex)
-        options._id = {$regex: queryArgs.idRegex, $options: 'i'};
+        query._id = {$regex: queryArgs.idRegex, $options: 'i'};
     if (queryArgs.authorRegex)
-        options.author = {$regex: queryArgs.authorRegex, $options: 'i'};
+        query.author = {$regex: queryArgs.authorRegex, $options: 'i'};
     if (filterArgs.startDate && !filterArgs.endDate)
-        options.dateCreated = {$gt: filterArgs.startDate};
+        query.dateCreated = {$gt: filterArgs.startDate};
     if (!filterArgs.startDate && filterArgs.endDate)
-        options.dateCreated = {$lt: filterArgs.endDate};
+        query.dateCreated = {$lt: filterArgs.endDate};
     if (filterArgs.startDate && filterArgs.endDate)
-        options.dateCreated = {$gte: filterArgs.startDate, $lte: filterArgs.endDate};
-    return options;
+        query.dateCreated = {$gte: filterArgs.startDate, $lte: filterArgs.endDate};
+    return query;
 };
 
 const deleteJournalEntries = async (journalID: string): Promise<void> => {
@@ -54,8 +53,8 @@ export const MongoJournalsRepository: JournalsRepository = {
         filterArgs: FilterArgs,
         paginationArgs: PaginationArgs): Promise<Journal[]> => {
         const skip = (paginationArgs.page - 1) * paginationArgs.limit;
-        const options = buildGetJournalsOptions(queryArgs, filterArgs);
-        return JournalModel.find(options)
+        const query = buildGetJournalsQuery(queryArgs, filterArgs);
+        return JournalModel.find(query)
             .sort({[sortArgs.sort]: sortArgs.order})
             .skip(skip)
             .limit(paginationArgs.limit);
