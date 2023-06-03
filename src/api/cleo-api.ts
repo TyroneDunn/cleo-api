@@ -10,6 +10,7 @@ import {authGuard} from "./auth-guard";
 import journalsRouter from "../journal/journals-router";
 import entriesRouter from "../entry/entries-router";
 import {API_TITLE} from "../environment";
+import usersRouter from "../user/users-router";
 
 const cleoHomeRoute = (req, res): RequestHandler =>
     res.send(API_TITLE || 'Cleo-Server:v.1.3.x');
@@ -23,6 +24,7 @@ app.use(passport.session());
 
 app.get('/', cleoHomeRoute);
 app.use('/auth/', authRouter);
+app.use('/users/', authGuard, usersRouter);
 app.use('/journals/', authGuard, journalsRouter);
 app.use('/entries/', authGuard, entriesRouter);
 
