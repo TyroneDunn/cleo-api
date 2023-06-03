@@ -4,7 +4,7 @@ import {sendErrorResponse} from "../utils/send-error-response";
 import {User} from "./user";
 import {UsersController} from "./users-controller";
 
-const mapRequestToGetUsersDTO = (req: Request) => {
+const mapToGetUsersDTO = (req: Request) => {
     const dto: GetUsersDTO = {senderId: (req.user as User)._id.toString()};
     if (req.query.idRegex)
         dto.idRegex = req.query.idRegex as string;
@@ -35,7 +35,7 @@ const mapRequestToGetUsersDTO = (req: Request) => {
     return dto;
 };
 
-const mapRequestToGetUserDTO = (req: Request) => {
+const mapToGetUserDTO = (req: Request) => {
     const dto: GetUserDTO = {
         senderId: (req.user as User)._id.toString(),
         id: req.params.id,
@@ -43,7 +43,7 @@ const mapRequestToGetUserDTO = (req: Request) => {
     return dto;
 };
 
-const mapRequestToDeleteUserDTO = (req: Request) => {
+const mapToDeleteUserDTO = (req: Request) => {
     const dto: DeleteUserDTO = {
         senderId: (req.user as User)._id.toString(),
         id: req.params.id,
@@ -51,7 +51,7 @@ const mapRequestToDeleteUserDTO = (req: Request) => {
     return dto;
 };
 
-const mapRequestToUpdateUserDTO = (req: Request) => {
+const mapToUpdateUserDTO = (req: Request) => {
     const dto: UpdateUserDTO = {
         senderId: (req.user as User)._id.toString(),
         id: req.params.id,
@@ -65,7 +65,7 @@ const mapRequestToUpdateUserDTO = (req: Request) => {
 
 const getUser: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto = mapRequestToGetUserDTO(req);
+        const dto = mapToGetUserDTO(req);
         const user: User = await UsersController.getUser(dto);
         res.json(user);
     } catch (error) {
@@ -75,7 +75,7 @@ const getUser: RequestHandler = async (req: Request, res: Response) => {
 
 const getUsers: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto = mapRequestToGetUsersDTO(req);
+        const dto = mapToGetUsersDTO(req);
         const users: User[] = await UsersController.getUsers(dto);
         res.json(users);
     } catch (error) {
@@ -85,7 +85,7 @@ const getUsers: RequestHandler = async (req: Request, res: Response) => {
 
 const deleteUser: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto = mapRequestToDeleteUserDTO(req);
+        const dto = mapToDeleteUserDTO(req);
         const user = await UsersController.deleteUser(dto);
         res.json(user);
     } catch (error) {
@@ -95,7 +95,7 @@ const deleteUser: RequestHandler = async (req: Request, res: Response) => {
 
 const updateUser: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto = mapRequestToUpdateUserDTO(req);
+        const dto = mapToUpdateUserDTO(req);
         const user = await UsersController.updateUser(dto);
         res.json(user);
     } catch (error) {

@@ -22,7 +22,7 @@ import {
 } from "./journals-dtos";
 import {ValidationResult} from "../utils/validation-result";
 
-const buildQueryArgs = (dto: GetJournalsDTO) => {
+const mapToQueryArgs = (dto: GetJournalsDTO) => {
     let queryArgs: QueryArgs = {author: dto.userId}
     if (dto.idRegex)
         queryArgs.idRegex = dto.idRegex
@@ -37,7 +37,7 @@ const buildQueryArgs = (dto: GetJournalsDTO) => {
     return queryArgs;
 };
 
-const buildSortArgs = (dto: GetJournalsDTO) => {
+const mapToSortArgs = (dto: GetJournalsDTO) => {
     const sortArgs: SortArgs = {};
     if (dto.sort)
         sortArgs.sort = dto.sort
@@ -45,7 +45,7 @@ const buildSortArgs = (dto: GetJournalsDTO) => {
     return sortArgs;
 };
 
-const buildFilterArgs = (dto: GetJournalsDTO) => {
+const mapToFilterArgs = (dto: GetJournalsDTO) => {
     const filterArgs: FilterArgs = {};
     if (dto.startDate)
         filterArgs.startDate = dto.startDate;
@@ -54,7 +54,7 @@ const buildFilterArgs = (dto: GetJournalsDTO) => {
     return filterArgs;
 };
 
-const buildPaginationArgs = (dto: GetJournalsDTO) => {
+const mapToPaginationArgs = (dto: GetJournalsDTO) => {
     const paginationArgs: PaginationArgs = {};
     dto.page ? paginationArgs.page = dto.page : paginationArgs.page = 1;
     dto.limit ? paginationArgs.limit = dto.limit : paginationArgs.limit = 32;
@@ -74,10 +74,10 @@ export const JournalsController = {
         const validationResult: ValidationResult = await validateGetJournalsDTO(dto);
         if (!validationResult.status)
             throw validationResult.error;
-        const queryArgs = buildQueryArgs(dto);
-        const sortArgs = buildSortArgs(dto);
-        const filterArgs = buildFilterArgs(dto);
-        const paginationArgs = buildPaginationArgs(dto);
+        const queryArgs = mapToQueryArgs(dto);
+        const sortArgs = mapToSortArgs(dto);
+        const filterArgs = mapToFilterArgs(dto);
+        const paginationArgs = mapToPaginationArgs(dto);
         return repository.getJournals(queryArgs, sortArgs, filterArgs, paginationArgs);
     },
     
