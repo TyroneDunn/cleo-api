@@ -37,8 +37,11 @@ const buildGetUsersQuery = (queryArgs: QueryArgs, filterArgs: FilterArgs) => {
     return query;
 };
 export const MongoUsersRepository: UsersRepository = {
-    getUser: async (args: QueryArgs): Promise<User> =>
-        UserModel.findById(args.id),
+    getUser: async (args: QueryArgs): Promise<User> => {
+        if(args.id)
+            return UserModel.findById(args.id)
+        return UserModel.findOne({username: args.username});
+    },
 
     getUsers: async (
         queryArgs: QueryArgs,
