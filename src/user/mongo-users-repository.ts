@@ -3,7 +3,6 @@ import UserModel from "./mongo-user-model";
 import {User} from "./user.type";
 import {now} from "mongoose";
 
-
 type GetUsersQuery = {
     _id?: any,
     username?: any,
