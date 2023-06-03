@@ -7,7 +7,7 @@ import {
     GetEntryDTO,
     UpdateEntryDTO
 } from "./entries-dtos";
-import {User} from "../user/user.type";
+import {User} from "../user/user";
 import {sendErrorResponse} from "../utils/send-error-response";
 
 const mapRequestToGetEntryDTO = (req: Request): GetEntryDTO => ({

@@ -1,4 +1,4 @@
-import {Entry} from "./entry.type";
+import {Entry} from "./entry";
 import {
     EntriesRepository,
     FilterArgs,

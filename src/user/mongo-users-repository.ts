@@ -1,6 +1,6 @@
 import {FilterArgs, PaginationArgs, QueryArgs, SortArgs, UsersRepository} from "./users-repository";
 import UserModel from "./mongo-user-model";
-import {User} from "./user.type";
+import {User} from "./user";
 import {now} from "mongoose";
 
 type GetUsersQuery = {

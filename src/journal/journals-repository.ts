@@ -1,4 +1,4 @@
-import {Journal} from "./journal.type";
+import {Journal} from "./journal";
 
 export type QueryArgs = {
     id?: string,

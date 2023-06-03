@@ -1,4 +1,4 @@
-import {Journal} from "./journal.type";
+import {Journal} from "./journal";
 import {Document, Schema} from 'mongoose';
 import database from "../mongoose-database";
 

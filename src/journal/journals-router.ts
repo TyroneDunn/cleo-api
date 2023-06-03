@@ -7,7 +7,7 @@ import {
     GetJournalsDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
-import {User} from "../user/user.type";
+import {User} from "../user/user";
 import {sendErrorResponse} from "../utils/send-error-response";
 
 const mapRequestToGetJournalDTO = (req: Request): GetJournalDTO =>  ({

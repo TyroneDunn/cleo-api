@@ -1,6 +1,6 @@
 const passportConfig = require('passport');
 import LocalStrategy = require('passport-local');
-import {User} from "../user/user.type";
+import {User} from "../user/user";
 import {USERS_REPOSITORY} from "../repositories-config";
 import {validatePassword} from "../utils/password-utils";
 import {QueryArgs} from "../user/users-repository";

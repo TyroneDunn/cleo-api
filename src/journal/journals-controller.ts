@@ -1,4 +1,4 @@
-import {Journal} from "./journal.type";
+import {Journal} from "./journal";
 import {JOURNALS_REPOSITORY} from "../repositories-config";
 import {
     FilterArgs,

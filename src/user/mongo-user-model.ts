@@ -1,4 +1,4 @@
-import {User} from "./user.type";
+import {User} from "./user";
 import {Document, Schema} from 'mongoose';
 import database from "../mongoose-database";
 

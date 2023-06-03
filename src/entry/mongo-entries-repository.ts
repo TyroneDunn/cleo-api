@@ -5,10 +5,10 @@ import {
     QueryArgs,
     SortArgs
 } from "./entries-repository";
-import {Entry} from "./entry.type";
+import {Entry} from "./entry";
 import EntryModel from "./mongo-entry-model";
 import JournalModel from "../journal/mongo-journal-model";
-import {Journal} from "../journal/journal.type";
+import {Journal} from "../journal/journal";
 import {now} from "mongoose";
 
 type GetEntriesOptions = {

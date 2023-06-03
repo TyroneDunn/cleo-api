@@ -1,4 +1,4 @@
-import {User} from "../user/user.type";
+import {User} from "../user/user";
 import {RequestHandler, Request, Response} from "express";
 import {authGuard} from "./auth-guard";
 import {

@@ -1,7 +1,7 @@
 import {Request, Response, RequestHandler, Router} from "express";
 import {DeleteUserDTO, GetUserDTO, GetUsersDTO, UpdateUserDTO} from "./users-dtos";
 import {sendErrorResponse} from "../utils/send-error-response";
-import {User} from "./user.type";
+import {User} from "./user";
 import {UsersController} from "./users-controller";
 
 const mapRequestToGetUsersDTO = (req: Request) => {
