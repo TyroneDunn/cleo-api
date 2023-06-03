@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {MONGO_DB_URL} from "./environment";
+import {MONGODB_URL} from "./environment";
 
-const database = mongoose.createConnection(MONGO_DB_URL);
+const database = mongoose.createConnection(MONGODB_URL);
 export default database;

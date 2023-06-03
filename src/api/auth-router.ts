@@ -1,24 +1,25 @@
 import {User} from "../user/user";
-import {RequestHandler, Request, Response} from "express";
+import {Request, RequestHandler, Response} from "express";
 import {authGuard} from "./auth-guard";
-import {
-   CREATED,
-   INTERNAL_SERVER_ERROR,
-} from "../utils/http-status-constants";
-const express = require('express');
-import passport = require("passport");
-const authenticateUserMiddleware = passport.authenticate('local');
+import {CREATED, INTERNAL_SERVER_ERROR,} from "../utils/http-status-constants";
 import {UsersController} from "../user/users-controller";
 import {RegisterUserDTO} from "../user/users-dtos";
 import {sendErrorResponse} from "../utils/send-error-response";
 
+const express = require('express');
+import passport = require("passport");
+const authenticateUserMiddleware = passport.authenticate('local');
+
+const mapToRegisterUserDTO = (req: Request): RegisterUserDTO => ({
+   username: req.body.username,
+   password: req.body.password,
+});
+
 const register: RequestHandler = async (req: Request, res: Response): Promise<void> => {
    try {
-      const dto: RegisterUserDTO = {
-         username: req.body.username,
-         password: req.body.password,
-      };
-      res.status(CREATED).json(await UsersController.registerUser(dto));
+      const dto: RegisterUserDTO = mapToRegisterUserDTO(req);
+      const user = await UsersController.registerUser(dto);
+      res.status(CREATED).json(user);
    } catch (error) {
       sendErrorResponse(error, res);
    }
@@ -38,8 +39,9 @@ const logout: RequestHandler = (req: Request, res: Response): void => {
    });
 };
 
-const authorizedStatus: RequestHandler = (req: Request, res: Response) =>
+const authorizedStatus: RequestHandler = (req: Request, res: Response): void => {
    res.json(`Authenticated as ${(req.user as User).username}`);
+}
 
 const authRouter = express.Router();
 authRouter.post('/register/', register);
