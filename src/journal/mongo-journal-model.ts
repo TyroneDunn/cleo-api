@@ -1,6 +1,6 @@
-import {Journal} from "./journal.type";
+import {Journal} from "./journal";
 import {Document, Schema} from 'mongoose';
-import database from "../utils/mongoose-database";
+import database from "../mongoose-database";
 
 interface JournalDocument extends Document, Journal {
   _id: string,
@@ -8,7 +8,7 @@ interface JournalDocument extends Document, Journal {
   author: Schema.Types.ObjectId;
   dateCreated: Date,
   lastUpdated: Date,
-};
+}
 
 const journalSchema = new Schema<JournalDocument>({
   name: {
