@@ -35,12 +35,37 @@ const mapRequestToGetUsersDTO = (req: Request) => {
     return dto;
 };
 
+const mapRequestToGetUserDTO = (req: Request) => {
+    const dto: GetUserDTO = {
+        senderId: (req.user as User)._id.toString(),
+        id: req.params.id,
+    };
+    return dto;
+};
+
+const mapRequestToDeleteUserDTO = (req: Request) => {
+    const dto: DeleteUserDTO = {
+        senderId: (req.user as User)._id.toString(),
+        id: req.params.id,
+    };
+    return dto;
+};
+
+function mapRequestToUpdateUserDTO(req: Request) {
+    const dto: UpdateUserDTO = {
+        senderId: (req.user as User)._id.toString(),
+        id: req.params.id,
+    };
+    if (req.body.username)
+        dto.username = req.body.username;
+    if (req.body.password)
+        dto.password = req.body.password;
+    return dto;
+}
+
 const getUser: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: GetUserDTO = {
-            senderId: (req.user as User)._id.toString(),
-            id: req.params.id,
-        };
+        const dto = mapRequestToGetUserDTO(req);
         const user: User = await UsersController.getUser(dto);
         res.json(user);
     } catch (error) {
@@ -60,10 +85,7 @@ const getUsers: RequestHandler = async (req: Request, res: Response) => {
 
 const deleteUser: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteUserDTO = {
-            senderId: (req.user as User)._id.toString(),
-            id: req.params.id,
-        };
+        const dto = mapRequestToDeleteUserDTO(req);
         res.json(await UsersController.deleteUser(dto));
     } catch (error) {
         sendErrorResponse(error, res);
@@ -72,14 +94,7 @@ const deleteUser: RequestHandler = async (req: Request, res: Response) => {
 
 const updateUser: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: UpdateUserDTO = {
-            senderId: (req.user as User)._id.toString(),
-            id: req.params.id,
-        };
-        if (req.body.username)
-            dto.username = req.body.username;
-        if (req.body.password)
-            dto.password = req.body.password;
+        const dto = mapRequestToUpdateUserDTO(req);
         const user = await UsersController.updateUser(dto);
         res.json(user);
     } catch (error) {
