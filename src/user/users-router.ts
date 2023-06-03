@@ -51,7 +51,7 @@ const mapRequestToDeleteUserDTO = (req: Request) => {
     return dto;
 };
 
-function mapRequestToUpdateUserDTO(req: Request) {
+const mapRequestToUpdateUserDTO = (req: Request) => {
     const dto: UpdateUserDTO = {
         senderId: (req.user as User)._id.toString(),
         id: req.params.id,
@@ -61,7 +61,7 @@ function mapRequestToUpdateUserDTO(req: Request) {
     if (req.body.password)
         dto.password = req.body.password;
     return dto;
-}
+};
 
 const getUser: RequestHandler = async (req: Request, res: Response) => {
     try {
@@ -86,7 +86,8 @@ const getUsers: RequestHandler = async (req: Request, res: Response) => {
 const deleteUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto = mapRequestToDeleteUserDTO(req);
-        res.json(await UsersController.deleteUser(dto));
+        const user = await UsersController.deleteUser(dto);
+        res.json(user);
     } catch (error) {
         sendErrorResponse(error, res);
     }
