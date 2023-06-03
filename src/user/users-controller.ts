@@ -76,6 +76,7 @@ export const UsersController = {
         const args: QueryArgs = {
             username: dto.username,
             hash: generateHash(dto.password),
+            isAdmin: false,
         };
         return USERS_REPOSITORY.registerUser(args);
     },
