@@ -6,7 +6,10 @@ interface UserDocument extends Document, User {
     _id: string,
     username: string,
     hash: string,
-};
+    isAdmin: boolean,
+    dateCreated: Date,
+    lastUpdated: Date,
+}
 
 const userSchema = new Schema<UserDocument>({
     username: {
@@ -17,6 +20,18 @@ const userSchema = new Schema<UserDocument>({
     hash: {
         type: String,
         required: true
+    },
+    isAdmin: {
+        type: Boolean,
+        required: true
+    },
+    dateCreated: {
+        type: Date,
+        required: true,
+    },
+    lastUpdated: {
+        type: Date,
+        required: true,
     },
 });
 
