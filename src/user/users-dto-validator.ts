@@ -1,4 +1,4 @@
-import {DeleteUserDTO, GetUserDTO, GetUsersDTO, RegisterUserDTO} from "./users-dtos";
+import {DeleteUserDTO, GetUserDTO, GetUsersDTO, RegisterUserDTO, UpdateUserDTO} from "./users-dtos";
 import {ValidationResult} from "../utils/validation-result";
 import {BadRequestError, ConflictError, ForbiddenError, NotFoundError} from "../utils/errors";
 import {USERS_REPOSITORY} from "../config";
@@ -13,10 +13,10 @@ export const validateRegisterUserDTO = async (dto: RegisterUserDTO): Promise<Val
     return {status: true};
 };
 
-export const validateGetUserDTO = async (dto: GetUserDTO) => {
-    if (!(await USERS_REPOSITORY.isPrivileged({id: dto.userId})))
+export const validateGetUserDTO = async (dto: GetUserDTO): Promise<ValidationResult> => {
+    if (!(await USERS_REPOSITORY.isPrivileged({id: dto.senderId})))
         return {status: false, error: new ForbiddenError('Unauthorized.')};
-    if (!dto.userId)
+    if (!dto.senderId)
         return {status: false, error: new BadRequestError('Request user ID required.')};
     if (!dto.id)
         return {status: false, error: new BadRequestError('User ID required.')};
@@ -25,8 +25,8 @@ export const validateGetUserDTO = async (dto: GetUserDTO) => {
     return {status: true};
 };
 
-export const validateGetUsersDTO = async (dto: GetUsersDTO) => {
-    if (!(await USERS_REPOSITORY.isPrivileged({id: dto.userId})))
+export const validateGetUsersDTO = async (dto: GetUsersDTO): Promise<ValidationResult> => {
+    if (!(await USERS_REPOSITORY.isPrivileged({id: dto.senderId})))
         return {status: false, error: new ForbiddenError('Unauthorized.')};
     if ((dto.id && dto.idRegex) ||
         (dto.username && dto.usernameRegex)) {
@@ -35,13 +35,27 @@ export const validateGetUsersDTO = async (dto: GetUsersDTO) => {
     return {status: true};
 };
 
-export const validateDeleteUserDTO = async (dto: DeleteUserDTO) => {
-    if (!(await USERS_REPOSITORY.isPrivileged({id: dto.userId})))
+export const validateDeleteUserDTO = async (dto: DeleteUserDTO): Promise<ValidationResult> => {
+    if (!(await USERS_REPOSITORY.isPrivileged({id: dto.senderId})))
         return {status: false, error: new ForbiddenError('Unauthorized.')};
-    if (!dto.userId)
-        return {status: false, error: new BadRequestError('User ID required.')};
+    if (!dto.senderId)
+        return {status: false, error: new BadRequestError('Sender ID required.')};
     if (!dto.id)
-        return {status: false, error: new BadRequestError('Journal ID required.')};
+        return {status: false, error: new BadRequestError('User ID required.')};
+    if (!(await USERS_REPOSITORY.exists({id: dto.id}))) {
+        return {status: false, error: new NotFoundError(`User ${dto.id} not found.`)};
+    }
+    return {status: true};
+};
+
+export const validateUpdateUserDTO = async (dto: UpdateUserDTO): Promise<ValidationResult> => {
+    if (!dto.senderId)
+        return {status: false, error: new BadRequestError('Sender ID required.')};
+    if (!dto.id)
+        return {status: false, error: new BadRequestError('User ID required.')};
+    if (dto.senderId !== dto.id &&
+        !(await USERS_REPOSITORY.isPrivileged({id: dto.senderId})))
+        return {status: false, error: new ForbiddenError('Unauthorized.')};
     if (!(await USERS_REPOSITORY.exists({id: dto.id}))) {
         return {status: false, error: new NotFoundError(`User ${dto.id} not found.`)};
     }
