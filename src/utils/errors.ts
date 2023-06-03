@@ -29,3 +29,11 @@ export class ConflictError implements Error {
     message: string;
     name: string;
 }
+
+export class ForbiddenError implements Error {
+    constructor(message: string) {
+        this.message = message;
+    }
+    message: string;
+    name: string;
+}
