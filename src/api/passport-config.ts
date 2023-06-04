@@ -1,9 +1,9 @@
+import {GetUserDTO} from "../user/users-dtos";
 const passportConfig = require('passport');
 import LocalStrategy = require('passport-local');
 import {User} from "../user/user";
 import {USERS_REPOSITORY} from "../repositories-config";
-import {validatePassword} from "../utils/password-utils";
-import {QueryArgs} from "../user/users-repository";
+import {validateHash} from "../utils/password-utils";
 
 const userField = {
     usernameField: 'username',
@@ -11,14 +11,14 @@ const userField = {
 };
 
 const verifyCallback = async (username: string, password: string, done): Promise<void> => {
-    const args: QueryArgs = {username: username}
-    const user: User = await USERS_REPOSITORY.getUser(args);
+    const dto: GetUserDTO = {username: username};
+    const user: User = await USERS_REPOSITORY.getUser(dto);
     if (!user) {
         done(null, false);
         return;
     }
 
-    if (!validatePassword(password, user.hash)) {
+    if (!validateHash(password, user.hash)) {
         done(null, false);
         return;
     }
@@ -35,8 +35,8 @@ passportConfig.serializeUser((user, done) => {
 
 passportConfig.deserializeUser(async (userId, done) => {
     try {
-        const args: QueryArgs = {id: userId};
-        const user = await USERS_REPOSITORY.getUser(args);
+        const dto: GetUserDTO = {id: userId};
+        const user = await USERS_REPOSITORY.getUser(dto);
         done(null, user);
     } catch (error) {
         done(error);
