@@ -1,11 +1,10 @@
-import {Request, RequestHandler, Response} from "express";
-import {DeleteUserDTO, GetUserDTO, GetUsersDTO, UpdateUserDTO} from "./users-dtos";
 import {User} from "./user";
 import {UsersController} from "./users-controller";
+import {Request, RequestHandler, Response} from "express";
+import {DeleteUserDTO, GetUserDTO, GetUsersDTO, UpdateUserDTO} from "./users-dtos";
 import {sendErrorResponse} from "../utils/send-error-response";
 
-const mapToGetUsersDTO = (req: Request): GetUsersDTO => {
-    return {
+const mapToGetUsersDTO = (req: Request): GetUsersDTO => ({
         senderId: (req.user as User)._id.toString(),
         ...req.query.idRegex && {id: req.query.idRegex as string},
         ...req.query.username && {username: req.query.username as string},
@@ -16,8 +15,7 @@ const mapToGetUsersDTO = (req: Request): GetUsersDTO => {
         ...req.query.limit && {limit: parseInt(req.query.page as string)},
         ...req.query.startDate && {startDate: new Date(req.query.startDate as string)},
         ...req.query.endDate && {endDate: new Date(req.query.endDate as string)},
-    };
-};
+});
 
 const mapToGetUserDTO = (req: Request): GetUserDTO => ({
     id: req.params.id,
