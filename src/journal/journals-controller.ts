@@ -83,7 +83,7 @@ const mapToUpdateJournalQueryArgs = (dto: UpdateJournalDTO): QueryArgs => ({
 export const JournalsController = {
     getJournal: async (dto: GetJournalDTO): Promise<Journal> => {
         const validationResult: ValidationResult = await validateGetJournalDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const args: QueryArgs = mapToGetJournalQueryArgs(dto);
         return repository.getJournal(args);
@@ -91,7 +91,7 @@ export const JournalsController = {
 
     getJournals: async (dto: GetJournalsDTO): Promise<Journal[]> => {
         const validationResult: ValidationResult = await validateGetJournalsDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const queryArgs: QueryArgs = mapToGetJournalsQueryArgs(dto);
         const sortArgs: SortArgs = mapToGetJournalsSortArgs(dto);
@@ -102,7 +102,7 @@ export const JournalsController = {
     
     createJournal: async (dto: CreateJournalDTO): Promise<Journal> => {
         const validationResult: ValidationResult = await validateCreateJournalDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const args: QueryArgs = mapToCreateJournalQueryArgs(dto);
         return repository.createJournal(args)
@@ -110,7 +110,7 @@ export const JournalsController = {
     
     deleteJournal: async (dto: DeleteJournalDTO): Promise<Journal> => {
         const validationResult: ValidationResult = await validateDeleteJournalDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const args: QueryArgs = mapToDeleteJournalQueryArgs(dto);
         return repository.deleteJournal(args);
@@ -118,7 +118,7 @@ export const JournalsController = {
     
     updateJournal: async (dto: UpdateJournalDTO): Promise<Journal> => {
         const validationResult: ValidationResult = await validateUpdateJournalDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const args: QueryArgs = mapToUpdateJournalQueryArgs(dto);
         return repository.updateJournal(args);

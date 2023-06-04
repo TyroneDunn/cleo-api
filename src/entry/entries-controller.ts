@@ -85,7 +85,7 @@ const mapToGetEntryQueryArgs = (dto: GetEntryDTO): QueryArgs =>
 export const EntriesController = {
     getEntry: async (dto: GetEntryDTO): Promise<Entry> => {
         const validationResult: ValidationResult = await validateGetEntryDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const args = mapToGetEntryQueryArgs(dto);
         return repository.getEntry(args);
@@ -93,7 +93,7 @@ export const EntriesController = {
 
     getEntries: async (dto: GetEntriesDTO): Promise<Entry[]> => {
         const validationResult: ValidationResult = await validateGetEntriesDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const queryArgs = mapToGetEntriesQueryArgs(dto);
         const sortArgs = mapToGetEntriesSortArgs(dto);
@@ -104,7 +104,7 @@ export const EntriesController = {
 
     createEntry: async (dto: CreateEntryDTO): Promise<Entry> => {
         const validationResult: ValidationResult = await validateCreateEntryDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const args: QueryArgs = mapToCreateEntryQueryArgs(dto);
         return repository.createEntry(args);
@@ -112,7 +112,7 @@ export const EntriesController = {
 
     deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> => {
         const validationResult: ValidationResult = await validateDeleteEntryDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const args: QueryArgs = mapToDeleteEntryQueryArgs(dto);
         return repository.deleteEntry(args);
@@ -120,7 +120,7 @@ export const EntriesController = {
 
     updateEntry: async (dto: UpdateEntryDTO): Promise<Entry> => {
         const validationResult: ValidationResult = await validateUpdateEntryDTO(dto);
-        if (!validationResult.status)
+        if (!validationResult.outcome)
             throw validationResult.error;
         const args: QueryArgs = mapToUpdateEntryQueryArgs(dto);
         return repository.updateEntry(args);
