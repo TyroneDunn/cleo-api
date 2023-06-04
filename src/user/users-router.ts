@@ -1,66 +1,41 @@
-import {Request, Response, RequestHandler, Router} from "express";
+import {Request, RequestHandler, Response, Router} from "express";
 import {DeleteUserDTO, GetUserDTO, GetUsersDTO, UpdateUserDTO} from "./users-dtos";
 import {sendErrorResponse} from "../utils/send-error-response";
 import {User} from "./user";
 import {UsersController} from "./users-controller";
 
-const mapToGetUsersDTO = (req: Request) => {
-    const dto: GetUsersDTO = {senderId: (req.user as User)._id.toString()};
-    if (req.query.idRegex)
-        dto.idRegex = req.query.idRegex as string;
-    if (req.query.username)
-        dto.username = req.query.username as string;
-    if (req.query.usernameRegex)
-        dto.usernameRegex = req.query.usernameRegex as string;
-    if (req.query.sort) {
-        if (req.query.sort === 'id')
-            dto.sort = 'id';
-        if (req.query.sort === 'username')
-            dto.sort = 'username';
-        if (req.query.sort === 'dateCreated')
-            dto.sort = 'dateCreated';
-        if (req.query.sort === 'lastUpdated')
-            dto.sort = 'lastUpdated';
+const mapToGetUsersDTO = (req: Request): GetUsersDTO => {
+    return {
+        senderId: (req.user as User)._id.toString(),
+        ... req.query.idRegex && {id: req.query.idRegex as string},
+        ... req.query.username && {username: req.query.username as string},
+        ... req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
+        ... req.query.sort && {sort: req.query.sort as "username" | "id" | "dateCreated" | "lastUpdated"},
+        ... req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
+        ... req.query.page && {page: parseInt(req.query.page as string)},
+        ... req.query.limit && {limit: parseInt(req.query.page as string)},
+        ... req.query.startDate && {startDate: new Date(req.query.startDate as string)},
+        ... req.query.endDate && {endDate: new Date(req.query.endDate as string)},
     }
-    if (req.query.order)
-        req.query.order === '-1' ? dto.order = -1 : dto.order = 1;
-    if (req.query.page)
-        dto.page = parseInt(req.query.page as string);
-    if (req.query.limit)
-        dto.limit = parseInt(req.query.limit as string);
-    if (req.query.startDate)
-        dto.startDate = new Date(req.query.startdate as string)
-    if (req.query.endDate)
-        dto.endDate = new Date(req.query.enddate as string)
-    return dto;
 };
 
-const mapToGetUserDTO = (req: Request) => {
-    const dto: GetUserDTO = {
+const mapToGetUserDTO = (req: Request) => ({
         senderId: (req.user as User)._id.toString(),
         id: req.params.id,
-    };
-    return dto;
-};
+});
 
-const mapToDeleteUserDTO = (req: Request) => {
-    const dto: DeleteUserDTO = {
+const mapToDeleteUserDTO = (req: Request) => ({
         senderId: (req.user as User)._id.toString(),
         id: req.params.id,
-    };
-    return dto;
-};
+});
 
 const mapToUpdateUserDTO = (req: Request) => {
-    const dto: UpdateUserDTO = {
+    return {
         senderId: (req.user as User)._id.toString(),
         id: req.params.id,
-    };
-    if (req.body.username)
-        dto.username = req.body.username;
-    if (req.body.password)
-        dto.password = req.body.password;
-    return dto;
+        ... req.body.username && {username: req.body.username},
+        ... req.body.password && {password: req.body.password},
+    }
 };
 
 const getUser: RequestHandler = async (req: Request, res: Response) => {
