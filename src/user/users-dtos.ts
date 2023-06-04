@@ -1,5 +1,4 @@
 export type GetUserDTO = {
-    senderId: string,
     id?: string,
     username?: string,
 };
@@ -16,6 +15,7 @@ export type GetUsersDTO = {
     endDate?: Date,
     page?: number,
     limit?: number,
+    isAdmin?: boolean,
 };
 
 export type RegisterUserDTO = {

@@ -17,15 +17,15 @@ import {
 import {ValidationResult} from "../utils/validation-result";
 
 export const UsersController = {
-    getUser: async (dto: GetUserDTO): Promise<User> => {
-        const validationResult: ValidationResult = await validateGetUserDTO(dto);
+    getUser: async (user: User, dto: GetUserDTO): Promise<User> => {
+        const validationResult: ValidationResult = await validateGetUserDTO(user, dto);
         if (!validationResult.status)
             throw validationResult.error;
         return USERS_REPOSITORY.getUser(dto);
     },
 
-    getUsers: async (dto: GetUsersDTO): Promise<User[]> => {
-        const validationResult: ValidationResult = await validateGetUsersDTO(dto);
+    getUsers: async (user: User, dto: GetUsersDTO): Promise<User[]> => {
+        const validationResult: ValidationResult = await validateGetUsersDTO(user, dto);
         if (!validationResult.status)
             throw validationResult.error;
         return USERS_REPOSITORY.getUsers(dto);
@@ -38,15 +38,15 @@ export const UsersController = {
         return USERS_REPOSITORY.registerUser(dto);
     },
 
-    deleteUser: async (dto: DeleteUserDTO): Promise<User> => {
-        const validationResult: ValidationResult = await validateDeleteUserDTO(dto);
+    deleteUser: async (user: User, dto: DeleteUserDTO): Promise<User> => {
+        const validationResult: ValidationResult = await validateDeleteUserDTO(user, dto);
         if (!validationResult.status)
             throw validationResult.error;
         return USERS_REPOSITORY.deleteUser(dto);
     },
 
-    updateUser: async (dto: UpdateUserDTO): Promise<User> => {
-        const validationResult: ValidationResult = await validateUpdateUserDTO(dto);
+    updateUser: async (user: User, dto: UpdateUserDTO): Promise<User> => {
+        const validationResult: ValidationResult = await validateUpdateUserDTO(user, dto);
         if (!validationResult.status)
             throw validationResult.error;
         return USERS_REPOSITORY.updateUser(dto);
