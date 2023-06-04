@@ -19,12 +19,11 @@ const mapToGetUsersDTO = (req: Request): GetUsersDTO => {
     };
 };
 
-const mapToGetUserDTO = (req: Request) => ({
-    senderId: (req.user as User)._id.toString(),
+const mapToGetUserDTO = (req: Request): GetUserDTO => ({
     id: req.params.id,
 });
 
-const mapToUpdateUserDTO = (req: Request) => {
+const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => {
     return {
         senderId: (req.user as User)._id.toString(),
         id: req.params.id,
@@ -33,7 +32,7 @@ const mapToUpdateUserDTO = (req: Request) => {
     }
 };
 
-const mapToDeleteUserDTO = (req: Request) => ({
+const mapToDeleteUserDTO = (req: Request): DeleteUserDTO => ({
     senderId: (req.user as User)._id.toString(),
     id: req.params.id,
 });
