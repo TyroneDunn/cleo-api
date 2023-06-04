@@ -1,5 +1,5 @@
 import {User} from "./user";
-import {UsersController} from "./users-controller";
+import {UsersService} from "./users-service";
 import {Request, RequestHandler, Response} from "express";
 import {DeleteUserDTO, GetUserDTO, GetUsersDTO, UpdateUserDTO} from "./users-dtos";
 import {sendErrorResponse} from "../utils/send-error-response";
@@ -38,7 +38,7 @@ const mapToDeleteUserDTO = (req: Request): DeleteUserDTO => ({
 export const getUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: GetUserDTO = mapToGetUserDTO(req);
-        const user: User = await UsersController.getUser(req.user as User, dto);
+        const user: User = await UsersService.getUser(req.user as User, dto);
         res.json(user);
     } catch (error) {
         sendErrorResponse(error, res);
@@ -48,7 +48,7 @@ export const getUser: RequestHandler = async (req: Request, res: Response) => {
 export const getUsers: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: GetUsersDTO = mapToGetUsersDTO(req);
-        const users: User[] = await UsersController.getUsers(req.user as User, dto);
+        const users: User[] = await UsersService.getUsers(req.user as User, dto);
         res.json(users);
     } catch (error) {
         sendErrorResponse(error, res);
@@ -58,7 +58,7 @@ export const getUsers: RequestHandler = async (req: Request, res: Response) => {
 export const deleteUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: DeleteUserDTO = mapToDeleteUserDTO(req);
-        const user: User = await UsersController.deleteUser(req.user as User, dto);
+        const user: User = await UsersService.deleteUser(req.user as User, dto);
         res.json(user);
     } catch (error) {
         sendErrorResponse(error, res);
@@ -68,7 +68,7 @@ export const deleteUser: RequestHandler = async (req: Request, res: Response) =>
 export const updateUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: UpdateUserDTO = mapToUpdateUserDTO(req);
-        const user: User = await UsersController.updateUser(req.user as User, dto);
+        const user: User = await UsersService.updateUser(req.user as User, dto);
         res.json(user);
     } catch (error) {
         sendErrorResponse(error, res);

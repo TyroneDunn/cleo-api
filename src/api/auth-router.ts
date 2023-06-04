@@ -2,7 +2,7 @@ import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
 import {authGuard} from "./auth-guard";
 import {CREATED, INTERNAL_SERVER_ERROR,} from "../utils/http-status-constants";
-import {UsersController} from "../user/users-controller";
+import {UsersService} from "../user/users-service";
 import {RegisterUserDTO} from "../user/users-dtos";
 import {sendErrorResponse} from "../utils/send-error-response";
 
@@ -18,7 +18,7 @@ const mapToRegisterUserDTO = (req: Request): RegisterUserDTO => ({
 const register: RequestHandler = async (req: Request, res: Response): Promise<void> => {
    try {
       const dto: RegisterUserDTO = mapToRegisterUserDTO(req);
-      const user = await UsersController.registerUser(dto);
+      const user = await UsersService.registerUser(dto);
       res.status(CREATED).json(user);
    } catch (error) {
       sendErrorResponse(error, res);

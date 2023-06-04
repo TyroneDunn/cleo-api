@@ -16,7 +16,7 @@ import {
 } from "./users-dtos-validator";
 import {ValidationResult} from "../utils/validation-result";
 
-export const UsersController = {
+export const UsersService = {
     getUser: async (user: User, dto: GetUserDTO): Promise<User> => {
         const validationResult: ValidationResult = await validateGetUserDTO(user, dto);
         if (!validationResult.status)
