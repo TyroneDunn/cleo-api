@@ -1,41 +1,17 @@
 import {User} from "./user";
-
-export type QueryArgs = {
-    id?: string,
-    idRegex?: string,
-    username?: string,
-    usernameRegex?: string,
-    hash?: string,
-    hashRegex?: string,
-    isAdmin?: boolean,
-};
-
-export type SortArgs = {
-    sort?: 'id' | 'username' | 'dateCreated' | 'lastUpdated' | 'isAdmin',
-    order?: 1 | -1,
-};
-
-export type FilterArgs = {
-    startDate?: Date,
-    endDate?: Date,
-};
-
-export type PaginationArgs = {
-    page?: number,
-    limit?: number,
-};
+import {
+    DeleteUserDTO,
+    GetUserDTO, GetUsersDTO,
+    RegisterUserDTO,
+    UpdateUserDTO
+} from "./users-dtos";
 
 export type UsersRepository = {
-    getUser: (args: QueryArgs) => Promise<User>,
-    getUsers: (
-        queryArgs: QueryArgs,
-        sortArgs: SortArgs,
-        filterArgs: FilterArgs,
-        paginationArgs: PaginationArgs
-    ) => Promise<User[]>,
-    registerUser: (args: QueryArgs) => Promise<User>,
-    deleteUser: (args: QueryArgs) => Promise<User>,
-    updateUser: (args: QueryArgs) => Promise<User>,
-    exists: (args: QueryArgs) => Promise<boolean>,
-    isAdmin: (args: QueryArgs) => Promise<boolean>,
+    getUser: (dto: GetUserDTO) => Promise<User>,
+    getUsers: (dto: GetUsersDTO) => Promise<User[]>,
+    registerUser: (dto: RegisterUserDTO) => Promise<User>,
+    deleteUser: (dto: DeleteUserDTO) => Promise<User>,
+    updateUser: (dto: UpdateUserDTO) => Promise<User>,
+    exists: (id: string) => Promise<boolean>,
+    isAdmin: (id: string) => Promise<boolean>,
 };
