@@ -5,7 +5,6 @@ import {DeleteUserDTO, GetUserDTO, GetUsersDTO, UpdateUserDTO} from "./users-dto
 import {sendErrorResponse} from "../utils/send-error-response";
 
 const mapToGetUsersDTO = (req: Request): GetUsersDTO => ({
-        senderId: (req.user as User)._id.toString(),
         ...req.query.idRegex && {id: req.query.idRegex as string},
         ...req.query.username && {username: req.query.username as string},
         ...req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
@@ -23,7 +22,6 @@ const mapToGetUserDTO = (req: Request): GetUserDTO => ({
 
 const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => {
     return {
-        senderId: (req.user as User)._id.toString(),
         id: req.params.id,
         ...req.body.username && {username: req.body.username},
         ...req.body.password && {password: req.body.password},
@@ -31,7 +29,6 @@ const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => {
 };
 
 const mapToDeleteUserDTO = (req: Request): DeleteUserDTO => ({
-    senderId: (req.user as User)._id.toString(),
     id: req.params.id,
 });
 

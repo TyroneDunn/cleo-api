@@ -4,7 +4,6 @@ export type GetUserDTO = {
 };
 
 export type GetUsersDTO = {
-    senderId: string,
     id?: string,
     idRegex?: string,
     username?: string,
@@ -24,12 +23,10 @@ export type RegisterUserDTO = {
 };
 
 export type DeleteUserDTO = {
-    senderId: string,
     id: string,
 };
 
 export type UpdateUserDTO = {
-    senderId: string,
     id?: string,
     username?: string,
     password?: string,

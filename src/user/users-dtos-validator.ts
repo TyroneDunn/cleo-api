@@ -28,17 +28,15 @@ export const validateGetUsersDTO = async (user: User, dto: GetUsersDTO): Promise
     if ((dto.id && dto.idRegex) ||
         (dto.username && dto.usernameRegex))
         return {outcome: false, error: new BadRequestError('Invalid query.')};
-    if (!(await USERS_REPOSITORY.isAdmin(dto.senderId)))
+    if (!(await USERS_REPOSITORY.isAdmin(user._id.toString())))
         return {outcome: false, error: new ForbiddenError('Unauthorized.')};
     return {outcome: true};
 };
 
 export const validateDeleteUserDTO = async (user: User, dto: DeleteUserDTO): Promise<ValidationResult> => {
-    if (!dto.senderId)
-        return {outcome: false, error: new BadRequestError('Sender ID required.')};
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('User ID required.')};
-    if (!(await USERS_REPOSITORY.isAdmin(dto.senderId)))
+    if (!(await USERS_REPOSITORY.isAdmin(user._id.toString())))
         return {outcome: false, error: new ForbiddenError('Unauthorized.')};
     if (!(await USERS_REPOSITORY.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`User ${dto.id} not found.`)};
@@ -46,12 +44,10 @@ export const validateDeleteUserDTO = async (user: User, dto: DeleteUserDTO): Pro
 };
 
 export const validateUpdateUserDTO = async (user: User, dto: UpdateUserDTO): Promise<ValidationResult> => {
-    if (!dto.senderId)
-        return {outcome: false, error: new BadRequestError('Sender ID required.')};
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('User ID required.')};
-    if (dto.senderId !== dto.id &&
-        !(await USERS_REPOSITORY.isAdmin( dto.senderId)))
+    if (user._id.toString() !== dto.id &&
+        !(await USERS_REPOSITORY.isAdmin(user._id.toString())))
         return {outcome: false, error: new ForbiddenError('Unauthorized.')};
     if (!(await USERS_REPOSITORY.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`User ${dto.id} not found.`)};
