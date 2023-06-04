@@ -41,7 +41,7 @@ const mapToUpdateUserDTO = (req: Request) => {
 const getUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: GetUserDTO = mapToGetUserDTO(req);
-        const user: User = await UsersController.getUser(dto);
+        const user: User = await UsersController.getUser(req.user as User, dto);
         res.json(user);
     } catch (error) {
         sendErrorResponse(error, res);
@@ -51,7 +51,7 @@ const getUser: RequestHandler = async (req: Request, res: Response) => {
 const getUsers: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: GetUsersDTO = mapToGetUsersDTO(req);
-        const users: User[] = await UsersController.getUsers(dto);
+        const users: User[] = await UsersController.getUsers(req.user as User, dto);
         res.json(users);
     } catch (error) {
         sendErrorResponse(error, res);
@@ -61,7 +61,7 @@ const getUsers: RequestHandler = async (req: Request, res: Response) => {
 const deleteUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: DeleteUserDTO = mapToDeleteUserDTO(req);
-        const user: User = await UsersController.deleteUser(dto);
+        const user: User = await UsersController.deleteUser(req.user as User, dto);
         res.json(user);
     } catch (error) {
         sendErrorResponse(error, res);
@@ -71,7 +71,7 @@ const deleteUser: RequestHandler = async (req: Request, res: Response) => {
 const updateUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: UpdateUserDTO = mapToUpdateUserDTO(req);
-        const user: User = await UsersController.updateUser(dto);
+        const user: User = await UsersController.updateUser(req.user as User, dto);
         res.json(user);
     } catch (error) {
         sendErrorResponse(error, res);
