@@ -13,7 +13,7 @@ import {
     validateGetUsersDTO,
     validateRegisterUserDTO,
     validateUpdateUserDTO
-} from "./users-dto-validator";
+} from "./users-dtos-validator";
 import {ValidationResult} from "../utils/validation-result";
 
 export const UsersController = {
