@@ -25,11 +25,11 @@ export const validateGetUserDTO = async (user: User, dto: GetUserDTO): Promise<V
 };
 
 export const validateGetUsersDTO = async (user: User, dto: GetUsersDTO): Promise<ValidationResult> => {
-    if (!(await USERS_REPOSITORY.isAdmin(dto.senderId)))
-        return {status: false, error: new ForbiddenError('Unauthorized.')};
     if ((dto.id && dto.idRegex) ||
         (dto.username && dto.usernameRegex))
         return {status: false, error: new BadRequestError('Invalid query.')};
+    if (!(await USERS_REPOSITORY.isAdmin(dto.senderId)))
+        return {status: false, error: new ForbiddenError('Unauthorized.')};
     return {status: true};
 };
 
