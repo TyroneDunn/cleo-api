@@ -1,107 +1,76 @@
-import {FilterArgs, PaginationArgs, QueryArgs, SortArgs, UsersRepository} from "./users-repository";
+import {UsersRepository} from "./users-repository";
 import UserModel from "./mongo-user-model";
 import {User} from "./user";
 import {now} from "mongoose";
+import {DeleteUserDTO, GetUserDTO, GetUsersDTO, RegisterUserDTO, UpdateUserDTO} from "./users-dtos";
+import {generateHash} from "../utils/password-utils";
 
-type GetUsersQuery = {
-    _id?: any,
-    username?: any,
-    hash?: any,
-    dateCreated?: any,
-    lastUpdated?: any,
-    isAdmin?: any,
+const buildGetUsersQuery = (dto: GetUsersDTO) => {
+    return {
+        ... dto.id && {_id: dto.id},
+        ... dto.idRegex && {_id: dto.idRegex},
+        ... dto.username && {username: dto.username},
+        ... dto.usernameRegex && {username: dto.usernameRegex},
+        ... dto.isAdmin && {isAdmin: dto.isAdmin},
+        ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
+        ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
+        ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+    }
 };
 
-const buildGetUsersQuery = (queryArgs: QueryArgs, filterArgs: FilterArgs) => {
-    let query: GetUsersQuery = {};
-    if (queryArgs.id)
-        query._id = queryArgs.id;
-    if (queryArgs.idRegex)
-        query._id = {$regex: queryArgs.idRegex, $options: 'i'};
-    if (queryArgs.username)
-        query.username = queryArgs.username;
-    if (queryArgs.usernameRegex)
-        query.username = {$regex: queryArgs.usernameRegex, $options: 'i'};
-    if (queryArgs.hash)
-        query.hash = queryArgs.hash;
-    if (queryArgs.hashRegex)
-        query.hash = {$regex: queryArgs.hashRegex, $options: 'i'};
-    if (queryArgs.isAdmin)
-        query.isAdmin = queryArgs.isAdmin;
-    if (filterArgs.startDate && !filterArgs.endDate)
-        query.dateCreated = {$gt: filterArgs.startDate};
-    if (!filterArgs.startDate && filterArgs.endDate)
-        query.dateCreated = {$lt: filterArgs.endDate};
-    if (filterArgs.startDate && filterArgs.endDate)
-        query.dateCreated = {$gte: filterArgs.startDate, $lte: filterArgs.endDate};
-    return query;
-};
 export const MongoUsersRepository: UsersRepository = {
-    getUser: async (args: QueryArgs): Promise<User> => {
-        if(args.id)
-            return UserModel.findById(args.id)
-        return UserModel.findOne({username: args.username});
+    getUser: async (dto: GetUserDTO): Promise<User> => {
+        if(dto.id)
+            return UserModel.findById(dto.id)
+        return UserModel.findOne({username: dto.username});
     },
 
-    getUsers: async (
-        queryArgs: QueryArgs,
-        sortArgs: SortArgs,
-        filterArgs: FilterArgs,
-        paginationArgs: PaginationArgs
-    ): Promise<User[]> => {
-        const skip = (paginationArgs.page - 1) * paginationArgs.limit;
-        const query = buildGetUsersQuery(queryArgs, filterArgs);
+    getUsers: async (dto: GetUsersDTO): Promise<User[]> => {
+        const skip = (dto.page - 1) * dto.limit;
+        const query = buildGetUsersQuery(dto);
         return UserModel.find(query)
-            .sort({[sortArgs.sort]: sortArgs.order})
+            .sort({[dto.sort]: dto.order})
             .skip(skip)
-            .limit(paginationArgs.limit);
+            .limit(dto.limit);
     },
 
-    registerUser: async (args: QueryArgs): Promise<User> =>
+    registerUser: async (dto: RegisterUserDTO): Promise<User> =>
         new UserModel({
-            username: args.username,
-            hash: args.hash,
+            username: dto.username,
+            hash: generateHash(dto.password),
             dateCreated: now(),
             lastUpdated: now(),
-            isAdmin: args.isAdmin,
+            isAdmin: false,
         }).save(),
 
-    deleteUser: async (args: QueryArgs): Promise<User> =>
-        UserModel.findByIdAndDelete(args.id),
+    deleteUser: async (dto: DeleteUserDTO): Promise<User> =>
+        UserModel.findByIdAndDelete(dto.id),
 
-    updateUser: async (args: QueryArgs): Promise<User> => {
-        let query:  {
-            username?: string,
-            hash?: string,
-            isAdmin?: boolean,
-            lastUpdated: Date,
-        } = {lastUpdated: now()};
-        if (args.username)
-            query.username = args.username;
-        if (args.hash)
-            query.hash = args.hash;
-        if (args.isAdmin)
-            query.isAdmin = args.isAdmin;
-
+    updateUser: async (dto: UpdateUserDTO): Promise<User> => {
+        const query = {
+            lastUpdated: now(),
+            ... dto.username && {username: dto.username},
+            ... dto.password && {hash: generateHash(dto.password)},
+        };
         return UserModel.findByIdAndUpdate(
-            args.id,
+            dto.id,
             query,
             {new: true}
         );
     },
 
-    isAdmin: async (args: QueryArgs): Promise<boolean> => {
+    isAdmin: async (id: string): Promise<boolean> => {
         try {
-            const user: User = await UserModel.findById(args.id);
+            const user: User = await UserModel.findById(id);
             return user.isAdmin;
         } catch (error) {
             return false;
         }
     },
 
-    exists: async (args: QueryArgs): Promise<boolean> => {
+    exists: async (id: string): Promise<boolean> => {
         try {
-            const user: User = await UserModel.findById(args.id);
+            const user: User = await UserModel.findById(id);
             return !!user;
         } catch (error) {
             return false;
