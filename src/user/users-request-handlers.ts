@@ -47,6 +47,7 @@ export const getUser: RequestHandler = async (req: Request, res: Response) => {
         sendErrorResponse(error, res);
     }
 };
+
 export const getUsers: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: GetUsersDTO = mapToGetUsersDTO(req);
@@ -56,6 +57,7 @@ export const getUsers: RequestHandler = async (req: Request, res: Response) => {
         sendErrorResponse(error, res);
     }
 };
+
 export const deleteUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: DeleteUserDTO = mapToDeleteUserDTO(req);
@@ -65,6 +67,7 @@ export const deleteUser: RequestHandler = async (req: Request, res: Response) =>
         sendErrorResponse(error, res);
     }
 };
+
 export const updateUser: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: UpdateUserDTO = mapToUpdateUserDTO(req);
