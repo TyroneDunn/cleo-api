@@ -18,7 +18,7 @@ const encrypt = (password: string): string =>
 export const generateHash = (password: string): string => 
     encrypt(password);
 
-export const validatePassword = (password: string, hash: string): boolean => 
+export const validateHash = (password: string, hash: string): boolean =>
     hash === encrypt(password);
 
 // Tool for the developer to generate new salt.
