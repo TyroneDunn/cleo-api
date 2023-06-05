@@ -64,15 +64,15 @@ const mapToGetEntryDTO = (req: Request): GetEntryDTO =>
     ({id: req.params.id});
 
 const mapToGetEntriesDTO = (req: Request): GetEntriesDTO => ({
-    ...req.query.id && {journal: req.query.id as string},
-    ...req.query.body && {body: req.query.body as string},
-    ...req.query.bodyRegex && {bodyRegex: req.query.bodyRegex as string},
-    ...req.query.sort && {sort: req.query.sort as "body" | "id" | "dateCreated" | "lastUpdated"},
-    ...req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
-    ...req.query.page && {page: parseInt(req.query.page as string)},
-    ...req.query.limit && {limit: parseInt(req.query.page as string)},
-    ...req.query.startDate && {startDate: new Date(req.query.startDate as string)},
-    ...req.query.endDate && {endDate: new Date(req.query.endDate as string)},
+    ... req.query.id && {journal: req.query.id as string},
+    ... req.query.body && {body: req.query.body as string},
+    ... req.query.bodyRegex && {bodyRegex: req.query.bodyRegex as string},
+    ... req.query.sort && {sort: req.query.sort as "body" | "id" | "dateCreated" | "lastUpdated"},
+    ... req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
+    ... req.query.page && {page: parseInt(req.query.page as string)},
+    ... req.query.limit && {limit: parseInt(req.query.page as string)},
+    ... req.query.startDate && {startDate: new Date(req.query.startDate as string)},
+    ... req.query.endDate && {endDate: new Date(req.query.endDate as string)},
 });
 
 const mapToCreateEntryDTO = (req: Request): CreateEntryDTO => ({

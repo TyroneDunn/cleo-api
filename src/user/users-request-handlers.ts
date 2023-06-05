@@ -49,15 +49,15 @@ const mapToGetUserDTO = (req: Request): GetUserDTO => ({
 });
 
 const mapToGetUsersDTO = (req: Request): GetUsersDTO => ({
-    ...req.query.idRegex && {id: req.query.idRegex as string},
-    ...req.query.username && {username: req.query.username as string},
-    ...req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
-    ...req.query.sort && {sort: req.query.sort as "username" | "id" | "dateCreated" | "lastUpdated"},
-    ...req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
-    ...req.query.page && {page: parseInt(req.query.page as string)},
-    ...req.query.limit && {limit: parseInt(req.query.page as string)},
-    ...req.query.startDate && {startDate: new Date(req.query.startDate as string)},
-    ...req.query.endDate && {endDate: new Date(req.query.endDate as string)},
+    ... req.query.idRegex && {id: req.query.idRegex as string},
+    ... req.query.username && {username: req.query.username as string},
+    ... req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
+    ... req.query.sort && {sort: req.query.sort as "username" | "id" | "dateCreated" | "lastUpdated"},
+    ... req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
+    ... req.query.page && {page: parseInt(req.query.page as string)},
+    ... req.query.limit && {limit: parseInt(req.query.page as string)},
+    ... req.query.startDate && {startDate: new Date(req.query.startDate as string)},
+    ... req.query.endDate && {endDate: new Date(req.query.endDate as string)},
 });
 
 const mapToDeleteUserDTO = (req: Request): DeleteUserDTO => ({
@@ -67,7 +67,7 @@ const mapToDeleteUserDTO = (req: Request): DeleteUserDTO => ({
 const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => {
     return {
         id: req.params.id,
-        ...req.body.username && {username: req.body.username},
-        ...req.body.password && {password: req.body.password},
+        ... req.body.username && {username: req.body.username},
+        ... req.body.password && {password: req.body.password},
     }
 };

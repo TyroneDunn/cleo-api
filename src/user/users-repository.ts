@@ -1,7 +1,8 @@
 import {User} from "./user";
 import {
     DeleteUserDTO,
-    GetUserDTO, GetUsersDTO,
+    GetUserDTO,
+    GetUsersDTO,
     RegisterUserDTO,
     UpdateUserDTO
 } from "./users-dtos";
