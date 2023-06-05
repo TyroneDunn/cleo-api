@@ -21,6 +21,9 @@ export const validateGetEntryDTO = async (user: User, dto: GetEntryDTO): Promise
 };
 
 export const validateGetEntriesDTO = async (user: User, dto: GetEntriesDTO): Promise<ValidationResult> => {
+    if (!dto.journal) {
+        return {outcome: false, error: new BadRequestError('Journal required.')};
+    }
     if ((dto.body && dto.bodyRegex) ||
         (dto.body && dto.bodyRegex) ||
         (dto.journal && dto.journalRegex)) {
