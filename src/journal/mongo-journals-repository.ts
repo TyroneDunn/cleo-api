@@ -2,100 +2,80 @@ import {Journal} from "./journal"
 import JournalModel from './mongo-journal-model';
 import JournalEntryModel from "../entry/mongo-entry-model";
 import {now} from "mongoose";
+import {JournalsRepository} from "./journals-repository";
 import {
-    FilterArgs,
-    JournalsRepository,
-    PaginationArgs,
-    QueryArgs,
-    SortArgs
-} from "./journals-repository";
+    CreateJournalDTO,
+    DeleteJournalDTO,
+    GetJournalDTO,
+    GetJournalsDTO,
+    UpdateJournalDTO
+} from "./journals-dtos";
 
-type GetJournalsQuery = {
-    _id?: any,
-    author: any,
-    name?: any,
-    dateCreated?: any,
-    lastUpdated?: any,
-};
-
-const buildGetJournalsQuery = (queryArgs: QueryArgs, filterArgs: FilterArgs) => {
-    let query: GetJournalsQuery = {author: queryArgs.author};
-    if (queryArgs.name)
-        query.name = queryArgs.name;
-    if (queryArgs.nameRegex)
-        query.name = {$regex: queryArgs.nameRegex, $options: 'i'};
-    if (queryArgs.id)
-        query._id = queryArgs.id;
-    if (queryArgs.idRegex)
-        query._id = {$regex: queryArgs.idRegex, $options: 'i'};
-    if (queryArgs.authorRegex)
-        query.author = {$regex: queryArgs.authorRegex, $options: 'i'};
-    if (filterArgs.startDate && !filterArgs.endDate)
-        query.dateCreated = {$gt: filterArgs.startDate};
-    if (!filterArgs.startDate && filterArgs.endDate)
-        query.dateCreated = {$lt: filterArgs.endDate};
-    if (filterArgs.startDate && filterArgs.endDate)
-        query.dateCreated = {$gte: filterArgs.startDate, $lte: filterArgs.endDate};
-    return query;
-};
+const mapToGetJournalsQuery = (dto: GetJournalsDTO) => ({
+        author: dto.author,
+        ... dto.idRegex && {_id: {$regex: dto.idRegex, $options: 'i'}},
+        ... dto.name && {name: dto.name},
+        ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
+        ... dto.author && {author: dto.author},
+        ... dto.authorRegex && {author: {$regex: dto.authorRegex, $options: 'i'}},
+        ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
+        ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
+        ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+});
 
 const deleteJournalEntries = async (journalID: string): Promise<void> => {
     await JournalEntryModel.deleteMany({journal: journalID});
 };
 
 export const MongoJournalsRepository: JournalsRepository = {
-    getJournal: async (args: QueryArgs): Promise<Journal> =>
-        JournalModel.findById(args.id),
+    getJournal: async (dto: GetJournalDTO): Promise<Journal> =>
+        JournalModel.findById(dto.id),
 
-    getJournals: async (
-        queryArgs: QueryArgs,
-        sortArgs: SortArgs,
-        filterArgs: FilterArgs,
-        paginationArgs: PaginationArgs): Promise<Journal[]> => {
-        const skip = (paginationArgs.page - 1) * paginationArgs.limit;
-        const query = buildGetJournalsQuery(queryArgs, filterArgs);
+    getJournals: async (dto: GetJournalsDTO): Promise<Journal[]> => {
+        const skip = (dto.page - 1) * dto.limit;
+        const query = mapToGetJournalsQuery(dto);
         return JournalModel.find(query)
-            .sort({[sortArgs.sort]: sortArgs.order})
+            .sort({[dto.sort]: dto.order})
             .skip(skip)
-            .limit(paginationArgs.limit);
+            .limit(dto.limit);
     },
 
-    createJournal: async (args: QueryArgs): Promise<Journal> =>
+    createJournal: async (dto: CreateJournalDTO): Promise<Journal> =>
          new JournalModel({
-            name: args.name,
-            author: args.author,
+            name: dto.name,
+            author: dto.author,
             dateCreated: now(),
             lastUpdated: now(),
         }).save(),
 
-    deleteJournal: async (args: QueryArgs): Promise<Journal> => {
-        await deleteJournalEntries(args.id);
-        return JournalModel.findByIdAndDelete(args.id);
+    deleteJournal: async (dto: DeleteJournalDTO): Promise<Journal> => {
+        await deleteJournalEntries(dto.id);
+        return JournalModel.findByIdAndDelete(dto.id);
     },
 
-    updateJournal: async (args: QueryArgs): Promise<Journal> =>
+    updateJournal: async (dto: UpdateJournalDTO): Promise<Journal> =>
         JournalModel.findByIdAndUpdate(
-            args.id,
+            dto.id,
             {
-                name: args.name,
+                name: dto.name,
                 lastUpdated: now()
             },
             {new: true}
         ),
 
-    exists: async (args: QueryArgs): Promise<boolean> => {
+    exists: async (id: string): Promise<boolean> => {
         try {
-            const journal = await JournalModel.findById(args.id);
+            const journal = await JournalModel.findById(id);
             return !!journal;
         } catch (error) {
             return false;
         }
     },
 
-    ownsJournal: async (args: QueryArgs): Promise<boolean> => {
+    ownsJournal: async (author: string, id: string): Promise<boolean> => {
         try {
-            const journal: Journal = await JournalModel.findById(args.id);
-            return journal.author.toString() === args.author;
+            const journal: Journal = await JournalModel.findById(id);
+            return journal.author.toString() === author;
         } catch (error) {
             return false;
         }

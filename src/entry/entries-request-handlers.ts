@@ -1,0 +1,90 @@
+import {
+    CreateEntryDTO,
+    DeleteEntryDTO,
+    GetEntriesDTO,
+    GetEntryDTO,
+    UpdateEntryDTO
+} from "./entries-dtos";
+import {EntriesService} from "./entries-service";
+import {User} from "../user/user";
+import {Request, RequestHandler, Response} from "express";
+import {sendErrorResponse} from "../utils/send-error-response";
+
+export const getEntry: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        const dto: GetEntryDTO = mapToGetEntryDTO(req);
+        const entry = await EntriesService.getEntry(req.user as User, dto);
+        res.json(entry);
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
+export const getEntries: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        const dto: GetEntriesDTO = mapToGetEntriesDTO(req);
+        let entries = await EntriesService.getEntries(req.user as User, dto);
+        res.json(entries);
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
+export const createEntry: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        const dto: CreateEntryDTO = mapToCreateEntryDTO(req);
+        const entry = await EntriesService.createEntry(req.user as User, dto);
+        res.json(entry);
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
+export const deleteEntry: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        const dto: DeleteEntryDTO = mapToDeleteEntryDTO(req);
+        const entry = await EntriesService.deleteEntry(req.user as User, dto);
+        res.json(entry);
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
+export const updateEntry: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        const dto: UpdateEntryDTO = mapToUpdateEntryDTO(req);
+        const entry = await EntriesService.updateEntry(req.user as User, dto);
+        res.json(entry);
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
+const mapToGetEntryDTO = (req: Request): GetEntryDTO =>
+    ({id: req.params.id});
+
+const mapToGetEntriesDTO = (req: Request): GetEntriesDTO => ({
+    ...req.query.id && {journal: req.query.id as string},
+    ...req.query.body && {body: req.query.body as string},
+    ...req.query.bodyRegex && {bodyRegex: req.query.bodyRegex as string},
+    ...req.query.sort && {sort: req.query.sort as "body" | "id" | "dateCreated" | "lastUpdated"},
+    ...req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
+    ...req.query.page && {page: parseInt(req.query.page as string)},
+    ...req.query.limit && {limit: parseInt(req.query.page as string)},
+    ...req.query.startDate && {startDate: new Date(req.query.startDate as string)},
+    ...req.query.endDate && {endDate: new Date(req.query.endDate as string)},
+});
+
+const mapToCreateEntryDTO = (req: Request): CreateEntryDTO => ({
+    journal: req.params.id,
+    body: req.body.body,
+});
+
+const mapToDeleteEntryDTO = (req: Request): DeleteEntryDTO =>
+    ({id: req.params.id});
+
+const mapToUpdateEntryDTO = (req: Request): UpdateEntryDTO => ({
+    id: req.params.id,
+    journal: req.body.journal,
+    body: req.body.body,
+});

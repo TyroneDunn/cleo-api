@@ -1,10 +1,8 @@
 export type GetJournalDTO = {
-    userId: string,
     id: string,
 };
 
 export type GetJournalsDTO = {
-    userId: string,
     idRegex?: string,
     name?: string,
     nameRegex?: string,
@@ -19,17 +17,15 @@ export type GetJournalsDTO = {
 };
 
 export type CreateJournalDTO = {
-    userId: string,
+    author: string,
     name: string,
 };
 
 export type DeleteJournalDTO = {
-    userId: string,
     id: string,
 };
 
 export type UpdateJournalDTO = {
-    userId: string,
     id: string,
     name: string,
 };

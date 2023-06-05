@@ -1,105 +1,79 @@
-import {
-    EntriesRepository,
-    FilterArgs,
-    PaginationArgs,
-    QueryArgs,
-    SortArgs
-} from "./entries-repository";
+import {EntriesRepository} from "./entries-repository";
 import {Entry} from "./entry";
 import EntryModel from "./mongo-entry-model";
 import JournalModel from "../journal/mongo-journal-model";
 import {Journal} from "../journal/journal";
 import {now} from "mongoose";
+import {
+    CreateEntryDTO,
+    DeleteEntryDTO,
+    GetEntriesDTO,
+    GetEntryDTO,
+    UpdateEntryDTO
+} from "./entries-dtos";
 
-type GetEntriesOptions = {
-    _id?: any,
-    journal?: any,
-    body?: any,
-    dateCreated?: any,
-    lastUpdated?: any,
-};
-
-const buildGetEntriesOptions = (queryArgs: QueryArgs, filterArgs: FilterArgs) => {
-    let options: GetEntriesOptions = {};
-    if (queryArgs.journal)
-        options.journal = queryArgs.journal;
-    if (queryArgs.journalRegex)
-        options.journal = {$regex: queryArgs.journal, $options: 'i'};
-    if (queryArgs.body)
-        options.body = queryArgs.body;
-    if (queryArgs.bodyRegex)
-        options.body = {$regex: queryArgs.bodyRegex, $options: 'i'};
-    if (queryArgs.id)
-        options._id = queryArgs.id;
-    if (queryArgs.idRegex)
-        options._id = {$regex: queryArgs.idRegex, $options: 'i'};
-    if (filterArgs.startDate && !filterArgs.endDate)
-        options.dateCreated = {$gt: filterArgs.startDate};
-    if (!filterArgs.startDate && filterArgs.endDate)
-        options.dateCreated = {$lt: filterArgs.endDate};
-    if (filterArgs.startDate && filterArgs.endDate)
-        options.dateCreated = {$gte: filterArgs.startDate, $lte: filterArgs.endDate};
-    return options;
-};
+const mapToGetEntriesOptions = (dto: GetEntriesDTO) => ({
+        ... dto.idRegex && {_id: {$regex: dto.idRegex, $options: 'i'}},
+        ... dto.journal && {journal: dto.journal},
+        ... dto.journalRegex && {journal: {$regex: dto.journal, $options: 'i'}},
+        ... dto.body && {body: dto.body},
+        ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
+        ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
+        ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
+        ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+});
 
 export const MongoEntriesRepository: EntriesRepository = {
-    getEntry: async (args: QueryArgs): Promise<Entry> =>
-        EntryModel.findById(args.id),
+    getEntry: async (dto: GetEntryDTO): Promise<Entry> =>
+        EntryModel.findById(dto.id),
 
-    getEntries: async (
-        queryArgs: QueryArgs,
-        sortArgs: SortArgs,
-        filterArgs: FilterArgs,
-        paginationArgs: PaginationArgs
-    ): Promise<Entry[]> => {
-        const skip = (paginationArgs.page - 1) * paginationArgs.limit;
-        const options = buildGetEntriesOptions(queryArgs, filterArgs);
+    getEntries: async (dto: GetEntriesDTO): Promise<Entry[]> => {
+        const skip = (dto.page - 1) * dto.limit;
+        const options = mapToGetEntriesOptions(dto);
         return EntryModel.find(options)
-            .sort({[sortArgs.sort]: sortArgs.order})
+            .sort({[dto.sort]: dto.order})
             .skip(skip)
-            .limit(paginationArgs.limit);
+            .limit(dto.limit);
     },
 
-    createEntry: (args: QueryArgs): Promise<Entry> =>
+    createEntry: (dto: CreateEntryDTO): Promise<Entry> =>
         new EntryModel({
-            body: args.body,
-            journal: args.journal,
+            body: dto.body,
+            journal: dto.journal,
             dateCreated: now(),
             lastUpdated: now(),
         }).save(),
 
+    deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> =>
+        EntryModel.findByIdAndDelete(dto.id),
 
-    deleteEntry: async (args: QueryArgs): Promise<Entry> => {
-        return EntryModel.findByIdAndDelete(args.id);
-    },
-
-    updateEntry: async (args: QueryArgs): Promise<Entry> =>
+    updateEntry: async (dto: UpdateEntryDTO): Promise<Entry> =>
         EntryModel.findByIdAndUpdate(
-            args.id,
+            dto.id,
             {
-                body: args.body,
+                ... dto.body && {body: dto.body},
+                ... dto.journal && {journal: dto.journal},
                 lastUpdated: now()
             },
             {new: true}
         ),
 
-
-    exists: async (args: QueryArgs): Promise<boolean> => {
+    exists: async (id: string): Promise<boolean> => {
         try {
-            const entry = await EntryModel.findOne({_id: args.id});
+            const entry = await EntryModel.findById(id);
             return !!entry;
         } catch (error) {
             return false;
         }
     },
 
-    ownsEntry: async (args: QueryArgs): Promise<boolean> => {
+    ownsEntry: async (author: string, id: string): Promise<boolean> => {
         try {
-            const entry: Entry = await EntryModel.findById(args.id);
+            const entry: Entry = await EntryModel.findById(id);
             const journal: Journal = await JournalModel.findById(entry.journal);
-            return journal.author.toString() === args.userId;
+            return journal.author.toString() === author;
         } catch (error) {
             return false;
         }
-    }
+    },
 };

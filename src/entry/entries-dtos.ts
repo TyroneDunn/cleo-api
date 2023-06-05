@@ -1,10 +1,8 @@
 export type GetEntryDTO = {
-    userId: string,
     id: string,
 };
 
 export type GetEntriesDTO = {
-    userId: string,
     idRegex?: string,
     body?: string,
     bodyRegex?: string,
@@ -19,19 +17,16 @@ export type GetEntriesDTO = {
 };
 
 export type CreateEntryDTO = {
-    userId: string,
     journal: string,
     body: string,
 };
 
 export type DeleteEntryDTO = {
-    userId: string,
     id: string,
 };
 
 export type UpdateEntryDTO = {
-    userId: string,
     id: string,
-    body: string,
-    journal: string,
+    body?: string,
+    journal?: string,
 };

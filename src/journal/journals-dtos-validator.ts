@@ -8,20 +8,19 @@ import {
 import {BadRequestError, NotFoundError, UnauthorizedError} from "../utils/errors";
 import {JOURNALS_REPOSITORY} from "../repositories-config"
 import {ValidationResult} from "../utils/validation-result";
+import {User} from "../user/user";
 
-export const validateGetJournalDTO = async (dto: GetJournalDTO): Promise<ValidationResult> => {
-    if (!dto.userId)
-        return {outcome: false, error: new BadRequestError('User ID required.')};
-    if (!dto.id)
+export const validateGetJournalDTO = async (user: User, dto: GetJournalDTO): Promise<ValidationResult> => {
+    if (!user._id.toString())
         return {outcome: false, error: new BadRequestError('Journal ID required.')};
-    if (!(await JOURNALS_REPOSITORY.exists({id: dto.id})))
+    if (!(await JOURNALS_REPOSITORY.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.id} not found.`)};
-    if (!(await JOURNALS_REPOSITORY.ownsJournal({author: dto.userId, id: dto.id})))
+    if (!(await JOURNALS_REPOSITORY.ownsJournal(user._id.toString(), dto.id)))
         return {outcome: false, error: new UnauthorizedError(`Unauthorized access to journal ${dto.id}`)};
     return {outcome: true};
 };
 
-export const validateGetJournalsDTO = async (dto: GetJournalsDTO): Promise<ValidationResult> => {
+export const validateGetJournalsDTO = async (user: User, dto: GetJournalsDTO): Promise<ValidationResult> => {
     if ((dto.name && dto.nameRegex) ||
         (dto.author && dto.authorRegex)) {
         return {outcome: false, error: new BadRequestError('Invalid query.')};
@@ -29,36 +28,30 @@ export const validateGetJournalsDTO = async (dto: GetJournalsDTO): Promise<Valid
     return {outcome: true};
 };
 
-export const validateCreateJournalDTO = async (dto: CreateJournalDTO): Promise<ValidationResult> => {
-    if (!dto.userId)
-        return {outcome: false, error: new BadRequestError('User ID required.')};
+export const validateCreateJournalDTO = async (user: User, dto: CreateJournalDTO): Promise<ValidationResult> => {
     if (!dto.name)
         return {outcome: false, error: new BadRequestError('Journal name required.')};
     return {outcome: true};
 };
 
-export const validateDeleteJournalDTO = async (dto: DeleteJournalDTO): Promise<ValidationResult> => {
-    if (!dto.userId)
-        return {outcome: false, error: new BadRequestError('User ID required.')};
+export const validateDeleteJournalDTO = async (user: User, dto: DeleteJournalDTO): Promise<ValidationResult> => {
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Journal ID required.')};
-    if (!(await JOURNALS_REPOSITORY.exists({id: dto.id})))
+    if (!(await JOURNALS_REPOSITORY.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.id} not found.`)};
-    if (!(await JOURNALS_REPOSITORY.ownsJournal({author: dto.userId, id: dto.id})))
+    if (!(await JOURNALS_REPOSITORY.ownsJournal(user._id.toString(), dto.id)))
         return {outcome: false, error: new UnauthorizedError(`Unauthorized access to journal ${dto.id}`)};
     return {outcome: true};
 };
 
-export const validateUpdateJournalDTO = async (dto: UpdateJournalDTO): Promise<ValidationResult> => {
-    if (!dto.userId)
-        return {outcome: false, error: new BadRequestError('User ID required.')};
+export const validateUpdateJournalDTO = async (user: User, dto: UpdateJournalDTO): Promise<ValidationResult> => {
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Journal ID required.')};
     if (!dto.name)
         return {outcome: false, error: new BadRequestError('Journal name required.')};
-    if (!(await JOURNALS_REPOSITORY.exists({id: dto.id})))
+    if (!(await JOURNALS_REPOSITORY.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.id} not found.`)};
-    if (!(await JOURNALS_REPOSITORY.ownsJournal({author: dto.userId, id: dto.id})))
+    if (!(await JOURNALS_REPOSITORY.ownsJournal(user._id.toString(), dto.id)))
         return {outcome: false, error: new UnauthorizedError(`Unauthorized access to journal ${dto.id}`)};
     return {outcome: true};
 };

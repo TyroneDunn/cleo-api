@@ -1,40 +1,18 @@
 import {Journal} from "./journal";
-
-export type QueryArgs = {
-    id?: string,
-    idRegex?: string,
-    name?: string,
-    nameRegex?: string,
-    author?: string,
-    authorRegex?: string,
-};
-
-export type SortArgs = {
-    sort?: 'id' | 'name' | 'author' | 'dateCreated' | 'lastUpdated',
-    order?: 1 | -1,
-};
-
-export type FilterArgs = {
-    startDate?: Date,
-    endDate?: Date,
-};
-
-export type PaginationArgs = {
-    page?: number,
-    limit?: number,
-};
+import {
+    CreateJournalDTO,
+    DeleteJournalDTO,
+    GetJournalDTO,
+    GetJournalsDTO,
+    UpdateJournalDTO
+} from "./journals-dtos";
 
 export type JournalsRepository = {
-    getJournal: (args: QueryArgs) => Promise<Journal>,
-    getJournals: (
-        queryArgs: QueryArgs,
-        sortArgs: SortArgs,
-        filterArgs: FilterArgs,
-        paginationArgs: PaginationArgs,
-    ) => Promise<Journal[]>,
-    createJournal: (args: QueryArgs) => Promise<Journal>,
-    deleteJournal: (args: QueryArgs) => Promise<Journal>,
-    updateJournal: (args: QueryArgs) => Promise<Journal>,
-    exists: (args: QueryArgs) => Promise<boolean>,
-    ownsJournal: (args: QueryArgs) => Promise<boolean>,
+    getJournal: (dto: GetJournalDTO) => Promise<Journal>,
+    getJournals: (dto: GetJournalsDTO) => Promise<Journal[]>,
+    createJournal: (dto: CreateJournalDTO) => Promise<Journal>,
+    deleteJournal: (dto: DeleteJournalDTO) => Promise<Journal>,
+    updateJournal: (dto: UpdateJournalDTO) => Promise<Journal>,
+    exists: (id: string) => Promise<boolean>,
+    ownsJournal: (author: string, id: string) => Promise<boolean>,
 };

@@ -1,7 +1,7 @@
 require('dotenv').config();
 export const NODE_ENV: string = process.env.NODE_ENV;
-export const API_TITLE: string = process.env.TITLE;
-export const API_PORT: number = parseInt(process.env.CLEO_PORT);
+export const API_TITLE: string = process.env.API_TITLE;
+export const API_PORT: number = parseInt(process.env.API_PORT);
 export const APP_URL = process.env.APP_URL;
 export const MONGODB_URL: string = process.env.MONGO_DB_URL;
 export const SESSION_SECRET: string = process.env.SESSION_SECRET;
