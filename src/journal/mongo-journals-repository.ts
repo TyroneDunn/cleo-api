@@ -23,8 +23,8 @@ const mapToGetJournalsQuery = (dto: GetJournalsDTO) => ({
         ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
 
-const deleteJournalEntries = async (journalID: string): Promise<void> => {
-    await JournalEntryModel.deleteMany({journal: journalID});
+const deleteJournalEntries = async (journal: string): Promise<void> => {
+    await JournalEntryModel.deleteMany({journal: journal});
 };
 
 export const MongoJournalsRepository: JournalsRepository = {
