@@ -5,55 +5,55 @@ import {
     GetEntryDTO,
     UpdateEntryDTO
 } from "./entries-dtos";
-import {EntriesService} from "./entries-service";
+import {createEntry, deleteEntry, getEntries, getEntry, updateEntry} from "./entries-service";
 import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
 import {sendErrorResponse} from "../utils/send-error-response";
 
-export const getEntry: RequestHandler = async (req: Request, res: Response) => {
+export const getEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: GetEntryDTO = mapToGetEntryDTO(req);
-        const entry = await EntriesService.getEntry(req.user as User, dto);
+        const entry = await getEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const getEntries: RequestHandler = async (req: Request, res: Response) => {
+export const getEntriesHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: GetEntriesDTO = mapToGetEntriesDTO(req);
-        let entries = await EntriesService.getEntries(req.user as User, dto);
+        let entries = await getEntries(req.user as User, dto);
         res.json(entries);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const createEntry: RequestHandler = async (req: Request, res: Response) => {
+export const createEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: CreateEntryDTO = mapToCreateEntryDTO(req);
-        const entry = await EntriesService.createEntry(req.user as User, dto);
+        const entry = await createEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const deleteEntry: RequestHandler = async (req: Request, res: Response) => {
+export const deleteEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: DeleteEntryDTO = mapToDeleteEntryDTO(req);
-        const entry = await EntriesService.deleteEntry(req.user as User, dto);
+        const entry = await deleteEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const updateEntry: RequestHandler = async (req: Request, res: Response) => {
+export const updateEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: UpdateEntryDTO = mapToUpdateEntryDTO(req);
-        const entry = await EntriesService.updateEntry(req.user as User, dto);
+        const entry = await updateEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);

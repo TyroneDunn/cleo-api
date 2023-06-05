@@ -1,10 +1,15 @@
 import {Router} from "express";
-import {getUser, getUsers, deleteUser, updateUser} from "./users-request-handlers";
+import {
+    getUserHandler,
+    getUsersHandler,
+    deleteUserHandler,
+    updateUserHandler
+} from "./users-request-handlers";
 
 const usersRouter: Router = Router();
-usersRouter.get('/:id', getUser);
-usersRouter.get('/', getUsers);
-usersRouter.delete('/:id', deleteUser);
-usersRouter.patch('/:id', updateUser);
+usersRouter.get('/:id', getUserHandler);
+usersRouter.get('/', getUsersHandler);
+usersRouter.delete('/:id', deleteUserHandler);
+usersRouter.patch('/:id', updateUserHandler);
 
 export default usersRouter;

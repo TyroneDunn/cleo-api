@@ -1,17 +1,17 @@
 import {Router} from "express";
 import {
-    createJournal,
-    deleteJournal,
-    getJournal,
-    getJournals,
-    updateJournal
+    createJournalHandler,
+    deleteJournalHandler,
+    getJournalHandler,
+    getJournalsHandler,
+    updateJournalHandler
 } from "./journals-request-handlers";
 
 const journalsRouter: Router = Router();
-journalsRouter.get('/:id', getJournal);
-journalsRouter.get('/', getJournals);
-journalsRouter.post('/', createJournal);
-journalsRouter.delete('/:id', deleteJournal);
-journalsRouter.patch('/:id', updateJournal);
+journalsRouter.get('/:id', getJournalHandler);
+journalsRouter.get('/', getJournalsHandler);
+journalsRouter.post('/', createJournalHandler);
+journalsRouter.delete('/:id', deleteJournalHandler);
+journalsRouter.patch('/:id', updateJournalHandler);
 
 export default journalsRouter;

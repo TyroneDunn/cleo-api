@@ -20,39 +20,37 @@ import {User} from "../user/user";
 
 const repository: EntriesRepository = ENTRIES_REPOSITORY;
 
-export const EntriesService = {
-    getEntry: async (user: User, dto: GetEntryDTO): Promise<Entry> => {
-        const validationResult: ValidationResult = await validateGetEntryDTO(user, dto);
-        if (!validationResult.outcome)
-            throw validationResult.error;
-        return repository.getEntry(dto);
-    },
+export const getEntry = async (user: User, dto: GetEntryDTO): Promise<Entry> => {
+    const validationResult: ValidationResult = await validateGetEntryDTO(user, dto);
+    if (!validationResult.outcome)
+        throw validationResult.error;
+    return repository.getEntry(dto);
+};
 
-    getEntries: async (user: User, dto: GetEntriesDTO): Promise<Entry[]> => {
-        const validationResult: ValidationResult = await validateGetEntriesDTO(user, dto);
-        if (!validationResult.outcome)
-            throw validationResult.error;
-        return repository.getEntries(dto);
-    },
+export const getEntries = async (user: User, dto: GetEntriesDTO): Promise<Entry[]> => {
+    const validationResult: ValidationResult = await validateGetEntriesDTO(user, dto);
+    if (!validationResult.outcome)
+        throw validationResult.error;
+    return repository.getEntries(dto);
+};
 
-    createEntry: async (user: User, dto: CreateEntryDTO): Promise<Entry> => {
-        const validationResult: ValidationResult = await validateCreateEntryDTO(user, dto);
-        if (!validationResult.outcome)
-            throw validationResult.error;
-        return repository.createEntry(dto);
-    },
+export const createEntry = async (user: User, dto: CreateEntryDTO): Promise<Entry> => {
+    const validationResult: ValidationResult = await validateCreateEntryDTO(user, dto);
+    if (!validationResult.outcome)
+        throw validationResult.error;
+    return repository.createEntry(dto);
+};
 
-    deleteEntry: async (user: User, dto: DeleteEntryDTO): Promise<Entry> => {
-        const validationResult: ValidationResult = await validateDeleteEntryDTO(user, dto);
-        if (!validationResult.outcome)
-            throw validationResult.error;
-        return repository.deleteEntry(dto);
-    },
+export const deleteEntry = async (user: User, dto: DeleteEntryDTO): Promise<Entry> => {
+    const validationResult: ValidationResult = await validateDeleteEntryDTO(user, dto);
+    if (!validationResult.outcome)
+        throw validationResult.error;
+    return repository.deleteEntry(dto);
+};
 
-    updateEntry: async (user: User, dto: UpdateEntryDTO): Promise<Entry> => {
-        const validationResult: ValidationResult = await validateUpdateEntryDTO(user, dto);
-        if (!validationResult.outcome)
-            throw validationResult.error;
-        return repository.updateEntry(dto);
-    },
+export const updateEntry = async (user: User, dto: UpdateEntryDTO): Promise<Entry> => {
+    const validationResult: ValidationResult = await validateUpdateEntryDTO(user, dto);
+    if (!validationResult.outcome)
+        throw validationResult.error;
+    return repository.updateEntry(dto);
 };

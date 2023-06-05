@@ -7,53 +7,59 @@ import {
     GetJournalsDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
-import {JournalsService} from "./journals-service";
+import {
+    createJournal,
+    deleteJournal,
+    getJournal,
+    getJournals,
+    updateJournal,
+} from "./journals-service";
 import {sendErrorResponse} from "../utils/send-error-response";
 
-export const getJournal: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const getJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const dto: GetJournalDTO = mapToGetJournalDTO(req);
-        const journal = await JournalsService.getJournal(req.user as User, dto);
+        const journal = await getJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const getJournals: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const getJournalsHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const dto: GetJournalsDTO = mapToGetJournalsDTO(req);
-        const journals = await JournalsService.getJournals(req.user as User, dto);
+        const journals = await getJournals(req.user as User, dto);
         res.json(journals);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const createJournal: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const createJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const dto: CreateJournalDTO = mapToCreateJournalDTO(req);
-        const journal = await JournalsService.createJournal(req.user as User, dto);
+        const journal = await createJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const deleteJournal: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const deleteJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const dto: DeleteJournalDTO = mapToDeleteJournalDTO(req);
-        const journal = await JournalsService.deleteJournal(req.user as User, dto);
+        const journal = await deleteJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const updateJournal: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const updateJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const dto: UpdateJournalDTO = mapToUpdateJournalDTO(req);
-        const journal = await JournalsService.updateJournal(req.user as User, dto);
+        const journal = await updateJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
         sendErrorResponse(error, res);

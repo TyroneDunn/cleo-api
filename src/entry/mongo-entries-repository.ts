@@ -60,7 +60,7 @@ export const MongoEntriesRepository: EntriesRepository = {
 
     exists: async (id: string): Promise<boolean> => {
         try {
-            const entry = await EntryModel.findById(id);
+            const entry: Entry = await EntryModel.findById(id);
             return !!entry;
         } catch (error) {
             return false;

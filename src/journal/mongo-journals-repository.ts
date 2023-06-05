@@ -65,7 +65,7 @@ export const MongoJournalsRepository: JournalsRepository = {
 
     exists: async (id: string): Promise<boolean> => {
         try {
-            const journal = await JournalModel.findById(id);
+            const journal: Journal = await JournalModel.findById(id);
             return !!journal;
         } catch (error) {
             return false;
