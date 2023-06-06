@@ -21,8 +21,7 @@ export const validateGetJournalDTO = async (user: User, dto: GetJournalDTO): Pro
 };
 
 export const validateGetJournalsDTO = async (user: User, dto: GetJournalsDTO): Promise<ValidationResult> => {
-    if ((dto.name && dto.nameRegex) ||
-        (dto.author && dto.authorRegex)) {
+    if (dto.name && dto.nameRegex) {
         return {outcome: false, error: new BadRequestError('Invalid query.')};
     }
     return {outcome: true};

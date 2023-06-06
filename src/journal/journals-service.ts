@@ -31,6 +31,7 @@ export const getJournals = async (user: User, dto: GetJournalsDTO): Promise<Jour
     const validationResult: ValidationResult = await validateGetJournalsDTO(user, dto);
     if (!validationResult.outcome)
         throw validationResult.error;
+    dto.author = user._id.toString();
     return repository.getJournals(dto);
 };
 
