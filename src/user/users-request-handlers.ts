@@ -60,14 +60,11 @@ const mapToGetUsersDTO = (req: Request): GetUsersDTO => ({
     ... req.query.endDate && {endDate: new Date(req.query.endDate as string)},
 });
 
-const mapToDeleteUserDTO = (req: Request): DeleteUserDTO => ({
-    id: req.params.id,
-});
+const mapToDeleteUserDTO = (req: Request): DeleteUserDTO =>
+    ({id: req.params.id});
 
-const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => {
-    return {
-        id: req.params.id,
-        ... req.body.username && {username: req.body.username},
-        ... req.body.password && {password: req.body.password},
-    };
-};
+const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => ({
+    id: req.params.id,
+    ... req.body.username && {username: req.body.username},
+    ... req.body.password && {password: req.body.password},
+});
