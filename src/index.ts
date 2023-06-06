@@ -1,4 +1,4 @@
 import {run as runCleoApi} from "./api/cleo-api";
-import {API_PORT as port} from "./environment";
+import {API_PORT} from "./environment";
 
-runCleoApi(port);
+runCleoApi(API_PORT);
