@@ -1,13 +1,13 @@
 {
   "name": "cleo",
-  "version": "1.3.x",
-  "description": "A journal repository api.",
+  "version": "1.3.2",
+  "description": "A Journal Repository API.",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts"
   },
   "keywords": [
-    "journal; api; repository; express; mongo; typescript"
+    "journal; api; repository; expressjs; passportjs; mongodb; typescript"
   ],
   "author": "Tyrone B. Dunn",
   "license": "ISC",

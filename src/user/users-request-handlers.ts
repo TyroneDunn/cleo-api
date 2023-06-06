@@ -69,5 +69,5 @@ const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => {
         id: req.params.id,
         ... req.body.username && {username: req.body.username},
         ... req.body.password && {password: req.body.password},
-    }
+    };
 };
