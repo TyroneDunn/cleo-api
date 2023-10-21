@@ -1,7 +1,7 @@
-import {GetUserDTO} from "../user/users-dtos";
+import {GetUserDTO} from "./users-dtos";
 const passportConfig = require('passport');
 import LocalStrategy = require('passport-local');
-import {User} from "../user/user";
+import {User} from "./user";
 import {USERS_REPOSITORY} from "../repositories-config";
 import {validateHash} from "../utils/password-utils";
 
@@ -23,6 +23,11 @@ const verifyCallback = async (username: string, password: string, done): Promise
         return;
     }
 
+    if (user.status != 'active') {
+        done(null, false);
+        return;
+    }
+
     done(null, user);
 };
 
@@ -30,12 +35,12 @@ const localStrategy = new LocalStrategy.Strategy(userField, verifyCallback);
 
 passportConfig.use(localStrategy);
 passportConfig.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.username);
 });
 
-passportConfig.deserializeUser(async (userId, done) => {
+passportConfig.deserializeUser(async (username, done) => {
     try {
-        const dto: GetUserDTO = {id: userId};
+        const dto: GetUserDTO = {username: username};
         const user = await USERS_REPOSITORY.getUser(dto);
         done(null, user);
     } catch (error) {

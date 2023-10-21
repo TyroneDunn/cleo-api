@@ -4,13 +4,12 @@ import {corsOptions} from "./cors-config";
 const cors = require('cors');
 import {sessionMiddleware} from "./session-config";
 import passport = require("passport");
-require("../auth/passport-config");
-import authRouter from "../auth/auth-router";
-import {authGuard} from "../auth/auth-guard";
+require("../user/passport-config");
 import journalsRouter from "../journal/journals-router";
 import entriesRouter from "../entry/entries-router";
 import {API_TITLE} from "../environment";
 import usersRouter from "../user/users-router";
+import {authGuard} from "../user/users-request-handlers";
 
 const cleoHomeRoute = (req, res): RequestHandler =>
     res.send(API_TITLE);
@@ -23,8 +22,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', cleoHomeRoute);
-app.use('/auth/', authRouter);
-app.use('/users/', authGuard, usersRouter);
+app.use('/users/', usersRouter);
 app.use('/journals/', authGuard, journalsRouter);
 app.use('/entries/', authGuard, entriesRouter);
 
