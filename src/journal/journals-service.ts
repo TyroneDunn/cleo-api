@@ -4,6 +4,7 @@ import {JournalsRepository} from "./journals-repository";
 import {
     validateCreateJournalDTO,
     validateDeleteJournalDTO,
+    validateDeleteJournalsDTO,
     validateGetJournalDTO,
     validateGetJournalsDTO,
     validateUpdateJournalDTO
@@ -42,6 +43,13 @@ export const createJournal = async (user: User, dto: CreateJournalDTO): Promise<
     return repository.createJournal(dto)
 };
 
+export const updateJournal = async (user: User, dto: UpdateJournalDTO): Promise<Journal> => {
+    const validationResult: ValidationResult = await validateUpdateJournalDTO(user, dto);
+    if (!validationResult.outcome)
+        throw validationResult.error;
+    return repository.updateJournal(dto);
+};
+
 export const deleteJournal = async (user: User, dto: DeleteJournalDTO): Promise<Journal> => {
     const validationResult: ValidationResult = await validateDeleteJournalDTO(user, dto);
     if (!validationResult.outcome)
@@ -55,10 +63,3 @@ export const deleteJournals = async (user: User, dto: DeleteJournalsDTO): Promis
         throw validationResult.error;
     return repository.deleteJournals(dto);
 }
-
-export const updateJournal = async (user: User, dto: UpdateJournalDTO): Promise<Journal> => {
-    const validationResult: ValidationResult = await validateUpdateJournalDTO(user, dto);
-    if (!validationResult.outcome)
-        throw validationResult.error;
-    return repository.updateJournal(dto);
-};

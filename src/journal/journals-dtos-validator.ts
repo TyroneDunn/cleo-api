@@ -1,6 +1,7 @@
 import {
     CreateJournalDTO,
     DeleteJournalDTO,
+    DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
     UpdateJournalDTO
@@ -104,5 +105,25 @@ export const validateDeleteJournalDTO = async (user: User, dto: DeleteJournalDTO
         return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
     if (!(await journalsRepository.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.id} not found.`)};
+    return {outcome: true};
+};
+
+export const validateDeleteJournalsDTO = async (user: User, dto: DeleteJournalsDTO): Promise<ValidationResult> => {
+    if (!(user))
+        return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
+    if (!(await usersRepository.isAdmin(user.username)) && (user.username !== dto.author))
+        return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
+    if (dto.name && dto.nameRegex)
+        return {outcome: false, error: new BadRequestError('Invalid query.')};
+    if (dto.author && dto.authorRegex)
+        return {outcome: false, error: new BadRequestError('Invalid query.')};
+    if (dto.startDate) {
+        if (isNaN(Date.parse(dto.startDate)))
+            return {outcome: false, error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};
+    }
+    if (dto.endDate) {
+        if (isNaN(Date.parse(dto.endDate)))
+            return {outcome: false, error: new BadRequestError('Invalid end date query. Provide a ISO date string.')};
+    }
     return {outcome: true};
 };
