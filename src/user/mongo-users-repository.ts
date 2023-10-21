@@ -47,6 +47,7 @@ export const MongoUsersRepository: UsersRepository = {
             dateCreated: now(),
             lastUpdated: now(),
             isAdmin: false,
+            status: 'active',
         }).save(),
 
     deleteUser: async (dto: DeleteUserDTO): Promise<User> =>
