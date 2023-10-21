@@ -21,11 +21,11 @@ export type CreateJournalDTO = {
     name: string,
 };
 
-export type DeleteJournalDTO = {
-    id: string,
-};
-
 export type UpdateJournalDTO = {
     id: string,
     name: string,
+};
+
+export type DeleteJournalDTO = {
+    id: string,
 };
