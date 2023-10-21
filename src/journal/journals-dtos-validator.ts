@@ -5,7 +5,12 @@ import {
     GetJournalsDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
-import {BadRequestError, NotFoundError, UnauthorizedError} from "../utils/errors";
+import {
+    BadRequestError,
+    ForbiddenError,
+    NotFoundError,
+    UnauthorizedError
+} from "../utils/errors";
 import {JOURNALS_REPOSITORY} from "../repositories-config"
 import {ValidationResult} from "../utils/validation-result";
 import {User} from "../user/user";
@@ -21,8 +26,41 @@ export const validateGetJournalDTO = async (user: User, dto: GetJournalDTO): Pro
 };
 
 export const validateGetJournalsDTO = async (user: User, dto: GetJournalsDTO): Promise<ValidationResult> => {
-    if (dto.name && dto.nameRegex) {
+    if (!(user))
+        return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
+    if (!user.isAdmin && (user.username !== dto.author))
+        return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
+    if (dto.name && dto.nameRegex)
         return {outcome: false, error: new BadRequestError('Invalid query.')};
+    if (dto.author && dto.authorRegex)
+        return {outcome: false, error: new BadRequestError('Invalid query.')};
+    if (dto.startDate) {
+        if (isNaN(Date.parse(dto.startDate)))
+            return {outcome: false, error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};
+    }
+    if (dto.endDate) {
+        if (isNaN(Date.parse(dto.endDate)))
+            return {outcome: false, error: new BadRequestError('Invalid end date query. Provide a ISO date string.')};
+    }
+    if (dto.sort) {
+        if (dto.sort !== 'id' && dto.sort !== 'name' && dto.sort !== 'lastUpdated' && dto.sort !== 'dateCreated')
+            return {outcome: false, error: new BadRequestError('Invalid query. Sort option must' +
+                    ' be id, name, lastUpdated, or dateCreated.')};
+    }
+    if (dto.order !== undefined) {
+        if ((dto.order !== 1 && dto.order !== -1))
+            return {outcome: false, error: new BadRequestError('Invalid query. Order must be' +
+                    ' 1 or -1.')};
+    }
+    if (dto.page !== undefined) {
+        if (dto.page < 1)
+            return {outcome: false, error: new BadRequestError('Invalid query. Page must be' +
+                    ' 1 or greater.')};
+    }
+    if (dto.limit !== undefined) {
+        if (dto.limit < 0)
+            return {outcome: false, error: new BadRequestError('Invalid query. Limit must be' +
+                    ' 0 or greater.')};
     }
     return {outcome: true};
 };
