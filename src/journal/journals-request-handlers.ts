@@ -52,20 +52,20 @@ export const createJournalHandler: RequestHandler = async (req: Request, res: Re
     }
 };
 
-export const deleteJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const updateJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: DeleteJournalDTO = mapToDeleteJournalDTO(req);
-        const journal = await deleteJournal(req.user as User, dto);
+        const dto: UpdateJournalDTO = mapToUpdateJournalDTO(req);
+        const journal = await updateJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const updateJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const deleteJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: UpdateJournalDTO = mapToUpdateJournalDTO(req);
-        const journal = await updateJournal(req.user as User, dto);
+        const dto: DeleteJournalDTO = mapToDeleteJournalDTO(req);
+        const journal = await deleteJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
         sendErrorResponse(error, res);
