@@ -1,5 +1,9 @@
 import {User} from "../user/user";
-import {Request, RequestHandler, Response} from "express";
+import {
+    Request,
+    RequestHandler,
+    Response
+} from "express";
 import {
     CreateJournalDTO,
     DeleteJournalDTO,
