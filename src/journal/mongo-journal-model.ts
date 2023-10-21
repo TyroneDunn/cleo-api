@@ -5,7 +5,7 @@ import database from "../mongoose-database";
 interface JournalDocument extends Document, Journal {
   _id: string,
   name: string,
-  author: Schema.Types.ObjectId;
+  author: string;
   dateCreated: Date,
   lastUpdated: Date,
 }
@@ -16,8 +16,7 @@ const journalSchema = new Schema<JournalDocument>({
     required: true
   },
   author: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
   },
   dateCreated: {
@@ -28,6 +27,16 @@ const journalSchema = new Schema<JournalDocument>({
     type: Date,
     required: true,
   },
+},
+{
+  toObject: {virtuals: true}
+});
+
+journalSchema.virtual('journal-author', {
+  ref: 'User',
+  localField: 'author',
+  foreignField: 'username',
+  justOne: true
 });
 
 const JournalModel = database.model<JournalDocument>('Journal', journalSchema);
