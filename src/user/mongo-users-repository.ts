@@ -28,11 +28,8 @@ const buildGetUsersQuery = (dto: GetUsersDTO) => {
 };
 
 export const MongoUsersRepository: UsersRepository = {
-    getUser: async (dto: GetUserDTO): Promise<User> => {
-        if(dto.id)
-            return UserModel.findById(dto.id)
-        return UserModel.findOne({username: dto.username});
-    },
+    getUser: async (dto: GetUserDTO): Promise<User> =>
+        UserModel.findOne({username: dto.username}),
 
     getUsers: async (dto: GetUsersDTO): Promise<User[]> => {
         const skip = (dto.page - 1) * dto.limit;
