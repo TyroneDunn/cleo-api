@@ -1,6 +1,7 @@
 import {User} from "./user";
 import {
     DeleteUserDTO,
+    DeleteUsersDTO,
     GetUserDTO,
     GetUsersDTO,
     RegisterUserDTO,
@@ -13,6 +14,7 @@ export type UsersRepository = {
     registerUser: (dto: RegisterUserDTO) => Promise<User>,
     registerAdminUser: (dto: RegisterUserDTO) => Promise<User>,
     deleteUser: (dto: DeleteUserDTO) => Promise<User>,
+    deleteUsers: (dto: DeleteUsersDTO) => Promise<string>,
     updateUser: (dto: UpdateUserDTO) => Promise<User>,
     exists: (id: string) => Promise<boolean>,
     isAdmin: (id: string) => Promise<boolean>,
