@@ -2,6 +2,7 @@ import {Router} from "express";
 import {
     createJournalHandler,
     deleteJournalHandler,
+    deleteJournalsHandler,
     getJournalHandler,
     getJournalsHandler,
     updateJournalHandler

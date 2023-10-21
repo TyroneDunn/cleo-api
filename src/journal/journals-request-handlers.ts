@@ -6,7 +6,7 @@ import {
 } from "express";
 import {
     CreateJournalDTO,
-    DeleteJournalDTO,
+    DeleteJournalDTO, DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
     UpdateJournalDTO
@@ -72,6 +72,16 @@ export const deleteJournalHandler: RequestHandler = async (req: Request, res: Re
     }
 };
 
+export const deleteJournalsHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+     try {
+         const dto: DeleteJournalsDTO = mapToDeleteJournalsDTO(req);
+         const result = await deleteJournals(req.user as User, dto);
+         res.json(result);
+     } catch (error) {
+         sendErrorResponse(error, res);
+     }
+};
+
 const mapToGetJournalDTO = (req: Request): GetJournalDTO =>
     ({id: req.params.id});
 
@@ -100,3 +110,12 @@ const mapToUpdateJournalDTO = (req: Request): UpdateJournalDTO => ({
 
 const mapToDeleteJournalDTO = (req: Request): DeleteJournalDTO =>
     ({id: req.params.id});
+
+const mapToDeleteJournalsDTO = (req: Request): DeleteJournalsDTO => ({
+    ... req.query.name && {name: req.query.name as string},
+    ... req.query.nameRegex && {nameRegex: req.query.nameRegex as string},
+    ... req.query.author && {author: req.query.author as string},
+    ... req.query.authorRegex && {authorRegex: req.query.authorRegex as string},
+    ... req.query.startDate && {startDate: req.query.startDate as string},
+    ... req.query.endDate && {endDate: req.query.endDate as string},
+});
