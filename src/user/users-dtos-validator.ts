@@ -9,7 +9,13 @@ import {
     UpdateUsersDTO
 } from "./users-dtos";
 import {ValidationResult} from "../utils/validation-result";
-import {BadRequestError, ConflictError, ForbiddenError, NotFoundError} from "../utils/errors";
+import {
+    BadRequestError,
+    ConflictError,
+    ForbiddenError,
+    NotFoundError,
+    UnauthorizedError
+} from "../utils/errors";
 import {USERS_REPOSITORY} from "../repositories-config";
 import {User} from "./user";
 
