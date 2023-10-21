@@ -1,6 +1,6 @@
-export type GetJournalDTO = {
-    id: string,
-};
+import {OrderOption} from "../utils/order-option";
+
+export type GetJournalDTO = {id: string};
 
 export type GetJournalsDTO = {
     idRegex?: string,
@@ -9,9 +9,9 @@ export type GetJournalsDTO = {
     author?: string,
     authorRegex?: string,
     sort?: 'id' | 'name' | 'author' | 'dateCreated' | 'lastUpdated',
-    order?: 1 | -1,
-    startDate?: Date,
-    endDate?: Date,
+    order?: OrderOption,
+    startDate?: string,
+    endDate?: string,
     page?: number,
     limit?: number,
 };
