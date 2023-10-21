@@ -62,4 +62,4 @@ export const deleteJournals = async (user: User, dto: DeleteJournalsDTO): Promis
     if (!validationResult.outcome)
         throw validationResult.error;
     return repository.deleteJournals(dto);
-}
+};

@@ -36,11 +36,6 @@ export const MongoJournalsRepository: JournalsRepository = {
             lastUpdated: now(),
         }).save(),
 
-    deleteJournal: async (dto: DeleteJournalDTO): Promise<Journal> => {
-        await deleteJournalEntries(dto.id);
-        return JournalModel.findByIdAndDelete(dto.id);
-    },
-
     updateJournal: async (dto: UpdateJournalDTO): Promise<Journal> =>
         JournalModel.findByIdAndUpdate(
             dto.id,
@@ -50,6 +45,11 @@ export const MongoJournalsRepository: JournalsRepository = {
             },
             {new: true}
         ),
+
+    deleteJournal: async (dto: DeleteJournalDTO): Promise<Journal> => {
+        await deleteJournalEntries(dto.id);
+        return JournalModel.findByIdAndDelete(dto.id);
+    },
 
     exists: async (id: string): Promise<boolean> => {
         try {
