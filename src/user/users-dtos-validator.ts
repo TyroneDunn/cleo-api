@@ -1,4 +1,13 @@
-import {DeleteUserDTO, GetUserDTO, GetUsersDTO, RegisterUserDTO, UpdateUserDTO} from "./users-dtos";
+import {
+    DeleteUserDTO,
+    DeleteUsersDTO,
+    GetUserDTO,
+    GetUsersDTO,
+    RegisterAdminDTO,
+    RegisterUserDTO,
+    UpdateUserDTO,
+    UpdateUsersDTO
+} from "./users-dtos";
 import {ValidationResult} from "../utils/validation-result";
 import {BadRequestError, ConflictError, ForbiddenError, NotFoundError} from "../utils/errors";
 import {USERS_REPOSITORY} from "../repositories-config";
