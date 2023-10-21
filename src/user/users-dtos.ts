@@ -21,12 +21,35 @@ export type RegisterUserDTO = {
     password: string,
 };
 
-export type DeleteUserDTO = {
-    id: string,
+export type RegisterAdminDTO = {
+    username: string,
+    password: string,
 };
 
 export type UpdateUserDTO = {
-    id?: string,
-    username?: string,
-    password?: string,
+    username: string,
+    newUsername?: string,
+    newPassword?: string,
+    newIsAdmin?: string,
+    newStatus: string,
+};
+
+export type UpdateUsersDTO = {
+    usernameRegex?: string,
+    isAdmin?: string,
+    status?: UserStatusOption,
+    startDate?: string,
+    endDate?: string,
+    newIsAdmin?: string,
+    newStatus?: UserStatusOption,
+};
+
+export type DeleteUserDTO = {username: string};
+
+export type DeleteUsersDTO = {
+    usernameRegex?: string,
+    isAdmin?: string,
+    status?: UserStatusOption,
+    startDate?: string,
+    endDate?: string,
 };
