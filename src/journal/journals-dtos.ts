@@ -1,4 +1,5 @@
 import {OrderOption} from "../utils/order-option";
+import {JournalSortOption} from "./journal";
 
 export type GetJournalDTO = {id: string};
 
@@ -9,7 +10,7 @@ export type GetJournalsDTO = {
     authorRegex?: string,
     startDate?: string,
     endDate?: string,
-    sort?: 'id' | 'name' | 'author' | 'dateCreated' | 'lastUpdated',
+    sort?: JournalSortOption,
     order?: OrderOption,
     page?: number,
     limit?: number,

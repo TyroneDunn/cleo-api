@@ -5,3 +5,5 @@ export type Journal = {
     dateCreated: Date,
     lastUpdated: Date,
 };
+
+export type JournalSortOption = 'id' | 'name' | 'dateCreated' | 'lastUpdated';
