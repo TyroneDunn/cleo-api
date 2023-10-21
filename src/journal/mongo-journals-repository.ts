@@ -6,6 +6,7 @@ import {JournalsRepository} from "./journals-repository";
 import {
     CreateJournalDTO,
     DeleteJournalDTO,
+    DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
     UpdateJournalDTO
@@ -51,6 +52,12 @@ export const MongoJournalsRepository: JournalsRepository = {
         return JournalModel.findByIdAndDelete(dto.id);
     },
 
+    deleteJournals: async (dto: DeleteJournalsDTO): Promise<string> => {
+        const filter = mapToDeleteJournalsFilter(dto);
+        const result = await JournalModel.deleteMany(filter);
+        return `${result.deletedCount} journals deleted.`;
+    },
+
     exists: async (id: string): Promise<boolean> => {
         try {
             const journal: Journal = await JournalModel.findById(id);
@@ -79,3 +86,14 @@ const mapToGetJournalsFilter = (dto: GetJournalsDTO) => ({
     ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
     ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
+
+const mapToDeleteJournalsFilter = (dto: DeleteJournalsDTO) => ({
+    ... dto.name && {name: dto.name},
+    ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
+    ... dto.author && {author: dto.author},
+    ... dto.authorRegex && {author: {$regex: dto.authorRegex, $options: 'i'}},
+    ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
+    ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
+    ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+});
+
