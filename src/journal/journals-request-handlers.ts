@@ -80,7 +80,7 @@ const mapToGetJournalsDTO = (req: Request): GetJournalsDTO => ({
     ... req.query.sort && {sort: req.query.sort as "name" | "author" | "id" | "dateCreated" | "lastUpdated"},
     ... req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
     ... req.query.page && {page: parseInt(req.query.page as string)},
-    ... req.query.limit && {limit: parseInt(req.query.page as string)},
+    ... req.query.limit && {limit: parseInt(req.query.limit as string)},
 });
 
 const mapToCreateJournalDTO = (req: Request): CreateJournalDTO => ({
