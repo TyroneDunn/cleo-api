@@ -8,10 +8,10 @@ export type GetJournalsDTO = {
     nameRegex?: string,
     author?: string,
     authorRegex?: string,
-    sort?: 'id' | 'name' | 'author' | 'dateCreated' | 'lastUpdated',
-    order?: OrderOption,
     startDate?: string,
     endDate?: string,
+    sort?: 'id' | 'name' | 'author' | 'dateCreated' | 'lastUpdated',
+    order?: OrderOption,
     page?: number,
     limit?: number,
 };
