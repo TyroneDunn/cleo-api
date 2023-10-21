@@ -11,7 +11,8 @@ const journalsRouter: Router = Router();
 journalsRouter.get('/', getJournalsHandler);
 journalsRouter.get('/:id', getJournalHandler);
 journalsRouter.post('/', createJournalHandler);
-journalsRouter.delete('/:id', deleteJournalHandler);
 journalsRouter.patch('/:id', updateJournalHandler);
+journalsRouter.delete('/', deleteJournalsHandler);
+journalsRouter.delete('/:id', deleteJournalHandler);
 
 export default journalsRouter;
