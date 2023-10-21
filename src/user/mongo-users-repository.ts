@@ -19,7 +19,7 @@ export const MongoUsersRepository: UsersRepository = {
         UserModel.findOne({username: dto.username}),
 
     getUsers: async (dto: GetUsersDTO): Promise<User[]> => {
-        const filter = buildGetUsersFilter(dto);
+        const filter = mapToGetUsersFilter(dto);
         const skip = (dto.page - 1) * dto.limit;
         return UserModel.find(filter)
             .sort({[dto.sort]: dto.order})
@@ -48,8 +48,8 @@ export const MongoUsersRepository: UsersRepository = {
         }).save(),
 
     updateUsers: async (dto: UpdateUsersDTO): Promise<User[]> => {
-        const filter = buildUpdateUsersFilter(dto);
-        const query = buildUpdateUsersQuery(dto);
+        const filter = mapToUpdateUsersFilter(dto);
+        const query = mapToUpdateUsersQuery(dto);
         await UserModel.updateMany(
             filter,
             query
@@ -58,7 +58,7 @@ export const MongoUsersRepository: UsersRepository = {
     },
 
     updateUser: async (dto: UpdateUserDTO): Promise<User> => {
-        const query = buildUpdateUserQuery(dto);
+        const query = mapToUpdateUserQuery(dto);
         return UserModel.findOneAndUpdate(
             {username: dto.username},
             query,
@@ -67,7 +67,7 @@ export const MongoUsersRepository: UsersRepository = {
     },
 
     deleteUsers: async (dto: DeleteUsersDTO): Promise<string> => {
-        const filter = buildDeleteUsersFilter(dto);
+        const filter = mapToDeleteUsersFilter(dto);
         const result = await UserModel.deleteMany(filter);
         return `${result.deletedCount} users deleted.`;
     },
@@ -94,7 +94,7 @@ export const MongoUsersRepository: UsersRepository = {
     },
 };
 
-const buildGetUsersFilter = (dto: GetUsersDTO) => ({
+const mapToGetUsersFilter = (dto: GetUsersDTO) => ({
     ...dto.username && {username: dto.username},
     ...dto.usernameRegex && {username: {$regex: dto.usernameRegex, $options: 'i'}},
     ...dto.isAdmin && {isAdmin: (dto.isAdmin.toLowerCase() === 'true')},
@@ -104,7 +104,7 @@ const buildGetUsersFilter = (dto: GetUsersDTO) => ({
     ...(dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
 
-const buildUpdateUsersFilter = (dto: UpdateUsersDTO) => ({
+const mapToUpdateUsersFilter = (dto: UpdateUsersDTO) => ({
     ...dto.usernameRegex && {username: {$regex: dto.usernameRegex, $options: 'i'}},
     ...dto.isAdmin && {isAdmin: (dto.isAdmin.toLowerCase() === 'true')},
     ...dto.status && {status: dto.status},
@@ -114,12 +114,12 @@ const buildUpdateUsersFilter = (dto: UpdateUsersDTO) => ({
 });
 
 
-const buildUpdateUsersQuery = (dto: UpdateUsersDTO) => ({
+const mapToUpdateUsersQuery = (dto: UpdateUsersDTO) => ({
     ...dto.newIsAdmin && {isAdmin: (dto.newIsAdmin.toLowerCase() === 'true')},
     ...dto.newStatus && {status: dto.newStatus}
 });
 
-const buildUpdateUserQuery = (dto: UpdateUserDTO) => ({
+const mapToUpdateUserQuery = (dto: UpdateUserDTO) => ({
     lastUpdated: now(),
     ...dto.newUsername && {username: dto.newUsername},
     ...dto.newPassword && {hash: generateHash(dto.newPassword)},
@@ -127,7 +127,7 @@ const buildUpdateUserQuery = (dto: UpdateUserDTO) => ({
     ...dto.newStatus && {status: dto.newStatus}
 });
 
-const buildDeleteUsersFilter = (dto: DeleteUsersDTO) => ({
+const mapToDeleteUsersFilter = (dto: DeleteUsersDTO) => ({
     ...dto.usernameRegex && {username: {$regex: dto.usernameRegex, $options: 'i'}},
     ...dto.isAdmin && {isAdmin: (dto.isAdmin.toLowerCase() === 'true')},
     ...dto.status && {status: dto.status},
