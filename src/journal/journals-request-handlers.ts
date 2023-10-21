@@ -14,6 +14,7 @@ import {
 import {
     createJournal,
     deleteJournal,
+    deleteJournals,
     getJournal,
     getJournals,
     updateJournal,

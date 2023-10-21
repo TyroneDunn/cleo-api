@@ -11,6 +11,7 @@ import {
 import {
     CreateJournalDTO,
     DeleteJournalDTO,
+    DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
     UpdateJournalDTO
@@ -47,6 +48,13 @@ export const deleteJournal = async (user: User, dto: DeleteJournalDTO): Promise<
         throw validationResult.error;
     return repository.deleteJournal(dto);
 };
+
+export const deleteJournals = async (user: User, dto: DeleteJournalsDTO): Promise<string> => {
+    const validationResult: ValidationResult = await validateDeleteJournalsDTO(user, dto);
+    if (!validationResult.outcome)
+        throw validationResult.error;
+    return repository.deleteJournals(dto);
+}
 
 export const updateJournal = async (user: User, dto: UpdateJournalDTO): Promise<Journal> => {
     const validationResult: ValidationResult = await validateUpdateJournalDTO(user, dto);
