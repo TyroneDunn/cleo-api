@@ -5,7 +5,8 @@ import {
     GetUserDTO,
     GetUsersDTO,
     RegisterUserDTO,
-    UpdateUserDTO
+    UpdateUserDTO,
+    UpdateUsersDTO
 } from "./users-dtos";
 
 export type UsersRepository = {
@@ -16,6 +17,7 @@ export type UsersRepository = {
     deleteUser: (dto: DeleteUserDTO) => Promise<User>,
     deleteUsers: (dto: DeleteUsersDTO) => Promise<string>,
     updateUser: (dto: UpdateUserDTO) => Promise<User>,
-    exists: (id: string) => Promise<boolean>,
-    isAdmin: (id: string) => Promise<boolean>,
+    updateUsers: (dto: UpdateUsersDTO) => Promise<User[]>,
+    exists: (username: string) => Promise<boolean>,
+    isAdmin: (username: string) => Promise<boolean>,
 };
