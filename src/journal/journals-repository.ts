@@ -2,6 +2,7 @@ import {Journal} from "./journal";
 import {
     CreateJournalDTO,
     DeleteJournalDTO,
+    DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
     UpdateJournalDTO
@@ -12,6 +13,7 @@ export type JournalsRepository = {
     getJournals: (dto: GetJournalsDTO) => Promise<Journal[]>,
     createJournal: (dto: CreateJournalDTO) => Promise<Journal>,
     deleteJournal: (dto: DeleteJournalDTO) => Promise<Journal>,
+    deleteJournals: (dto: DeleteJournalsDTO) => Promise<string>,
     updateJournal: (dto: UpdateJournalDTO) => Promise<Journal>,
     exists: (id: string) => Promise<boolean>,
     ownsJournal: (author: string, id: string) => Promise<boolean>,
