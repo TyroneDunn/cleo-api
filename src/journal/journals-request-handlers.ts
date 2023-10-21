@@ -84,14 +84,14 @@ const mapToGetJournalsDTO = (req: Request): GetJournalsDTO => ({
 });
 
 const mapToCreateJournalDTO = (req: Request): CreateJournalDTO => ({
-    author: (req.user as User)._id.toString(),
+    author: (req.user as User).username,
     name: req.body.name,
 });
-
-const mapToDeleteJournalDTO = (req: Request): DeleteJournalDTO =>
-    ({id: req.params.id});
 
 const mapToUpdateJournalDTO = (req: Request): UpdateJournalDTO => ({
     id: req.params.id,
     name: req.body.name,
 });
+
+const mapToDeleteJournalDTO = (req: Request): DeleteJournalDTO =>
+    ({id: req.params.id});
