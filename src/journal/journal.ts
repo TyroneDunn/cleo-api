@@ -1,7 +1,7 @@
 export type Journal = {
     _id: string,
     name: string,
-    author: any,
+    author: string,
     dateCreated: Date,
     lastUpdated: Date,
 };
