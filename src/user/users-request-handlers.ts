@@ -1,17 +1,68 @@
-import {User} from "./user";
-import {deleteUser, getUser, getUsers, updateUser} from "./users-service";
-import {Request, RequestHandler, Response} from "express";
-import {DeleteUserDTO, GetUserDTO, GetUsersDTO, UpdateUserDTO} from "./users-dtos";
+import {NextFunction, Request, RequestHandler, Response} from "express";
+import {User, UserSortByOption, UserStatusOption} from "./user";
+import {
+    deleteUser,
+    deleteUsers,
+    getUser,
+    getUsers,
+    registerAdminUser,
+    registerUser,
+    updateUser,
+    updateUsers
+} from "./users-service";
+import {
+    DeleteUserDTO,
+    DeleteUsersDTO,
+    GetUserDTO,
+    GetUsersDTO,
+    RegisterAdminDTO,
+    RegisterUserDTO,
+    UpdateUserDTO,
+    UpdateUsersDTO
+} from "./users-dtos";
 import {sendErrorResponse} from "../utils/send-error-response";
+import {
+    CREATED,
+    INTERNAL_SERVER_ERROR,
+    UNAUTHORIZED
+} from "../utils/http-status-constants";
+import {OrderOption} from "../utils/order-option";
+import passport = require("passport");
 
-export const getUserHandler: RequestHandler = async (req: Request, res: Response) => {
+export const authenticate: RequestHandler = passport.authenticate('local');
+
+export const authGuard: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.isAuthenticated())
+        return res.status(UNAUTHORIZED).json('Unauthorized.');
+    return next();
+};
+
+export const register: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: GetUserDTO = mapToGetUserDTO(req);
-        const user: User = await getUser(req.user as User, dto);
-        res.json(user);
+        const dto: RegisterUserDTO = mapToRegisterUserDTO(req);
+        const user = await registerUser(dto);
+        res.status(CREATED).json(user);
     } catch (error) {
         sendErrorResponse(error, res);
     }
+};
+
+export const registerAdmin: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const dto: RegisterAdminDTO = mapToRegisterAdminDTO(req);
+        const user = await registerAdminUser(req.user as User, dto);
+        res.status(CREATED).json(user);
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
+export const authenticatedResponse: RequestHandler = (req: Request, res: Response): void => {
+    res.json(`Authenticated as ${(req.user as User).username}`);
+};
+
+export const loggedInResponse: RequestHandler = (req: Request, res: Response): void => {
+    res.json(`Logged in as ${(req.user as User).username}`);
 };
 
 export const getUsersHandler: RequestHandler = async (req: Request, res: Response) => {
@@ -24,11 +75,21 @@ export const getUsersHandler: RequestHandler = async (req: Request, res: Respons
     }
 };
 
-export const deleteUserHandler: RequestHandler = async (req: Request, res: Response) => {
+export const getUserHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteUserDTO = mapToDeleteUserDTO(req);
-        const user: User = await deleteUser(req.user as User, dto);
+        const dto: GetUserDTO = mapToGetUserDTO(req);
+        const user: User = await getUser(req.user as User, dto);
         res.json(user);
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
+export const updateUsersHandler: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        const dto: UpdateUsersDTO = mapToUpdateUsersDTO(req);
+        const users: User[] = await updateUsers(req.user as User, dto);
+        res.json(users);
     } catch (error) {
         sendErrorResponse(error, res);
     }
@@ -44,27 +105,86 @@ export const updateUserHandler: RequestHandler = async (req: Request, res: Respo
     }
 };
 
-const mapToGetUserDTO = (req: Request): GetUserDTO => ({
-    id: req.params.id,
+export const deleteUsersHandler: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        const dto: DeleteUsersDTO = mapToDeleteUsersDTO(req);
+        res.json(await deleteUsers(req.user as User, dto));
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
+export const deleteUserHandler: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        const dto: DeleteUserDTO = mapToDeleteUserDTO(req);
+        const user: User = await deleteUser(req.user as User, dto);
+        res.json(user);
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
+export const logout: RequestHandler = (req: Request, res: Response): void => {
+    req.logout((error) => {
+        if (error) {
+            res.status(INTERNAL_SERVER_ERROR).json('Log out failed.');
+            return;
+        }
+        res.json('Logged out successfully.');
+    });
+};
+
+const mapToRegisterUserDTO = (req: Request): RegisterUserDTO => ({
+    username: req.body.username,
+    password: req.body.password,
+});
+
+const mapToRegisterAdminDTO = (req: Request): RegisterAdminDTO => ({
+    username: req.body.username,
+    password: req.body.password,
 });
 
 const mapToGetUsersDTO = (req: Request): GetUsersDTO => ({
-    ... req.query.idRegex && {id: req.query.idRegex as string},
     ... req.query.username && {username: req.query.username as string},
     ... req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
-    ... req.query.sort && {sort: req.query.sort as "username" | "id" | "dateCreated" | "lastUpdated"},
-    ... req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
+    ... req.query.isAdmin && {isAdmin: (req.query.isAdmin as string)},
+    ... req.query.status && {status: req.query.status as UserStatusOption},
+    ... req.query.sort && {sort: req.query.sort as UserSortByOption},
+    ... req.query.order && {order: parseInt(req.query.order as string) as OrderOption},
     ... req.query.page && {page: parseInt(req.query.page as string)},
-    ... req.query.limit && {limit: parseInt(req.query.page as string)},
-    ... req.query.startDate && {startDate: new Date(req.query.startDate as string)},
-    ... req.query.endDate && {endDate: new Date(req.query.endDate as string)},
+    ... req.query.limit && {limit: parseInt(req.query.limit as string)},
+    ... req.query.startDate && {startDate: req.query.startDate as string},
+    ... req.query.endDate && {endDate: req.query.endDate as string},
+});
+
+const mapToGetUserDTO = (req: Request): GetUserDTO =>
+    ({username: req.params.username});
+
+const mapToUpdateUsersDTO = (req: Request): UpdateUsersDTO => ({
+    ... req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
+    ... req.query.isAdmin && {isAdmin: (req.query.isAdmin as string)},
+    ... req.query.status && {status: req.query.status as UserStatusOption},
+    ... req.query.startDate && {startDate: req.query.startDate as string},
+    ... req.query.endDate && {endDate: req.query.endDate as string},
+    ... req.body.isAdmin && {newIsAdmin: req.body.isAdmin},
+    ... req.body.status && {newStatus: req.body.status},
+});
+
+const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => ({
+    username: req.params.username,
+    ... req.body.username && {newUsername: req.body.username},
+    ... req.body.password && {newPassword: req.body.password},
+    ... req.body.isAdmin && {newIsAdmin: req.body.isAdmin},
+    ... req.body.status && {newStatus: req.body.status},
+});
+
+const mapToDeleteUsersDTO = (req: Request): DeleteUsersDTO => ({
+    ... req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
+    ... req.query.isAdmin && {isAdmin: (req.query.isAdmin as string)},
+    ... req.query.status && {status: req.query.status as UserStatusOption},
+    ... req.query.startDate && {startDate: req.query.startDate as string},
+    ... req.query.endDate && {endDate: req.query.endDate as string},
 });
 
 const mapToDeleteUserDTO = (req: Request): DeleteUserDTO =>
-    ({id: req.params.id});
-
-const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => ({
-    id: req.params.id,
-    ... req.body.username && {username: req.body.username},
-    ... req.body.password && {password: req.body.password},
-});
+    ({username: req.params.username});
