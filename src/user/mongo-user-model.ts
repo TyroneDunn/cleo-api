@@ -1,4 +1,4 @@
-import {User} from "./user";
+import {User, UserStatusOption} from "./user";
 import {Document, Schema} from 'mongoose';
 import database from "../mongoose-database";
 
@@ -7,6 +7,7 @@ interface UserDocument extends Document, User {
     username: string,
     hash: string,
     isAdmin: boolean,
+    status: UserStatusOption,
     dateCreated: Date,
     lastUpdated: Date,
 }
@@ -23,6 +24,10 @@ const userSchema = new Schema<UserDocument>({
     },
     isAdmin: {
         type: Boolean,
+        required: true
+    },
+    status: {
+        type: String,
         required: true
     },
     dateCreated: {
