@@ -8,8 +8,8 @@ import {
 } from "./journals-request-handlers";
 
 const journalsRouter: Router = Router();
-journalsRouter.get('/:id', getJournalHandler);
 journalsRouter.get('/', getJournalsHandler);
+journalsRouter.get('/:id', getJournalHandler);
 journalsRouter.post('/', createJournalHandler);
 journalsRouter.delete('/:id', deleteJournalHandler);
 journalsRouter.patch('/:id', updateJournalHandler);
