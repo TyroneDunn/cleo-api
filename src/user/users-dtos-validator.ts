@@ -30,11 +30,13 @@ export const validateRegisterUserDTO = async (dto: RegisterUserDTO): Promise<Val
 };
 
 export const validateGetUserDTO = async (user: User, dto: GetUserDTO): Promise<ValidationResult> => {
-    if (!dto.id && !dto.username)
-        return {outcome: false, error: new BadRequestError('User ID or username required.')};
-    if (!(await USERS_REPOSITORY.isAdmin(user._id.toString())))
-        return {outcome: false, error: new ForbiddenError('Unauthorized.')};
-    if (!(await USERS_REPOSITORY.exists(dto.id)))
+    if (!(user))
+        return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
+    if (!(await USERS_REPOSITORY.isAdmin(user.username)))
+        return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
+    if (!dto.username)
+        return {outcome: false, error: new BadRequestError('Username required.')};
+    if (!(await USERS_REPOSITORY.exists(dto.username)))
         return {outcome: false, error: new NotFoundError('User not found.')};
     return {outcome: true};
 };
