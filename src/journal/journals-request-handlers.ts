@@ -16,6 +16,7 @@ import {
 } from "./journals-service";
 import {sendErrorResponse} from "../utils/send-error-response";
 import {JournalSortOption} from "./journal";
+import {OrderOption} from "../utils/order-option";
 
 export const getJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -78,7 +79,7 @@ const mapToGetJournalsDTO = (req: Request): GetJournalsDTO => ({
     ... req.query.startDate && {startDate: req.query.startDate as string},
     ... req.query.endDate && {endDate: req.query.endDate as string},
     ... req.query.sort && {sort: req.query.sort as JournalSortOption},
-    ... req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
+    ... req.query.order && {order: parseInt(req.query.order as string) as OrderOption},
     ... req.query.page && {page: parseInt(req.query.page as string)},
     ... req.query.limit && {limit: parseInt(req.query.limit as string)},
 });
