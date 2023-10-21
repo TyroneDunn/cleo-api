@@ -3,7 +3,6 @@ import {OrderOption} from "../utils/order-option";
 export type GetJournalDTO = {id: string};
 
 export type GetJournalsDTO = {
-    idRegex?: string,
     name?: string,
     nameRegex?: string,
     author?: string,

@@ -70,7 +70,6 @@ const mapToGetJournalDTO = (req: Request): GetJournalDTO =>
     ({id: req.params.id});
 
 const mapToGetJournalsDTO = (req: Request): GetJournalsDTO => ({
-    ... req.query.idRegex && {idRegex: req.query.idRegex as string},
     ... req.query.name && {name: req.query.name as string},
     ... req.query.nameRegex && {nameRegex: req.query.nameRegex as string},
     ... req.query.author && {author: req.query.author as string},

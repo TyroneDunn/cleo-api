@@ -71,7 +71,6 @@ export const MongoJournalsRepository: JournalsRepository = {
 };
 
 const mapToGetJournalsFilter = (dto: GetJournalsDTO) => ({
-    ... dto.idRegex && {_id: {$regex: dto.idRegex, $options: 'i'}},
     ... dto.name && {name: dto.name},
     ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
     ... dto.author && {author: dto.author},
