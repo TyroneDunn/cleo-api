@@ -15,15 +15,20 @@ import {JOURNALS_REPOSITORY} from "../repositories-config"
 import {USERS_REPOSITORY} from "../repositories-config";
 import {ValidationResult} from "../utils/validation-result";
 import {User} from "../user/user";
+import {JournalsRepository} from "./journals-repository";
+import {UsersRepository} from "../user/users-repository";
+
+const journalsRepository: JournalsRepository = JOURNALS_REPOSITORY;
+const usersRepository: UsersRepository = USERS_REPOSITORY;
 
 export const validateGetJournalDTO = async (user: User, dto: GetJournalDTO): Promise<ValidationResult> => {
     if (!(user))
         return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Journal ID required.')};
-    if (!(await JOURNALS_REPOSITORY.ownsJournal(user.username, dto.id)) && !(await USERS_REPOSITORY.isAdmin(user.username)))
+    if (!(await journalsRepository.ownsJournal(user.username, dto.id)) && !(await usersRepository.isAdmin(user.username)))
         return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
-    if (!(await JOURNALS_REPOSITORY.exists(dto.id)))
+    if (!(await journalsRepository.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.id} not found.`)};
     return {outcome: true};
 };
@@ -31,7 +36,7 @@ export const validateGetJournalDTO = async (user: User, dto: GetJournalDTO): Pro
 export const validateGetJournalsDTO = async (user: User, dto: GetJournalsDTO): Promise<ValidationResult> => {
     if (!(user))
         return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
-    if (!(await USERS_REPOSITORY.isAdmin(user.username)) && (user.username !== dto.author))
+    if (!(await usersRepository.isAdmin(user.username)) && (user.username !== dto.author))
         return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
     if (dto.name && dto.nameRegex)
         return {outcome: false, error: new BadRequestError('Invalid query.')};
@@ -85,9 +90,9 @@ export const validateUpdateJournalDTO = async (user: User, dto: UpdateJournalDTO
         return {outcome: false, error: new BadRequestError('Journal ID required.')};
     if (!dto.name)
         return {outcome: false, error: new BadRequestError('Journal name required.')};
-    if (!(await JOURNALS_REPOSITORY.ownsJournal(user.username, dto.id)) && !(await USERS_REPOSITORY.isAdmin(user.username)))
+    if (!(await journalsRepository.ownsJournal(user.username, dto.id)) && !(await usersRepository.isAdmin(user.username)))
         return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
-    if (!(await JOURNALS_REPOSITORY.exists(dto.id)))
+    if (!(await journalsRepository.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.id} not found.`)};
     return {outcome: true};
 };
@@ -95,9 +100,9 @@ export const validateUpdateJournalDTO = async (user: User, dto: UpdateJournalDTO
 export const validateDeleteJournalDTO = async (user: User, dto: DeleteJournalDTO): Promise<ValidationResult> => {
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Journal ID required.')};
-    if (!(await JOURNALS_REPOSITORY.ownsJournal(user.username, dto.id)) && !(await USERS_REPOSITORY.isAdmin(user.username)))
+    if (!(await journalsRepository.ownsJournal(user.username, dto.id)) && !(await usersRepository.isAdmin(user.username)))
         return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
-    if (!(await JOURNALS_REPOSITORY.exists(dto.id)))
+    if (!(await journalsRepository.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.id} not found.`)};
     return {outcome: true};
 };
