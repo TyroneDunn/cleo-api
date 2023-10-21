@@ -3,13 +3,30 @@ import {
     getUserHandler,
     getUsersHandler,
     deleteUserHandler,
-    updateUserHandler
+    updateUserHandler,
+    authenticate,
+    loggedInResponse,
+    authenticatedResponse,
+    logout,
+    register,
+    authGuard,
+    registerAdmin,
+    updateUsersHandler,
+    deleteUsersHandler,
 } from "./users-request-handlers";
 
 const usersRouter: Router = Router();
-usersRouter.get('/:id', getUserHandler);
+usersRouter.post('/login/', authenticate, loggedInResponse);
+usersRouter.post('/logout/', authGuard, logout);
+usersRouter.post('/register/', register);
+usersRouter.post('/register-admin/', registerAdmin);
+usersRouter.get('/protected/', authGuard, authenticatedResponse);
+
 usersRouter.get('/', getUsersHandler);
-usersRouter.delete('/:id', deleteUserHandler);
-usersRouter.patch('/:id', updateUserHandler);
+usersRouter.get('/:username', getUserHandler);
+usersRouter.patch('/', updateUsersHandler);
+usersRouter.patch('/:username', updateUserHandler);
+usersRouter.delete('/', deleteUsersHandler);
+usersRouter.delete('/:username', deleteUserHandler);
 
 export default usersRouter;
