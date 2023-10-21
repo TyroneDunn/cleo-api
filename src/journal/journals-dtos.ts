@@ -29,3 +29,12 @@ export type UpdateJournalDTO = {
 export type DeleteJournalDTO = {
     id: string,
 };
+
+export type DeleteJournalsDTO = {
+    name?: string,
+    nameRegex?: string,
+    author?: string,
+    authorRegex?: string,
+    startDate?: string,
+    endDate?: string,
+};
