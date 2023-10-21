@@ -2,7 +2,16 @@ import {UsersRepository} from "./users-repository";
 import UserModel from "./mongo-user-model";
 import {User} from "./user";
 import {now} from "mongoose";
-import {DeleteUserDTO, GetUserDTO, GetUsersDTO, RegisterUserDTO, UpdateUserDTO} from "./users-dtos";
+import {
+    DeleteUserDTO,
+    DeleteUsersDTO,
+    GetUserDTO,
+    GetUsersDTO,
+    RegisterAdminDTO,
+    RegisterUserDTO,
+    UpdateUserDTO,
+    UpdateUsersDTO
+} from "./users-dtos";
 import {generateHash} from "../utils/password-utils";
 
 const buildGetUsersQuery = (dto: GetUsersDTO) => {
