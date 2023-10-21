@@ -11,18 +11,6 @@ import {
     UpdateJournalDTO
 } from "./journals-dtos";
 
-const mapToGetJournalsQuery = (dto: GetJournalsDTO) => ({
-        author: dto.author,
-        ... dto.idRegex && {_id: {$regex: dto.idRegex, $options: 'i'}},
-        ... dto.name && {name: dto.name},
-        ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
-        ... dto.author && {author: dto.author},
-        ... dto.authorRegex && {author: {$regex: dto.authorRegex, $options: 'i'}},
-        ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
-        ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
-        ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
-});
-
 const deleteJournalEntries = async (journal: string): Promise<void> => {
     await JournalEntryModel.deleteMany({journal: journal});
 };
@@ -33,8 +21,8 @@ export const MongoJournalsRepository: JournalsRepository = {
 
     getJournals: async (dto: GetJournalsDTO): Promise<Journal[]> => {
         const skip = (dto.page - 1) * dto.limit;
-        const query = mapToGetJournalsQuery(dto);
-        return JournalModel.find(query)
+        const filter = mapToGetJournalsFilter(dto);
+        return JournalModel.find(filter)
             .sort({[dto.sort]: dto.order})
             .skip(skip)
             .limit(dto.limit);
@@ -81,3 +69,14 @@ export const MongoJournalsRepository: JournalsRepository = {
         }
     },
 };
+
+const mapToGetJournalsFilter = (dto: GetJournalsDTO) => ({
+    ... dto.idRegex && {_id: {$regex: dto.idRegex, $options: 'i'}},
+    ... dto.name && {name: dto.name},
+    ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
+    ... dto.author && {author: dto.author},
+    ... dto.authorRegex && {author: {$regex: dto.authorRegex, $options: 'i'}},
+    ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
+    ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
+    ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+});
