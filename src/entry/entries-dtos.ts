@@ -31,3 +31,11 @@ export type UpdateEntryDTO = {
 export type DeleteEntryDTO = {
     id: string,
 };
+
+export type DeleteEntriesDTO = {
+    body?: string,
+    bodyRegex?: string,
+    journal?: string,
+    startDate?: string,
+    endDate?: string,
+};
