@@ -1,10 +1,11 @@
 import {Router} from "express";
 import {
-    createEntryHandler,
-    deleteEntryHandler,
     getEntriesHandler,
     getEntryHandler,
-    updateEntryHandler
+    createEntryHandler,
+    updateEntryHandler,
+    deleteEntryHandler,
+    deleteEntriesHandler
 } from "./entries-request-handlers";
 
 const entriesRouter: Router = Router();

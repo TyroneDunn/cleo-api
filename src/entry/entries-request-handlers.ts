@@ -1,5 +1,5 @@
 import {
-    CreateEntryDTO,
+    CreateEntryDTO, DeleteEntriesDTO,
     DeleteEntryDTO,
     GetEntriesDTO,
     GetEntryDTO,
@@ -68,6 +68,16 @@ export const deleteEntryHandler: RequestHandler = async (req: Request, res: Resp
     }
 };
 
+export const deleteEntriesHandler: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        const dto: DeleteEntriesDTO = mapToDeleteEntriesDTO(req);
+        const result = await deleteEntries(req.user as User, dto);
+        res.json(result);
+    } catch (error) {
+        sendErrorResponse(error, res);
+    }
+};
+
 const mapToGetEntryDTO = (req: Request): GetEntryDTO =>
     ({id: req.params.id});
 
@@ -96,3 +106,11 @@ const mapToUpdateEntryDTO = (req: Request): UpdateEntryDTO => ({
 
 const mapToDeleteEntryDTO = (req: Request): DeleteEntryDTO =>
     ({id: req.params.id});
+
+const mapToDeleteEntriesDTO = (req: Request): DeleteEntriesDTO => ({
+    ... req.query.journal && {journal: req.query.journal as string},
+    ... req.query.body && {body: req.query.body as string},
+    ... req.query.bodyRegex && {bodyRegex: req.query.bodyRegex as string},
+    ... req.query.startDate && {startDate: req.query.startDate as string},
+    ... req.query.endDate && {endDate: req.query.endDate as string},
+});
