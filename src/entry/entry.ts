@@ -5,3 +5,5 @@ export type Entry = {
     lastUpdated: Date,
     dateCreated: Date,
 };
+
+export type EntrySortOption = 'id' | 'journal' | 'body' | 'dateCreated' | 'lastUpdated';
