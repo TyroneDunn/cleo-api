@@ -41,16 +41,16 @@ export const createEntry = async (user: User, dto: CreateEntryDTO): Promise<Entr
     return repository.createEntry(dto);
 };
 
-export const deleteEntry = async (user: User, dto: DeleteEntryDTO): Promise<Entry> => {
-    const validationResult: ValidationResult = await validateDeleteEntryDTO(user, dto);
-    if (!validationResult.outcome)
-        throw validationResult.error;
-    return repository.deleteEntry(dto);
-};
-
 export const updateEntry = async (user: User, dto: UpdateEntryDTO): Promise<Entry> => {
     const validationResult: ValidationResult = await validateUpdateEntryDTO(user, dto);
     if (!validationResult.outcome)
         throw validationResult.error;
     return repository.updateEntry(dto);
+};
+
+export const deleteEntry = async (user: User, dto: DeleteEntryDTO): Promise<Entry> => {
+    const validationResult: ValidationResult = await validateDeleteEntryDTO(user, dto);
+    if (!validationResult.outcome)
+        throw validationResult.error;
+    return repository.deleteEntry(dto);
 };
