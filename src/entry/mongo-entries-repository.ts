@@ -12,25 +12,14 @@ import {
     UpdateEntryDTO
 } from "./entries-dtos";
 
-const mapToGetEntriesOptions = (dto: GetEntriesDTO) => ({
-        ... dto.idRegex && {_id: {$regex: dto.idRegex, $options: 'i'}},
-        ... dto.journal && {journal: dto.journal},
-        ... dto.journalRegex && {journal: {$regex: dto.journal, $options: 'i'}},
-        ... dto.body && {body: dto.body},
-        ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
-        ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
-        ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
-        ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
-});
-
 export const MongoEntriesRepository: EntriesRepository = {
     getEntry: async (dto: GetEntryDTO): Promise<Entry> =>
         EntryModel.findById(dto.id),
 
     getEntries: async (dto: GetEntriesDTO): Promise<Entry[]> => {
         const skip = (dto.page - 1) * dto.limit;
-        const options = mapToGetEntriesOptions(dto);
-        return EntryModel.find(options)
+        const filter = mapToGetEntriesFilter(dto);
+        return EntryModel.find(filter)
             .sort({[dto.sort]: dto.order})
             .skip(skip)
             .limit(dto.limit);
@@ -77,3 +66,12 @@ export const MongoEntriesRepository: EntriesRepository = {
         }
     },
 };
+
+const mapToGetEntriesFilter = (dto: GetEntriesDTO) => ({
+    ... dto.journal && {journal: dto.journal},
+    ... dto.body && {body: dto.body},
+    ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
+    ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
+    ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
+    ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+});
