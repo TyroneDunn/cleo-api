@@ -6,7 +6,7 @@ import {
     UpdateEntryDTO
 } from "./entries-dtos";
 import {
-    createEntry,
+    createEntry, deleteEntries,
     deleteEntry,
     getEntries,
     getEntry,

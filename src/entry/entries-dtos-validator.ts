@@ -1,9 +1,10 @@
 import {
     CreateEntryDTO,
-    DeleteEntryDTO,
     GetEntriesDTO,
     GetEntryDTO,
-    UpdateEntryDTO
+    UpdateEntryDTO,
+    DeleteEntryDTO,
+    DeleteEntriesDTO,
 } from "./entries-dtos";
 import {ValidationResult} from "../utils/validation-result";
 import {
@@ -120,5 +121,28 @@ export const validateDeleteEntryDTO = async (user: User, dto: DeleteEntryDTO): P
         return {outcome: false, error: new NotFoundError(`Entry ${dto.id} not found.`)};
     if (!(await ENTRIES_REPOSITORY.ownsEntry(user._id.toString(), dto.id)))
         return {outcome: false, error: new UnauthorizedError(`Unauthorized access to entry ${dto.id}`)};
+    return {outcome: true};
+};
+
+export const validateDeleteEntriesDTO = async (user: User, dto: DeleteEntriesDTO): Promise<ValidationResult> => {
+    if (!(user))
+        return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
+    if (dto.journal) {
+        if (!(await journalsRepository.exists(dto.journal)))
+            return {outcome: false, error: new NotFoundError(`Journal ${dto.journal} not found.`)};
+    }
+    if (!(await usersRepository.isAdmin(user.username)) && !(await journalsRepository.ownsJournal(user.username, dto.journal)))
+        return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
+    if ((dto.body && dto.bodyRegex)) {
+        return {outcome: false, error: new BadRequestError('Invalid query.')};
+    }
+    if (dto.startDate) {
+        if (isNaN(Date.parse(dto.startDate)))
+            return {outcome: false, error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};
+    }
+    if (dto.endDate) {
+        if (isNaN(Date.parse(dto.endDate)))
+            return {outcome: false, error: new BadRequestError('Invalid end date query. Provide a ISO date string.')};
+    }
     return {outcome: true};
 };

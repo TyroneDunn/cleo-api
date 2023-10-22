@@ -9,7 +9,7 @@ import {
     UpdateEntryDTO
 } from "./entries-dtos";
 import {
-    validateCreateEntryDTO,
+    validateCreateEntryDTO, validateDeleteEntriesDTO,
     validateDeleteEntryDTO,
     validateGetEntriesDTO,
     validateGetEntryDTO,
