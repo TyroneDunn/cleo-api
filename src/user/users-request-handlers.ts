@@ -58,7 +58,7 @@ export const registerAdmin: RequestHandler = async (req: Request, res: Response)
 };
 
 export const authenticatedResponse: RequestHandler = (req: Request, res: Response): void => {
-    res.json(`Authenticated as ${(req.user as User).username}`);
+    res.json({"username": (req.user as User).username});
 };
 
 export const loggedInResponse: RequestHandler = (req: Request, res: Response): void => {
