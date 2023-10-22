@@ -57,14 +57,16 @@ export const validateGetEntriesDTO = async (user: User, dto: GetEntriesDTO): Pro
 };
 
 export const validateCreateEntryDTO = async (user: User, dto: CreateEntryDTO): Promise<ValidationResult> => {
+    if (!(user))
+        return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
     if (!dto.journal)
         return {outcome: false, error: new BadRequestError('Journal required.')};
     if (!dto.body)
         return {outcome: false, error: new BadRequestError('Body required.')};
     if (!(await JOURNALS_REPOSITORY.exists(dto.journal)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.journal} not found.`)};
-    if (!(await JOURNALS_REPOSITORY.ownsJournal(user._id.toString(),dto.journal)))
-        return {outcome: false, error: new UnauthorizedError(`Unauthorized access to journal ${dto.journal}`)};
+    if (!(await usersRepository.isAdmin(user.username)) && !(await journalsRepository.ownsJournal(user.username, dto.journal)))
+        return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
     return {outcome: true};
 };
 
