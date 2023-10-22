@@ -1,17 +1,18 @@
+import {OrderOption} from "../utils/order-option";
+import {EntrySortOption} from "./entry";
+
 export type GetEntryDTO = {
     id: string,
 };
 
 export type GetEntriesDTO = {
-    idRegex?: string,
     body?: string,
     bodyRegex?: string,
     journal?: string,
-    journalRegex?: string,
-    sort?: 'id' | 'body' | 'journal' | 'dateCreated' | 'lastUpdated',
-    order?: 1 | -1,
-    startDate?: Date,
-    endDate?: Date,
+    startDate?: string,
+    endDate?: string,
+    sort?: EntrySortOption,
+    order?: OrderOption,
     page?: number,
     limit?: number,
 };
