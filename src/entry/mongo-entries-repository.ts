@@ -5,11 +5,12 @@ import JournalModel from "../journal/mongo-journal-model";
 import {Journal} from "../journal/journal";
 import {now} from "mongoose";
 import {
-    CreateEntryDTO,
-    DeleteEntryDTO,
-    GetEntriesDTO,
     GetEntryDTO,
-    UpdateEntryDTO
+    GetEntriesDTO,
+    CreateEntryDTO,
+    UpdateEntryDTO,
+    DeleteEntryDTO,
+    DeleteEntriesDTO
 } from "./entries-dtos";
 
 export const MongoEntriesRepository: EntriesRepository = {
@@ -33,9 +34,6 @@ export const MongoEntriesRepository: EntriesRepository = {
             lastUpdated: now(),
         }).save(),
 
-    deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> =>
-        EntryModel.findByIdAndDelete(dto.id),
-
     updateEntry: async (dto: UpdateEntryDTO): Promise<Entry> =>
         EntryModel.findByIdAndUpdate(
             dto.id,
@@ -46,6 +44,15 @@ export const MongoEntriesRepository: EntriesRepository = {
             },
             {new: true}
         ),
+
+    deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> =>
+        EntryModel.findByIdAndDelete(dto.id),
+
+    deleteEntries: async (dto: DeleteEntriesDTO): Promise<string> => {
+        const filter = mapToDeleteEntriesFilter(dto);
+        const result = await EntryModel.deleteMany(filter);
+        return `${result.deletedCount} entries deleted.`;
+    },
 
     exists: async (id: string): Promise<boolean> => {
         try {
@@ -68,6 +75,15 @@ export const MongoEntriesRepository: EntriesRepository = {
 };
 
 const mapToGetEntriesFilter = (dto: GetEntriesDTO) => ({
+    ... dto.journal && {journal: dto.journal},
+    ... dto.body && {body: dto.body},
+    ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
+    ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
+    ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
+    ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+});
+
+const mapToDeleteEntriesFilter = (dto: DeleteEntriesDTO) => ({
     ... dto.journal && {journal: dto.journal},
     ... dto.body && {body: dto.body},
     ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
