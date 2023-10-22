@@ -5,19 +5,20 @@ import {
     Response
 } from "express";
 import {
-    CreateJournalDTO,
-    DeleteJournalDTO, DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
-    UpdateJournalDTO
+    CreateJournalDTO,
+    UpdateJournalDTO,
+    DeleteJournalDTO,
+    DeleteJournalsDTO
 } from "./journals-dtos";
 import {
-    createJournal,
-    deleteJournal,
-    deleteJournals,
     getJournal,
     getJournals,
+    createJournal,
     updateJournal,
+    deleteJournal,
+    deleteJournals,
 } from "./journals-service";
 import {sendErrorResponse} from "../utils/send-error-response";
 import {JournalSortOption} from "./journal";
@@ -106,7 +107,7 @@ const mapToCreateJournalDTO = (req: Request): CreateJournalDTO => ({
 
 const mapToUpdateJournalDTO = (req: Request): UpdateJournalDTO => ({
     id: req.params.id,
-    name: req.body.name,
+    ... req.body.name && {name: req.body.name},
 });
 
 const mapToDeleteJournalDTO = (req: Request): DeleteJournalDTO =>

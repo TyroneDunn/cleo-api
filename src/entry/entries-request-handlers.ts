@@ -100,8 +100,8 @@ const mapToCreateEntryDTO = (req: Request): CreateEntryDTO => ({
 
 const mapToUpdateEntryDTO = (req: Request): UpdateEntryDTO => ({
     id: req.params.id,
-    journal: req.body.journal,
-    body: req.body.body,
+    ... req.body.journal && {journal: req.body.journal},
+    ... req.body.body && {body: req.body.body},
 });
 
 const mapToDeleteEntryDTO = (req: Request): DeleteEntryDTO =>
