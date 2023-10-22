@@ -5,10 +5,18 @@ import {
     GetEntryDTO,
     UpdateEntryDTO
 } from "./entries-dtos";
-import {createEntry, deleteEntry, getEntries, getEntry, updateEntry} from "./entries-service";
+import {
+    createEntry,
+    deleteEntry,
+    getEntries,
+    getEntry,
+    updateEntry
+} from "./entries-service";
 import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
 import {sendErrorResponse} from "../utils/send-error-response";
+import {EntrySortOption} from "./entry";
+import {OrderOption} from "../utils/order-option";
 
 export const getEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
@@ -40,20 +48,20 @@ export const createEntryHandler: RequestHandler = async (req: Request, res: Resp
     }
 };
 
-export const deleteEntryHandler: RequestHandler = async (req: Request, res: Response) => {
+export const updateEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteEntryDTO = mapToDeleteEntryDTO(req);
-        const entry = await deleteEntry(req.user as User, dto);
+        const dto: UpdateEntryDTO = mapToUpdateEntryDTO(req);
+        const entry = await updateEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);
     }
 };
 
-export const updateEntryHandler: RequestHandler = async (req: Request, res: Response) => {
+export const deleteEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: UpdateEntryDTO = mapToUpdateEntryDTO(req);
-        const entry = await updateEntry(req.user as User, dto);
+        const dto: DeleteEntryDTO = mapToDeleteEntryDTO(req);
+        const entry = await deleteEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
         sendErrorResponse(error, res);
@@ -69,8 +77,8 @@ const mapToGetEntriesDTO = (req: Request): GetEntriesDTO => ({
     ... req.query.bodyRegex && {bodyRegex: req.query.bodyRegex as string},
     ... req.query.startDate && {startDate: req.query.startDate as string},
     ... req.query.endDate && {endDate: req.query.endDate as string},
-    ... req.query.sort && {sort: req.query.sort as "body" | "id" | "dateCreated" | "lastUpdated"},
-    ... req.query.order && {order: parseInt(req.query.order as string) as 1 | -1},
+    ... req.query.sort && {sort: req.query.sort as EntrySortOption},
+    ... req.query.order && {order: parseInt(req.query.order as string) as OrderOption},
     ... req.query.page && {page: parseInt(req.query.page as string)},
     ... req.query.limit && {limit: parseInt(req.query.limit as string)},
 });
@@ -80,11 +88,11 @@ const mapToCreateEntryDTO = (req: Request): CreateEntryDTO => ({
     body: req.body.body,
 });
 
-const mapToDeleteEntryDTO = (req: Request): DeleteEntryDTO =>
-    ({id: req.params.id});
-
 const mapToUpdateEntryDTO = (req: Request): UpdateEntryDTO => ({
     id: req.params.id,
     journal: req.body.journal,
     body: req.body.body,
 });
+
+const mapToDeleteEntryDTO = (req: Request): DeleteEntryDTO =>
+    ({id: req.params.id});
