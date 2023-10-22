@@ -31,7 +31,7 @@ export const validateGetEntryDTO = async (user: User, dto: GetEntryDTO): Promise
         return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Entry ID required.')};
-    if (!(await ENTRIES_REPOSITORY.exists(dto.id)))
+    if (!(await entriesRepository.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Entry ${dto.id} not found.`)};
     if (!(await usersRepository.isAdmin(user.username)) && !(await entriesRepository.ownsEntry(user.username, dto.id)))
         return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
@@ -88,7 +88,7 @@ export const validateCreateEntryDTO = async (user: User, dto: CreateEntryDTO): P
         return {outcome: false, error: new BadRequestError('Journal required.')};
     if (!dto.body)
         return {outcome: false, error: new BadRequestError('Body required.')};
-    if (!(await JOURNALS_REPOSITORY.exists(dto.journal)))
+    if (!(await journalsRepository.exists(dto.journal)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.journal} not found.`)};
     if (!(await usersRepository.isAdmin(user.username)) && !(await journalsRepository.ownsJournal(user.username, dto.journal)))
         return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};

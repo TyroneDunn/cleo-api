@@ -22,12 +22,12 @@ export type CreateEntryDTO = {
     body: string,
 };
 
-export type DeleteEntryDTO = {
-    id: string,
-};
-
 export type UpdateEntryDTO = {
     id: string,
     body?: string,
     journal?: string,
+};
+
+export type DeleteEntryDTO = {
+    id: string,
 };
