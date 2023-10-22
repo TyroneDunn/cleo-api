@@ -2,18 +2,20 @@ import {Entry} from "./entry";
 import {EntriesRepository} from "./entries-repository";
 import {ENTRIES_REPOSITORY} from "../repositories-config";
 import {
-    CreateEntryDTO, DeleteEntriesDTO,
-    DeleteEntryDTO,
-    GetEntriesDTO,
     GetEntryDTO,
-    UpdateEntryDTO
+    GetEntriesDTO,
+    CreateEntryDTO,
+    UpdateEntryDTO,
+    DeleteEntryDTO,
+    DeleteEntriesDTO,
 } from "./entries-dtos";
 import {
-    validateCreateEntryDTO, validateDeleteEntriesDTO,
-    validateDeleteEntryDTO,
-    validateGetEntriesDTO,
     validateGetEntryDTO,
-    validateUpdateEntryDTO
+    validateGetEntriesDTO,
+    validateCreateEntryDTO,
+    validateUpdateEntryDTO,
+    validateDeleteEntryDTO,
+    validateDeleteEntriesDTO,
 } from "./entries-dtos-validator";
 import {ValidationResult} from "../utils/validation-result";
 import {User} from "../user/user";
