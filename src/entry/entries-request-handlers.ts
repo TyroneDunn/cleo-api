@@ -1,16 +1,18 @@
 import {
-    CreateEntryDTO, DeleteEntriesDTO,
-    DeleteEntryDTO,
-    GetEntriesDTO,
     GetEntryDTO,
-    UpdateEntryDTO
+    GetEntriesDTO,
+    CreateEntryDTO,
+    UpdateEntryDTO,
+    DeleteEntriesDTO,
+    DeleteEntryDTO,
 } from "./entries-dtos";
 import {
-    createEntry, deleteEntries,
-    deleteEntry,
-    getEntries,
     getEntry,
-    updateEntry
+    getEntries,
+    createEntry,
+    updateEntry,
+    deleteEntry,
+    deleteEntries,
 } from "./entries-service";
 import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
