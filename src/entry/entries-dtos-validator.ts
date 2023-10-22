@@ -96,14 +96,20 @@ export const validateCreateEntryDTO = async (user: User, dto: CreateEntryDTO): P
 };
 
 export const validateUpdateEntryDTO = async (user: User, dto: UpdateEntryDTO): Promise<ValidationResult> => {
+    if (!(user))
+        return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Entry ID required.')};
+    if (!(await usersRepository.isAdmin(user.username)) && !(await entriesRepository.ownsEntry(user.username, dto.id)))
+        return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
+    if (!(await entriesRepository.exists(dto.id)))
+        return {outcome: false, error: new NotFoundError(`Entry ${dto.id} not found.`)};
     if ((!dto.body) && (!dto.journal))
         return {outcome: false, error: new BadRequestError('Update field required.')};
-    if (!(await ENTRIES_REPOSITORY.exists(dto.id)))
-        return {outcome: false, error: new NotFoundError(`Entry ${dto.id} not found.`)};
-    if (!(await ENTRIES_REPOSITORY.ownsEntry(user._id.toString(), dto.id)))
-        return {outcome: false, error: new UnauthorizedError(`Unauthorized access to entry ${dto.id}`)};
+    if (dto.journal) {
+        if (!(await journalsRepository.exists(dto.journal)))
+            return {outcome: false, error: new NotFoundError(`Journal ${dto.journal} not found.`)};
+    }
     return {outcome: true};
 };
 
