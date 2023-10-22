@@ -62,7 +62,7 @@ export const authenticatedResponse: RequestHandler = (req: Request, res: Respons
 };
 
 export const loggedInResponse: RequestHandler = (req: Request, res: Response): void => {
-    res.json(`Logged in as ${(req.user as User).username}`);
+    res.json({"username": (req.user as User).username});
 };
 
 export const getUsersHandler: RequestHandler = async (req: Request, res: Response) => {
