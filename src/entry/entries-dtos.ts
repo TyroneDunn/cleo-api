@@ -1,9 +1,7 @@
 import {OrderOption} from "../utils/order-option";
 import {EntrySortOption} from "./entry";
 
-export type GetEntryDTO = {
-    id: string,
-};
+export type GetEntryDTO = {id: string};
 
 export type GetEntriesDTO = {
     body?: string,
@@ -28,9 +26,7 @@ export type UpdateEntryDTO = {
     journal?: string,
 };
 
-export type DeleteEntryDTO = {
-    id: string,
-};
+export type DeleteEntryDTO = {id: string};
 
 export type DeleteEntriesDTO = {
     body?: string,
