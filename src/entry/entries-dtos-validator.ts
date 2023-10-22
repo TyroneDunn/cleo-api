@@ -6,17 +6,35 @@ import {
     UpdateEntryDTO
 } from "./entries-dtos";
 import {ValidationResult} from "../utils/validation-result";
-import {BadRequestError, NotFoundError, UnauthorizedError} from "../utils/errors";
-import {ENTRIES_REPOSITORY, JOURNALS_REPOSITORY} from "../repositories-config";
+import {
+    BadRequestError,
+    ForbiddenError,
+    NotFoundError,
+    UnauthorizedError
+} from "../utils/errors";
+import {
+    ENTRIES_REPOSITORY,
+    JOURNALS_REPOSITORY,
+    USERS_REPOSITORY
+} from "../repositories-config";
 import {User} from "../user/user";
+import {UsersRepository} from "../user/users-repository";
+import {JournalsRepository} from "../journal/journals-repository";
+import {EntriesRepository} from "./entries-repository";
+
+const usersRepository: UsersRepository = USERS_REPOSITORY;
+const journalsRepository: JournalsRepository = JOURNALS_REPOSITORY;
+const entriesRepository: EntriesRepository = ENTRIES_REPOSITORY;
 
 export const validateGetEntryDTO = async (user: User, dto: GetEntryDTO): Promise<ValidationResult> => {
+    if (!(user))
+        return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Entry ID required.')};
     if (!(await ENTRIES_REPOSITORY.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Entry ${dto.id} not found.`)};
-    if (!(await ENTRIES_REPOSITORY.ownsEntry(user._id.toString(), dto.id)))
-        return {outcome: false, error: new UnauthorizedError(`Unauthorized access to entry ${dto.id}`)};
+    if (!(await usersRepository.isAdmin(user.username)) && !(await entriesRepository.ownsEntry(user.username, dto.id)))
+        return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
     return {outcome: true};
 };
 
