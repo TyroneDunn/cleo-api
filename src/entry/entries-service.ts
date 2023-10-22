@@ -2,7 +2,7 @@ import {Entry} from "./entry";
 import {EntriesRepository} from "./entries-repository";
 import {ENTRIES_REPOSITORY} from "../repositories-config";
 import {
-    CreateEntryDTO,
+    CreateEntryDTO, DeleteEntriesDTO,
     DeleteEntryDTO,
     GetEntriesDTO,
     GetEntryDTO,
@@ -53,4 +53,11 @@ export const deleteEntry = async (user: User, dto: DeleteEntryDTO): Promise<Entr
     if (!validationResult.outcome)
         throw validationResult.error;
     return repository.deleteEntry(dto);
+};
+
+export const deleteEntries = async (user: User, dto: DeleteEntriesDTO): Promise<string> => {
+    const validationResult: ValidationResult = await validateDeleteEntriesDTO(user, dto);
+    if (!validationResult.outcome)
+        throw validationResult.error;
+    return repository.deleteEntries(dto);
 };
