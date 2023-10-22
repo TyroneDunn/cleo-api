@@ -27,10 +27,10 @@ export const validateGetJournalDTO = async (user: User, dto: GetJournalDTO): Pro
         return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Journal ID required.')};
-    if (!(await journalsRepository.ownsJournal(user.username, dto.id)) && !(await usersRepository.isAdmin(user.username)))
-        return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
     if (!(await journalsRepository.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.id} not found.`)};
+    if (!(await journalsRepository.ownsJournal(user.username, dto.id)) && !(await usersRepository.isAdmin(user.username)))
+        return {outcome: false, error: new ForbiddenError('Insufficient permissions.')};
     return {outcome: true};
 };
 
