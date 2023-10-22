@@ -95,9 +95,11 @@ export const validateCreateEntryDTO = async (user: User, dto: CreateEntryDTO): P
     return {outcome: true};
 };
 
-export const validateDeleteEntryDTO = async (user: User, dto: DeleteEntryDTO): Promise<ValidationResult> => {
+export const validateUpdateEntryDTO = async (user: User, dto: UpdateEntryDTO): Promise<ValidationResult> => {
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Entry ID required.')};
+    if ((!dto.body) && (!dto.journal))
+        return {outcome: false, error: new BadRequestError('Update field required.')};
     if (!(await ENTRIES_REPOSITORY.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Entry ${dto.id} not found.`)};
     if (!(await ENTRIES_REPOSITORY.ownsEntry(user._id.toString(), dto.id)))
@@ -105,11 +107,9 @@ export const validateDeleteEntryDTO = async (user: User, dto: DeleteEntryDTO): P
     return {outcome: true};
 };
 
-export const validateUpdateEntryDTO = async (user: User, dto: UpdateEntryDTO): Promise<ValidationResult> => {
+export const validateDeleteEntryDTO = async (user: User, dto: DeleteEntryDTO): Promise<ValidationResult> => {
     if (!dto.id)
         return {outcome: false, error: new BadRequestError('Entry ID required.')};
-    if ((!dto.body) && (!dto.journal))
-        return {outcome: false, error: new BadRequestError('Update field required.')};
     if (!(await ENTRIES_REPOSITORY.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Entry ${dto.id} not found.`)};
     if (!(await ENTRIES_REPOSITORY.ownsEntry(user._id.toString(), dto.id)))
