@@ -1,5 +1,5 @@
 import {OrderOption} from "../utils/order-option";
-import {JournalSortOption} from "./journal";
+import {Journal, JournalSortOption} from "./journal";
 
 export type GetJournalDTO = {id: string};
 
@@ -12,6 +12,13 @@ export type GetJournalsDTO = {
     endDate?: string,
     sort?: JournalSortOption,
     order?: OrderOption,
+    page?: number,
+    limit?: number,
+};
+
+export type GetJournalsResponseDTO = {
+    journals: Journal[],
+    count: number,
     page?: number,
     limit?: number,
 };
