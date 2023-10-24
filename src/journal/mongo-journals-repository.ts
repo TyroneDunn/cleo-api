@@ -9,6 +9,7 @@ import {
     DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
+    GetJournalsResponseDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
 
@@ -20,13 +21,18 @@ export const MongoJournalsRepository: JournalsRepository = {
     getJournal: async (dto: GetJournalDTO): Promise<Journal> =>
         JournalModel.findById(dto.id),
 
-    getJournals: async (dto: GetJournalsDTO): Promise<Journal[]> => {
-        const skip = (dto.page - 1) * dto.limit;
+    getJournals: async (dto: GetJournalsDTO): Promise<GetJournalsResponseDTO> => {
+        const skip = (dto.page) * dto.limit;
         const filter = mapToGetJournalsFilter(dto);
-        return JournalModel.find(filter)
-            .sort({[dto.sort]: dto.order})
-            .skip(skip)
-            .limit(dto.limit);
+        return {
+            count: await JournalModel.count(filter),
+            journals: await JournalModel.find(filter)
+                .sort({[dto.sort]: dto.order})
+                .skip(skip)
+                .limit(dto.limit),
+            ...(dto.page !== undefined) && {page: dto.page},
+            ...(dto.limit !== undefined) && {limit: dto.limit},
+        };
     },
 
     createJournal: async (dto: CreateJournalDTO): Promise<Journal> =>

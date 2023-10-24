@@ -15,6 +15,7 @@ import {
     DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
+    GetJournalsResponseDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
 import {ValidationResult} from "../utils/validation-result";
@@ -29,7 +30,7 @@ export const getJournal = async (user: User, dto: GetJournalDTO): Promise<Journa
     return repository.getJournal(dto);
 };
 
-export const getJournals = async (user: User, dto: GetJournalsDTO): Promise<Journal[]> => {
+export const getJournals = async (user: User, dto: GetJournalsDTO): Promise<GetJournalsResponseDTO> => {
     const validationResult: ValidationResult = await validateGetJournalsDTO(user, dto);
     if (!validationResult.outcome)
         throw validationResult.error;

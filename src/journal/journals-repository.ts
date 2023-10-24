@@ -5,12 +5,13 @@ import {
     DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
+    GetJournalsResponseDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
 
 export type JournalsRepository = {
     getJournal: (dto: GetJournalDTO) => Promise<Journal>,
-    getJournals: (dto: GetJournalsDTO) => Promise<Journal[]>,
+    getJournals: (dto: GetJournalsDTO) => Promise<GetJournalsResponseDTO>,
     createJournal: (dto: CreateJournalDTO) => Promise<Journal>,
     deleteJournal: (dto: DeleteJournalDTO) => Promise<Journal>,
     deleteJournals: (dto: DeleteJournalsDTO) => Promise<string>,

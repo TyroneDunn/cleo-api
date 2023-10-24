@@ -62,9 +62,9 @@ export const validateGetJournalsDTO = async (user: User, dto: GetJournalsDTO): P
                     ' 1 or -1.')};
     }
     if (dto.page !== undefined) {
-        if (dto.page < 1)
+        if (dto.page < 0)
             return {outcome: false, error: new BadRequestError('Invalid query. Page must be' +
-                    ' 1 or greater.')};
+                    ' 0 or greater.')};
     }
     if (dto.limit !== undefined) {
         if (dto.limit < 0)

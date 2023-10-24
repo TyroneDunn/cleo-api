@@ -10,7 +10,8 @@ import {
     CreateJournalDTO,
     UpdateJournalDTO,
     DeleteJournalDTO,
-    DeleteJournalsDTO
+    DeleteJournalsDTO,
+    GetJournalsResponseDTO
 } from "./journals-dtos";
 import {
     getJournal,
@@ -37,8 +38,8 @@ export const getJournalHandler: RequestHandler = async (req: Request, res: Respo
 export const getJournalsHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const dto: GetJournalsDTO = mapToGetJournalsDTO(req);
-        const journals = await getJournals(req.user as User, dto);
-        res.json(journals);
+        const response: GetJournalsResponseDTO = await getJournals(req.user as User, dto);
+        res.json(response);
     } catch (error) {
         sendErrorResponse(error, res);
     }
