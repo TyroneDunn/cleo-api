@@ -1,7 +1,8 @@
 import {Entry} from "./entry";
 import {
-    GetEntriesDTO,
     GetEntryDTO,
+    GetEntriesDTO,
+    GetEntriesResponseDTO,
     CreateEntryDTO,
     UpdateEntryDTO,
     DeleteEntryDTO,
@@ -10,7 +11,7 @@ import {
 
 export type EntriesRepository = {
     getEntry: (dto: GetEntryDTO) => Promise<Entry>,
-    getEntries: (dto: GetEntriesDTO) => Promise<Entry[]>,
+    getEntries: (dto: GetEntriesDTO) => Promise<GetEntriesResponseDTO>,
     createEntry: (dto: CreateEntryDTO) => Promise<Entry>,
     updateEntry: (dto: UpdateEntryDTO) => Promise<Entry>,
     deleteEntry: (dto: DeleteEntryDTO) => Promise<Entry>,

@@ -1,6 +1,7 @@
 import {
     GetEntryDTO,
     GetEntriesDTO,
+    GetEntriesResponseDTO,
     CreateEntryDTO,
     UpdateEntryDTO,
     DeleteEntriesDTO,
@@ -33,8 +34,8 @@ export const getEntryHandler: RequestHandler = async (req: Request, res: Respons
 export const getEntriesHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: GetEntriesDTO = mapToGetEntriesDTO(req);
-        let entries = await getEntries(req.user as User, dto);
-        res.json(entries);
+        let getEntriesResponse: GetEntriesResponseDTO = await getEntries(req.user as User, dto);
+        res.json(getEntriesResponse);
     } catch (error) {
         sendErrorResponse(error, res);
     }

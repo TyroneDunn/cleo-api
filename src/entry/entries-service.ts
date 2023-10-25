@@ -4,6 +4,7 @@ import {ENTRIES_REPOSITORY} from "../repositories-config";
 import {
     GetEntryDTO,
     GetEntriesDTO,
+    GetEntriesResponseDTO,
     CreateEntryDTO,
     UpdateEntryDTO,
     DeleteEntryDTO,
@@ -29,7 +30,7 @@ export const getEntry = async (user: User, dto: GetEntryDTO): Promise<Entry> => 
     return repository.getEntry(dto);
 };
 
-export const getEntries = async (user: User, dto: GetEntriesDTO): Promise<Entry[]> => {
+export const getEntries = async (user: User, dto: GetEntriesDTO): Promise<GetEntriesResponseDTO> => {
     const validationResult: ValidationResult = await validateGetEntriesDTO(user, dto);
     if (!validationResult.outcome)
         throw validationResult.error;

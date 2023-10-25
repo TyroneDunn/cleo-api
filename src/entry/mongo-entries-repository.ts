@@ -7,6 +7,7 @@ import {now} from "mongoose";
 import {
     GetEntryDTO,
     GetEntriesDTO,
+    GetEntriesResponseDTO,
     CreateEntryDTO,
     UpdateEntryDTO,
     DeleteEntryDTO,
@@ -17,13 +18,18 @@ export const MongoEntriesRepository: EntriesRepository = {
     getEntry: async (dto: GetEntryDTO): Promise<Entry> =>
         EntryModel.findById(dto.id),
 
-    getEntries: async (dto: GetEntriesDTO): Promise<Entry[]> => {
+    getEntries: async (dto: GetEntriesDTO): Promise<GetEntriesResponseDTO> => {
         const skip = (dto.page - 1) * dto.limit;
         const filter = mapToGetEntriesFilter(dto);
-        return EntryModel.find(filter)
-            .sort({[dto.sort]: dto.order})
-            .skip(skip)
-            .limit(dto.limit);
+        return {
+            count: await EntryModel.count(filter),
+            entries: await EntryModel.find(filter)
+                .sort({[dto.sort]: dto.order})
+                .skip(skip)
+                .limit(dto.limit),
+            ...(dto.page !== undefined) && {page: dto.page},
+            ...(dto.limit !== undefined) && {limit: dto.limit},
+        };
     },
 
     createEntry: (dto: CreateEntryDTO): Promise<Entry> =>
