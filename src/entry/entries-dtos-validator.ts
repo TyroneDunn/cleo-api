@@ -87,8 +87,6 @@ export const validateCreateEntryDTO = async (user: User, dto: CreateEntryDTO): P
         return {outcome: false, error: new UnauthorizedError('Unauthorized.')};
     if (!dto.journal)
         return {outcome: false, error: new BadRequestError('Journal required.')};
-    if (!dto.body)
-        return {outcome: false, error: new BadRequestError('Body required.')};
     if (!(await journalsRepository.exists(dto.journal)))
         return {outcome: false, error: new NotFoundError(`Journal ${dto.journal} not found.`)};
     if (!(await usersRepository.isAdmin(user.username)) && !(await journalsRepository.ownsJournal(user.username, dto.journal)))
@@ -119,7 +117,7 @@ export const validateDeleteEntryDTO = async (user: User, dto: DeleteEntryDTO): P
         return {outcome: false, error: new BadRequestError('Entry ID required.')};
     if (!(await ENTRIES_REPOSITORY.exists(dto.id)))
         return {outcome: false, error: new NotFoundError(`Entry ${dto.id} not found.`)};
-    if (!(await ENTRIES_REPOSITORY.ownsEntry(user._id.toString(), dto.id)))
+    if (!(await ENTRIES_REPOSITORY.ownsEntry(user.username, dto.id)))
         return {outcome: false, error: new UnauthorizedError(`Unauthorized access to entry ${dto.id}`)};
     return {outcome: true};
 };

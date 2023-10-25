@@ -13,7 +13,6 @@ interface EntryDocument extends Document, Entry {
 const EntrySchema = new Schema({
     body: {
         type: String,
-        required: true
     },
     journal: {
         type: Schema.Types.ObjectId,
