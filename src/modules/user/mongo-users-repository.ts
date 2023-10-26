@@ -48,7 +48,7 @@ export const MongoUsersRepository: UsersRepository = {
         }).save(),
 
     updateUsers: async (dto: UpdateUsersDTO): Promise<User[]> => {
-        const filter = mapToUpdateUsersFilter(dto);
+        const filter = mapToUsersFilter(dto);
         const query = mapToUpdateUsersQuery(dto);
         await UserModel.updateMany(
             filter,
@@ -67,7 +67,7 @@ export const MongoUsersRepository: UsersRepository = {
     },
 
     deleteUsers: async (dto: DeleteUsersDTO): Promise<string> => {
-        const filter = mapToDeleteUsersFilter(dto);
+        const filter = mapToUsersFilter(dto);
         const result = await UserModel.deleteMany(filter);
         return `${result.deletedCount} users deleted.`;
     },
@@ -104,7 +104,7 @@ const mapToGetUsersFilter = (dto: GetUsersDTO) => ({
     ...(dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
 
-const mapToUpdateUsersFilter = (dto: UpdateUsersDTO) => ({
+const mapToUsersFilter = (dto: UpdateUsersDTO) => ({
     ...dto.usernameRegex && {username: {$regex: dto.usernameRegex, $options: 'i'}},
     ...dto.isAdmin && {isAdmin: (dto.isAdmin.toLowerCase() === 'true')},
     ...dto.status && {status: dto.status},
@@ -125,13 +125,4 @@ const mapToUpdateUserQuery = (dto: UpdateUserDTO) => ({
     ...dto.newPassword && {hash: generateHash(dto.newPassword)},
     ...dto.newIsAdmin && {isAdmin: (dto.newIsAdmin.toLowerCase() === 'true')},
     ...dto.newStatus && {status: dto.newStatus}
-});
-
-const mapToDeleteUsersFilter = (dto: DeleteUsersDTO) => ({
-    ...dto.usernameRegex && {username: {$regex: dto.usernameRegex, $options: 'i'}},
-    ...dto.isAdmin && {isAdmin: (dto.isAdmin.toLowerCase() === 'true')},
-    ...dto.status && {status: dto.status},
-    ...(dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
-    ...(!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
-    ...(dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
