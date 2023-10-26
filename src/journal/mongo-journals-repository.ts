@@ -47,7 +47,7 @@ export const MongoJournalsRepository: JournalsRepository = {
         JournalModel.findByIdAndUpdate(
             dto.id,
             {
-                name: dto.name,
+                ...dto.name && {name: dto.name},
                 lastUpdated: now()
             },
             {new: true}
