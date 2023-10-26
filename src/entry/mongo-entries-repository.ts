@@ -94,16 +94,16 @@ const mapToGetEntriesFilter = (dto: GetEntriesDTO) => ({
     ... dto.journal && {journal: dto.journal},
     ... dto.body && {body: dto.body},
     ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
-    ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
-    ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
-    ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+    ... (dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
+    ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
+    ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
 
 const mapToDeleteEntriesFilter = (dto: DeleteEntriesDTO) => ({
     ... dto.journal && {journal: dto.journal},
     ... dto.body && {body: dto.body},
     ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
-    ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
-    ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
-    ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+    ... (dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
+    ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
+    ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
