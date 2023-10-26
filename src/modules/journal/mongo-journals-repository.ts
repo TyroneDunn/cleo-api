@@ -76,7 +76,7 @@ export const MongoJournalsRepository: JournalsRepository = {
     ownsJournal: async (author: string, id: string): Promise<boolean> => {
         try {
             const journal: Journal = await JournalModel.findById(id);
-            return journal.author.toString() === author;
+            return journal.author === author;
         } catch (error) {
             return false;
         }
