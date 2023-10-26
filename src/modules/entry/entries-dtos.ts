@@ -1,5 +1,5 @@
 import {OrderOption} from "../../utils/order-option";
-import {Entry, EntrySortOption} from "./entry";
+import {EntrySortOption} from "./entry";
 
 export type GetEntryDTO = {id: string};
 
@@ -11,13 +11,6 @@ export type GetEntriesDTO = {
     endDate?: string,
     sort?: EntrySortOption,
     order?: OrderOption,
-    page?: number,
-    limit?: number,
-};
-
-export type GetEntriesResponseDTO = {
-    count: number,
-    entries: Entry[],
     page?: number,
     limit?: number,
 };
