@@ -1,6 +1,6 @@
 import {Journal} from "./journal";
 import {Document, Schema} from 'mongoose';
-import database from "../mongoose-database";
+import database from "../../mongoose-database";
 
 interface JournalDocument extends Document, Journal {
   _id: string,

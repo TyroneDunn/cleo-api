@@ -6,18 +6,18 @@ import {
     DeleteEntryDTO,
     DeleteEntriesDTO,
 } from "./entries-dtos";
-import {ValidationResult} from "../utils/validation-result";
+import {ValidationResult} from "../../utils/validation-result";
 import {
     BadRequestError,
     ForbiddenError,
     NotFoundError,
     UnauthorizedError
-} from "../utils/errors";
+} from "../../utils/errors";
 import {
     ENTRIES_REPOSITORY,
     JOURNALS_REPOSITORY,
     USERS_REPOSITORY
-} from "../repositories-config";
+} from "../../repositories-config";
 import {User} from "../user/user";
 import {UsersRepository} from "../user/users-repository";
 import {JournalsRepository} from "../journal/journals-repository";

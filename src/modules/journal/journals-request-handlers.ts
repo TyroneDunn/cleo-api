@@ -21,9 +21,9 @@ import {
     deleteJournal,
     deleteJournals,
 } from "./journals-service";
-import {sendErrorResponse} from "../utils/send-error-response";
+import {sendErrorResponse} from "../../utils/send-error-response";
 import {JournalSortOption} from "./journal";
-import {OrderOption} from "../utils/order-option";
+import {OrderOption} from "../../utils/order-option";
 
 export const getJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {

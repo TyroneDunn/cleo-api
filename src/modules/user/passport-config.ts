@@ -2,8 +2,8 @@ import {GetUserDTO} from "./users-dtos";
 const passportConfig = require('passport');
 import LocalStrategy = require('passport-local');
 import {User} from "./user";
-import {USERS_REPOSITORY} from "../repositories-config";
-import {validateHash} from "../utils/password-utils";
+import {USERS_REPOSITORY} from "../../repositories-config";
+import {validateHash} from "../../utils/password-utils";
 
 const userField = {
     usernameField: 'username',

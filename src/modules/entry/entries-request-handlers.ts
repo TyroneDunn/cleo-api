@@ -17,9 +17,9 @@ import {
 } from "./entries-service";
 import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
-import {sendErrorResponse} from "../utils/send-error-response";
+import {sendErrorResponse} from "../../utils/send-error-response";
 import {EntrySortOption} from "./entry";
-import {OrderOption} from "../utils/order-option";
+import {OrderOption} from "../../utils/order-option";
 
 export const getEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {

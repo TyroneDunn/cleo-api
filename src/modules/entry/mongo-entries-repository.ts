@@ -13,7 +13,7 @@ import {
     DeleteEntryDTO,
     DeleteEntriesDTO
 } from "./entries-dtos";
-import {JOURNALS_REPOSITORY} from "../repositories-config";
+import {JOURNALS_REPOSITORY} from "../../repositories-config";
 
 export const MongoEntriesRepository: EntriesRepository = {
     getEntry: async (dto: GetEntryDTO): Promise<Entry> =>

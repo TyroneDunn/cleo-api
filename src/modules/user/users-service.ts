@@ -1,5 +1,5 @@
 import {User} from "./user";
-import {USERS_REPOSITORY} from "../repositories-config";
+import {USERS_REPOSITORY} from "../../repositories-config";
 import {
     DeleteUserDTO,
     DeleteUsersDTO,
@@ -20,7 +20,7 @@ import {
     validateUpdateUserDTO,
     validateUpdateUsersDTO
 } from "./users-dtos-validator";
-import {ValidationResult} from "../utils/validation-result";
+import {ValidationResult} from "../../utils/validation-result";
 import {UsersRepository} from "./users-repository";
 
 const repository: UsersRepository = USERS_REPOSITORY;

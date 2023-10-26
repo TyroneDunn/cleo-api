@@ -1,5 +1,5 @@
 import {UserSortByOption, UserStatusOption} from "./user";
-import {OrderOption} from "../utils/order-option";
+import {OrderOption} from "../../utils/order-option";
 
 export type GetUserDTO = {username: string};
 

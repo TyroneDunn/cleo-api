@@ -1,4 +1,4 @@
-import {OrderOption} from "../utils/order-option";
+import {OrderOption} from "../../utils/order-option";
 import {Entry, EntrySortOption} from "./entry";
 
 export type GetEntryDTO = {id: string};

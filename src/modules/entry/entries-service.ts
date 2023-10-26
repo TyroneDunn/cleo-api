@@ -1,6 +1,6 @@
 import {Entry} from "./entry";
 import {EntriesRepository} from "./entries-repository";
-import {ENTRIES_REPOSITORY} from "../repositories-config";
+import {ENTRIES_REPOSITORY} from "../../repositories-config";
 import {
     GetEntryDTO,
     GetEntriesDTO,
@@ -18,7 +18,7 @@ import {
     validateDeleteEntryDTO,
     validateDeleteEntriesDTO,
 } from "./entries-dtos-validator";
-import {ValidationResult} from "../utils/validation-result";
+import {ValidationResult} from "../../utils/validation-result";
 import {User} from "../user/user";
 
 const repository: EntriesRepository = ENTRIES_REPOSITORY;

@@ -1,6 +1,6 @@
 import {Entry} from "./entry";
 import {Document, Schema} from 'mongoose';
-import database from "../mongoose-database";
+import database from "../../mongoose-database";
 
 interface EntryDocument extends Document, Entry {
     _id: string,

@@ -11,10 +11,10 @@ import {
     ForbiddenError,
     NotFoundError,
     UnauthorizedError
-} from "../utils/errors";
-import {JOURNALS_REPOSITORY} from "../repositories-config"
-import {USERS_REPOSITORY} from "../repositories-config";
-import {ValidationResult} from "../utils/validation-result";
+} from "../../utils/errors";
+import {JOURNALS_REPOSITORY} from "../../repositories-config"
+import {USERS_REPOSITORY} from "../../repositories-config";
+import {ValidationResult} from "../../utils/validation-result";
 import {User} from "../user/user";
 import {JournalsRepository} from "./journals-repository";
 import {UsersRepository} from "../user/users-repository";

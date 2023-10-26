@@ -20,13 +20,13 @@ import {
     UpdateUserDTO,
     UpdateUsersDTO
 } from "./users-dtos";
-import {sendErrorResponse} from "../utils/send-error-response";
+import {sendErrorResponse} from "../../utils/send-error-response";
 import {
     CREATED,
     INTERNAL_SERVER_ERROR,
     UNAUTHORIZED
-} from "../utils/http-status-constants";
-import {OrderOption} from "../utils/order-option";
+} from "../../utils/http-status-constants";
+import {OrderOption} from "../../utils/order-option";
 import passport = require("passport");
 
 export const authenticate: RequestHandler = passport.authenticate('local');
