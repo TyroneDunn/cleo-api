@@ -2,16 +2,16 @@ import {Entry} from "./entry";
 import {
     GetEntryDTO,
     GetEntriesDTO,
-    GetEntriesResponseDTO,
     CreateEntryDTO,
     UpdateEntryDTO,
     DeleteEntryDTO,
     DeleteEntriesDTO,
 } from "./entries-dtos";
+import {PaginatedResponse} from "../../utils/paginated-response";
 
 export type EntriesRepository = {
     getEntry: (dto: GetEntryDTO) => Promise<Entry>,
-    getEntries: (dto: GetEntriesDTO) => Promise<GetEntriesResponseDTO>,
+    getEntries: (dto: GetEntriesDTO) => Promise<PaginatedResponse<Entry>>,
     createEntry: (dto: CreateEntryDTO) => Promise<Entry>,
     updateEntry: (dto: UpdateEntryDTO) => Promise<Entry>,
     deleteEntry: (dto: DeleteEntryDTO) => Promise<Entry>,

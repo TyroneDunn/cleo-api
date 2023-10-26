@@ -7,24 +7,24 @@ import {now} from "mongoose";
 import {
     GetEntryDTO,
     GetEntriesDTO,
-    GetEntriesResponseDTO,
     CreateEntryDTO,
     UpdateEntryDTO,
     DeleteEntryDTO,
     DeleteEntriesDTO
 } from "./entries-dtos";
 import {JOURNALS_REPOSITORY} from "../../repositories-config";
+import {PaginatedResponse} from "../../utils/paginated-response";
 
 export const MongoEntriesRepository: EntriesRepository = {
     getEntry: async (dto: GetEntryDTO): Promise<Entry> =>
         EntryModel.findById(dto.id),
 
-    getEntries: async (dto: GetEntriesDTO): Promise<GetEntriesResponseDTO> => {
+    getEntries: async (dto: GetEntriesDTO): Promise<PaginatedResponse<Entry>> => {
         const skip = (dto.page) * dto.limit;
         const filter = mapToGetEntriesFilter(dto);
         return {
             count: await EntryModel.count(filter),
-            entries: await EntryModel.find(filter)
+            items: await EntryModel.find(filter)
                 .sort({[dto.sort]: dto.order})
                 .skip(skip)
                 .limit(dto.limit),

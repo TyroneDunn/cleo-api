@@ -1,7 +1,6 @@
 import {
     GetEntryDTO,
     GetEntriesDTO,
-    GetEntriesResponseDTO,
     CreateEntryDTO,
     UpdateEntryDTO,
     DeleteEntriesDTO,
@@ -18,8 +17,9 @@ import {
 import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
 import {sendErrorResponse} from "../../utils/send-error-response";
-import {EntrySortOption} from "./entry";
+import {Entry, EntrySortOption} from "./entry";
 import {OrderOption} from "../../utils/order-option";
+import {PaginatedResponse} from "../../utils/paginated-response";
 
 export const getEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
@@ -34,7 +34,7 @@ export const getEntryHandler: RequestHandler = async (req: Request, res: Respons
 export const getEntriesHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
         const dto: GetEntriesDTO = mapToGetEntriesDTO(req);
-        let getEntriesResponse: GetEntriesResponseDTO = await getEntries(req.user as User, dto);
+        let getEntriesResponse: PaginatedResponse<Entry> = await getEntries(req.user as User, dto);
         res.json(getEntriesResponse);
     } catch (error) {
         sendErrorResponse(error, res);
