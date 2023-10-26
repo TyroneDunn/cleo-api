@@ -61,7 +61,8 @@ export const validateGetUsersDTO = async (user: User, dto: GetUsersDTO): Promise
     if (!(await USERS_REPOSITORY.isAdmin(user.username)))
         return {error: new ForbiddenError('Insufficient permissions.')};
     if (dto.username && dto.usernameRegex)
-        return {error: new BadRequestError('Invalid query.')};
+        return {error: new BadRequestError('Invalid query. Provide either "username" or' +
+                ' "usernameRegex".')};
     if (dto.isAdmin) {
         if (dto.isAdmin.toLowerCase() !== 'true' && dto.isAdmin.toLowerCase() !== 'false')
             return {error: new BadRequestError('Invalid query. isAdmin must be' +

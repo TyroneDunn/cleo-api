@@ -40,9 +40,10 @@ export const validateGetJournalsDTO = async (user: User, dto: GetJournalsDTO): P
     if (!(await usersRepository.isAdmin(user.username)) && (user.username !== dto.author))
         return {error: new ForbiddenError('Insufficient permissions.')};
     if (dto.name && dto.nameRegex)
-        return {error: new BadRequestError('Invalid query.')};
+        return {error: new BadRequestError('Invalid query. Provide either "name" or "nameRegex".')};
     if (dto.author && dto.authorRegex)
-        return {error: new BadRequestError('Invalid query.')};
+        return {error: new BadRequestError('Invalid query. Provide either "author" or' +
+                ' "authorRegex"')};
     if (dto.startDate) {
         if (isNaN(Date.parse(dto.startDate)))
             return {error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};
@@ -114,9 +115,10 @@ export const validateDeleteJournalsDTO = async (user: User, dto: DeleteJournalsD
     if (!(await usersRepository.isAdmin(user.username)) && (user.username !== dto.author))
         return {error: new ForbiddenError('Insufficient permissions.')};
     if (dto.name && dto.nameRegex)
-        return {error: new BadRequestError('Invalid query.')};
+        return {error: new BadRequestError('Invalid query. Provide either "name" or "nameRegex".')};
     if (dto.author && dto.authorRegex)
-        return {error: new BadRequestError('Invalid query.')};
+        return {error: new BadRequestError('Invalid query. Provide either "author" or' +
+                ' "authorRegex".')};
     if (dto.startDate) {
         if (isNaN(Date.parse(dto.startDate)))
             return {error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};

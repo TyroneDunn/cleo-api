@@ -49,7 +49,7 @@ export const validateGetEntriesDTO = async (user: User, dto: GetEntriesDTO): Pro
     if (!(await usersRepository.isAdmin(user.username)) && !(await journalsRepository.ownsJournal(user.username, dto.journal)))
         return {error: new ForbiddenError('Insufficient permissions.')};
     if ((dto.body && dto.bodyRegex)) {
-        return {error: new BadRequestError('Invalid query.')};
+        return {error: new BadRequestError('Invalid query. Provide either "body" or "bodyRegex".')};
     }
     if (dto.startDate) {
         if (isNaN(Date.parse(dto.startDate)))
@@ -132,7 +132,7 @@ export const validateDeleteEntriesDTO = async (user: User, dto: DeleteEntriesDTO
     if (!(await usersRepository.isAdmin(user.username)) && !(await journalsRepository.ownsJournal(user.username, dto.journal)))
         return {error: new ForbiddenError('Insufficient permissions.')};
     if ((dto.body && dto.bodyRegex)) {
-        return {error: new BadRequestError('Invalid query.')};
+        return {error: new BadRequestError('Invalid query. Provide either "body" or "bodyRegex".')};
     }
     if (dto.startDate) {
         if (isNaN(Date.parse(dto.startDate)))
