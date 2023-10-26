@@ -21,7 +21,7 @@ export const MongoEntriesRepository: EntriesRepository = {
 
     getEntries: async (dto: GetEntriesDTO): Promise<PaginatedResponse<Entry>> => {
         const skip = (dto.page) * dto.limit;
-        const filter = mapToGetEntriesFilter(dto);
+        const filter = mapToEntriesFilter(dto);
         const entries: Entry[] = await EntryModel.find(filter)
             .sort({[dto.sort]: dto.order})
             .skip(skip)
@@ -66,7 +66,7 @@ export const MongoEntriesRepository: EntriesRepository = {
     },
 
     deleteEntries: async (dto: DeleteEntriesDTO): Promise<string> => {
-        const filter = mapToDeleteEntriesFilter(dto);
+        const filter = mapToEntriesFilter(dto);
         const result = await EntryModel.deleteMany(filter);
         return `${result.deletedCount} entries deleted.`;
     },
@@ -91,16 +91,7 @@ export const MongoEntriesRepository: EntriesRepository = {
     },
 };
 
-const mapToGetEntriesFilter = (dto: GetEntriesDTO) => ({
-    ... dto.journal && {journal: dto.journal},
-    ... dto.body && {body: dto.body},
-    ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
-    ... (dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
-    ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
-    ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
-});
-
-const mapToDeleteEntriesFilter = (dto: DeleteEntriesDTO) => ({
+const mapToEntriesFilter = (dto: GetEntriesDTO) => ({
     ... dto.journal && {journal: dto.journal},
     ... dto.body && {body: dto.body},
     ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
