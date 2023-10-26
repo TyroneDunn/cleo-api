@@ -13,6 +13,7 @@ import {
     DeleteEntryDTO,
     DeleteEntriesDTO
 } from "./entries-dtos";
+import {JOURNALS_REPOSITORY} from "../repositories-config";
 
 export const MongoEntriesRepository: EntriesRepository = {
     getEntry: async (dto: GetEntryDTO): Promise<Entry> =>
@@ -32,16 +33,19 @@ export const MongoEntriesRepository: EntriesRepository = {
         };
     },
 
-    createEntry: (dto: CreateEntryDTO): Promise<Entry> =>
-        new EntryModel({
+    createEntry: async (dto: CreateEntryDTO): Promise<Entry> => {
+        const entry: Entry = await new EntryModel({
             body: dto.body,
             journal: dto.journal,
             dateCreated: now(),
             lastUpdated: now(),
-        }).save(),
+        }).save();
+        await JOURNALS_REPOSITORY.updateJournal({id: dto.journal});
+        return entry;
+    },
 
-    updateEntry: async (dto: UpdateEntryDTO): Promise<Entry> =>
-        EntryModel.findByIdAndUpdate(
+    updateEntry: async (dto: UpdateEntryDTO): Promise<Entry> => {
+        const entry: Entry = await EntryModel.findByIdAndUpdate(
             dto.id,
             {
                 ... dto.body && {body: dto.body},
@@ -49,10 +53,16 @@ export const MongoEntriesRepository: EntriesRepository = {
                 lastUpdated: now()
             },
             {new: true}
-        ),
+        );
+        await JOURNALS_REPOSITORY.updateJournal({id: entry.journal.toString()});
+        return entry;
+    },
 
-    deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> =>
-        EntryModel.findByIdAndDelete(dto.id),
+    deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> => {
+        const entry: Entry = await EntryModel.findByIdAndDelete(dto.id);
+        await JOURNALS_REPOSITORY.updateJournal({id: entry.journal.toString()});
+        return entry;
+    },
 
     deleteEntries: async (dto: DeleteEntriesDTO): Promise<string> => {
         const filter = mapToDeleteEntriesFilter(dto);
