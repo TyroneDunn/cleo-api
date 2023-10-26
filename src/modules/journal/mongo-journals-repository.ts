@@ -9,9 +9,9 @@ import {
     DeleteJournalsDTO,
     GetJournalDTO,
     GetJournalsDTO,
-    GetJournalsResponseDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
+import {PaginatedResponse} from "../../utils/paginated-response";
 
 const deleteJournalEntries = async (journal: string): Promise<void> => {
     await JournalEntryModel.deleteMany({journal: journal});
@@ -21,12 +21,12 @@ export const MongoJournalsRepository: JournalsRepository = {
     getJournal: async (dto: GetJournalDTO): Promise<Journal> =>
         JournalModel.findById(dto.id),
 
-    getJournals: async (dto: GetJournalsDTO): Promise<GetJournalsResponseDTO> => {
+    getJournals: async (dto: GetJournalsDTO): Promise<PaginatedResponse<Journal>> => {
         const skip = (dto.page) * dto.limit;
         const filter = mapToGetJournalsFilter(dto);
         return {
             count: await JournalModel.count(filter),
-            journals: await JournalModel.find(filter)
+            items: await JournalModel.find(filter)
                 .sort({[dto.sort]: dto.order})
                 .skip(skip)
                 .limit(dto.limit),

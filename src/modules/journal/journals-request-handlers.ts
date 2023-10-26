@@ -11,7 +11,6 @@ import {
     UpdateJournalDTO,
     DeleteJournalDTO,
     DeleteJournalsDTO,
-    GetJournalsResponseDTO
 } from "./journals-dtos";
 import {
     getJournal,
@@ -22,8 +21,9 @@ import {
     deleteJournals,
 } from "./journals-service";
 import {sendErrorResponse} from "../../utils/send-error-response";
-import {JournalSortOption} from "./journal";
+import {Journal, JournalSortOption} from "./journal";
 import {OrderOption} from "../../utils/order-option";
+import {PaginatedResponse} from "../../utils/paginated-response";
 
 export const getJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -38,7 +38,7 @@ export const getJournalHandler: RequestHandler = async (req: Request, res: Respo
 export const getJournalsHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const dto: GetJournalsDTO = mapToGetJournalsDTO(req);
-        const response: GetJournalsResponseDTO = await getJournals(req.user as User, dto);
+        const response: PaginatedResponse<Journal> = await getJournals(req.user as User, dto);
         res.json(response);
     } catch (error) {
         sendErrorResponse(error, res);
