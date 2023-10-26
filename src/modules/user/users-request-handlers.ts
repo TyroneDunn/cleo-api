@@ -37,11 +37,11 @@ export const authGuard: RequestHandler = (req: Request, res: Response, next: Nex
     return next();
 };
 
-export const register: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const register: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const dto: RegisterUserDTO = mapToRegisterUserDTO(req);
-        const user = await registerUser(dto);
-        res.status(CREATED).json(user);
+        await registerUser(dto);
+        return next();
     } catch (error) {
         sendErrorResponse(error, res);
     }

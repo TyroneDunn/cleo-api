@@ -18,7 +18,7 @@ import {
 const usersRouter: Router = Router();
 usersRouter.post('/login/', authenticate, loggedInResponse);
 usersRouter.post('/logout/', authGuard, logout);
-usersRouter.post('/register/', register);
+usersRouter.post('/register/', register, authenticate, loggedInResponse);
 usersRouter.post('/register-admin/', registerAdmin);
 usersRouter.get('/protected/', authGuard, authenticatedResponse);
 
