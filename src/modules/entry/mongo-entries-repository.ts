@@ -22,12 +22,13 @@ export const MongoEntriesRepository: EntriesRepository = {
     getEntries: async (dto: GetEntriesDTO): Promise<PaginatedResponse<Entry>> => {
         const skip = (dto.page) * dto.limit;
         const filter = mapToGetEntriesFilter(dto);
+        const entries: Entry[] = await EntryModel.find(filter)
+            .sort({[dto.sort]: dto.order})
+            .skip(skip)
+            .limit(dto.limit);
         return {
-            count: await EntryModel.count(filter),
-            items: await EntryModel.find(filter)
-                .sort({[dto.sort]: dto.order})
-                .skip(skip)
-                .limit(dto.limit),
+            count: entries.length,
+            items: entries,
             ...(dto.page !== undefined) && {page: dto.page},
             ...(dto.limit !== undefined) && {limit: dto.limit},
         };
