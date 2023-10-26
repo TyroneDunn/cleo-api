@@ -88,9 +88,9 @@ const mapToGetJournalsFilter = (dto: GetJournalsDTO) => ({
     ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
     ... dto.author && {author: dto.author},
     ... dto.authorRegex && {author: {$regex: dto.authorRegex, $options: 'i'}},
-    ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
-    ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
-    ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+    ... (dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
+    ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
+    ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
 
 const mapToDeleteJournalsFilter = (dto: DeleteJournalsDTO) => ({
@@ -98,8 +98,8 @@ const mapToDeleteJournalsFilter = (dto: DeleteJournalsDTO) => ({
     ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
     ... dto.author && {author: dto.author},
     ... dto.authorRegex && {author: {$regex: dto.authorRegex, $options: 'i'}},
-    ... (dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
-    ... (!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
-    ... (dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+    ... (dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
+    ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
+    ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
 
