@@ -30,7 +30,7 @@ export type CreateJournalDTO = {
 
 export type UpdateJournalDTO = {
     id: string,
-    name: string,
+    name?: string,
 };
 
 export type DeleteJournalDTO = {
