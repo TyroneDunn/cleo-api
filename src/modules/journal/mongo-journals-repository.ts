@@ -23,7 +23,7 @@ export const MongoJournalsRepository: JournalsRepository = {
 
     getJournals: async (dto: GetJournalsDTO): Promise<PaginatedResponse<Journal>> => {
         const skip = (dto.page) * dto.limit;
-        const filter = mapToGetJournalsFilter(dto);
+        const filter = mapToJournalsFilter(dto);
         const journals: Journal[] = await JournalModel.find(filter)
                 .sort({[dto.sort]: dto.order})
                 .skip(skip)
@@ -60,7 +60,7 @@ export const MongoJournalsRepository: JournalsRepository = {
     },
 
     deleteJournals: async (dto: DeleteJournalsDTO): Promise<string> => {
-        const filter = mapToDeleteJournalsFilter(dto);
+        const filter = mapToJournalsFilter(dto);
         const result = await JournalModel.deleteMany(filter);
         return `${result.deletedCount} journals deleted.`;
     },
@@ -84,7 +84,7 @@ export const MongoJournalsRepository: JournalsRepository = {
     },
 };
 
-const mapToGetJournalsFilter = (dto: GetJournalsDTO) => ({
+const mapToJournalsFilter = (dto: GetJournalsDTO) => ({
     ... dto.name && {name: dto.name},
     ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
     ... dto.author && {author: dto.author},
@@ -93,14 +93,3 @@ const mapToGetJournalsFilter = (dto: GetJournalsDTO) => ({
     ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
     ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
-
-const mapToDeleteJournalsFilter = (dto: DeleteJournalsDTO) => ({
-    ... dto.name && {name: dto.name},
-    ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
-    ... dto.author && {author: dto.author},
-    ... dto.authorRegex && {author: {$regex: dto.authorRegex, $options: 'i'}},
-    ... (dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
-    ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
-    ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
-});
-
