@@ -19,7 +19,7 @@ export const MongoEntriesRepository: EntriesRepository = {
         EntryModel.findById(dto.id),
 
     getEntries: async (dto: GetEntriesDTO): Promise<GetEntriesResponseDTO> => {
-        const skip = (dto.page - 1) * dto.limit;
+        const skip = (dto.page) * dto.limit;
         const filter = mapToGetEntriesFilter(dto);
         return {
             count: await EntryModel.count(filter),
