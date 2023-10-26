@@ -1,5 +1,5 @@
 import {NextFunction, Request, RequestHandler, Response} from "express";
-import {User, UserSortByOption, UserStatusOption} from "./user";
+import {User, UserSortOption, UserStatusOption} from "./user";
 import {
     deleteUser,
     deleteUsers,
@@ -149,7 +149,7 @@ const mapToGetUsersDTO = (req: Request): GetUsersDTO => ({
     ... req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
     ... req.query.isAdmin && {isAdmin: (req.query.isAdmin as string)},
     ... req.query.status && {status: req.query.status as UserStatusOption},
-    ... req.query.sort && {sort: req.query.sort as UserSortByOption},
+    ... req.query.sort && {sort: req.query.sort as UserSortOption},
     ... req.query.order && {order: parseInt(req.query.order as string) as OrderOption},
     ... req.query.page && {page: parseInt(req.query.page as string)},
     ... req.query.limit && {limit: parseInt(req.query.limit as string)},

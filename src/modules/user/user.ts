@@ -10,4 +10,4 @@ export type User = {
 
 export type UserStatusOption = 'active' | 'inactive' | 'suspended';
 
-export type UserSortByOption = 'username' | 'id' | 'dateCreated' | 'lastUpdated';
+export type UserSortOption = 'username' | 'id' | 'dateCreated' | 'lastUpdated';

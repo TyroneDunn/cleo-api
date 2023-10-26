@@ -1,4 +1,4 @@
-import {UserSortByOption, UserStatusOption} from "./user";
+import {UserSortOption, UserStatusOption} from "./user";
 import {OrderOption} from "../../utils/order-option";
 
 export type GetUserDTO = {username: string};
@@ -8,7 +8,7 @@ export type GetUsersDTO = {
     usernameRegex?: string,
     isAdmin?: string,
     status?: UserStatusOption,
-    sort?: UserSortByOption,
+    sort?: UserSortOption,
     order?: OrderOption,
     startDate?: string,
     endDate?: string,
