@@ -4,6 +4,8 @@ import {EntrySortOption} from "./entry";
 export type GetEntryDTO = {id: string};
 
 export type GetEntriesDTO = {
+    title?: string,
+    titleRegex?: string,
     body?: string,
     bodyRegex?: string,
     journal?: string,
@@ -17,11 +19,13 @@ export type GetEntriesDTO = {
 
 export type CreateEntryDTO = {
     journal: string,
+    title: string,
     body: string,
 };
 
 export type UpdateEntryDTO = {
     id: string,
+    title?: string,
     body?: string,
     journal?: string,
 };
@@ -29,6 +33,8 @@ export type UpdateEntryDTO = {
 export type DeleteEntryDTO = {id: string};
 
 export type DeleteEntriesDTO = {
+    title?: string,
+    titleRegex?: string,
     body?: string,
     bodyRegex?: string,
     journal?: string,
