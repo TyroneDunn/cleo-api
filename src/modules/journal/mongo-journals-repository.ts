@@ -24,12 +24,13 @@ export const MongoJournalsRepository: JournalsRepository = {
     getJournals: async (dto: GetJournalsDTO): Promise<PaginatedResponse<Journal>> => {
         const skip = (dto.page) * dto.limit;
         const filter = mapToJournalsFilter(dto);
+        const count = await JournalModel.count(filter);
         const journals: Journal[] = await JournalModel.find(filter)
                 .sort({[dto.sort]: dto.order})
                 .skip(skip)
                 .limit(dto.limit);
         return {
-            count: journals.length,
+            count: count,
             items: journals,
             ...(dto.page !== undefined) && {page: dto.page},
             ...(dto.limit !== undefined) && {limit: dto.limit},

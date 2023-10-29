@@ -42,43 +42,38 @@ export const validateGetEntryDTO = async (user: User, dto: GetEntryDTO): Promise
 export const validateGetEntriesDTO = async (user: User, dto: GetEntriesDTO): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
-    if (dto.journal) {
+    if (dto.journal)
         if (!(await journalsRepository.exists(dto.journal)))
             return {error: new NotFoundError(`Journal ${dto.journal} not found.`)};
-    }
     if (!(await usersRepository.isAdmin(user.username)) && !(await journalsRepository.ownsJournal(user.username, dto.journal)))
         return {error: new ForbiddenError('Insufficient permissions.')};
-    if ((dto.body && dto.bodyRegex)) {
+    if ((dto.title && dto.titleRegex))
+        return {error: new BadRequestError('Invalid query. Provide either "title" or' +
+                ' "titleRegex".')};
+    if ((dto.body && dto.bodyRegex))
         return {error: new BadRequestError('Invalid query. Provide either "body" or "bodyRegex".')};
-    }
-    if (dto.startDate) {
+    if (dto.startDate)
         if (isNaN(Date.parse(dto.startDate)))
             return {error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};
-    }
-    if (dto.endDate) {
+    if (dto.endDate)
         if (isNaN(Date.parse(dto.endDate)))
             return {error: new BadRequestError('Invalid end date query. Provide a ISO date string.')};
-    }
-    if (dto.sort) {
+    if (dto.sort)
         if (dto.sort !== 'id' && dto.sort !== 'body' && dto.sort !== 'journal' && dto.sort !== 'lastUpdated' && dto.sort !== 'dateCreated')
             return {error: new BadRequestError('Invalid query. Sort option must' +
                     ' be id, body, journal, lastUpdated, or dateCreated.')};
-    }
-    if (dto.order !== undefined) {
+    if (dto.order !== undefined)
         if ((dto.order !== 1 && dto.order !== -1))
             return {error: new BadRequestError('Invalid query. Order must be' +
                     ' 1 or -1.')};
-    }
-    if (dto.page !== undefined) {
+    if (dto.page !== undefined)
         if (dto.page < 0)
             return {error: new BadRequestError('Invalid query. Page must be' +
                     ' 0 or greater.')};
-    }
-    if (dto.limit !== undefined) {
+    if (dto.limit !== undefined)
         if (dto.limit < 0)
             return {error: new BadRequestError('Invalid query. Limit must be' +
                     ' 0 or greater.')};
-    }
     return {};
 };
 
@@ -103,7 +98,7 @@ export const validateUpdateEntryDTO = async (user: User, dto: UpdateEntryDTO): P
         return {error: new ForbiddenError('Insufficient permissions.')};
     if (!(await entriesRepository.exists(dto.id)))
         return {error: new NotFoundError(`Entry ${dto.id} not found.`)};
-    if ((!dto.body) && (!dto.journal))
+    if ((!dto.body) && (!dto.journal) && (!dto.title))
         return {error: new BadRequestError('Update field required.')};
     if (dto.journal) {
         if (!(await journalsRepository.exists(dto.journal)))
@@ -125,22 +120,21 @@ export const validateDeleteEntryDTO = async (user: User, dto: DeleteEntryDTO): P
 export const validateDeleteEntriesDTO = async (user: User, dto: DeleteEntriesDTO): Promise<ValidationResult> => {
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
-    if (dto.journal) {
+    if (dto.journal)
         if (!(await journalsRepository.exists(dto.journal)))
             return {error: new NotFoundError(`Journal ${dto.journal} not found.`)};
-    }
     if (!(await usersRepository.isAdmin(user.username)) && !(await journalsRepository.ownsJournal(user.username, dto.journal)))
         return {error: new ForbiddenError('Insufficient permissions.')};
-    if ((dto.body && dto.bodyRegex)) {
+    if ((dto.title && dto.titleRegex))
+        return {error: new BadRequestError('Invalid query. Provide either "title" or' +
+                ' "titleRegex".')};
+    if ((dto.body && dto.bodyRegex))
         return {error: new BadRequestError('Invalid query. Provide either "body" or "bodyRegex".')};
-    }
-    if (dto.startDate) {
+    if (dto.startDate)
         if (isNaN(Date.parse(dto.startDate)))
             return {error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};
-    }
-    if (dto.endDate) {
+    if (dto.endDate)
         if (isNaN(Date.parse(dto.endDate)))
             return {error: new BadRequestError('Invalid end date query. Provide a ISO date string.')};
-    }
     return {};
 };

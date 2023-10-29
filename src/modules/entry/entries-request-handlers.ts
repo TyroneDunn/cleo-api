@@ -86,6 +86,8 @@ const mapToGetEntryDTO = (req: Request): GetEntryDTO =>
 
 const mapToGetEntriesDTO = (req: Request): GetEntriesDTO => ({
     ... req.query.journal && {journal: req.query.journal as string},
+    ... req.query.title && {title: req.query.title as string},
+    ... req.query.titleRegex && {titleRegex: req.query.titleRegex as string},
     ... req.query.body && {body: req.query.body as string},
     ... req.query.bodyRegex && {bodyRegex: req.query.bodyRegex as string},
     ... req.query.startDate && {startDate: req.query.startDate as string},
@@ -98,12 +100,14 @@ const mapToGetEntriesDTO = (req: Request): GetEntriesDTO => ({
 
 const mapToCreateEntryDTO = (req: Request): CreateEntryDTO => ({
     journal: req.params.id,
+    title: req.body.title,
     body: req.body.body,
 });
 
 const mapToUpdateEntryDTO = (req: Request): UpdateEntryDTO => ({
     id: req.params.id,
     ... req.body.journal && {journal: req.body.journal},
+    ... req.body.title && {title: req.body.title},
     ... req.body.body && {body: req.body.body},
 });
 
@@ -112,6 +116,8 @@ const mapToDeleteEntryDTO = (req: Request): DeleteEntryDTO =>
 
 const mapToDeleteEntriesDTO = (req: Request): DeleteEntriesDTO => ({
     ... req.query.journal && {journal: req.query.journal as string},
+    ... req.query.title && {title: req.query.title as string},
+    ... req.query.titleRegex && {titleRegex: req.query.titleRegex as string},
     ... req.query.body && {body: req.query.body as string},
     ... req.query.bodyRegex && {bodyRegex: req.query.bodyRegex as string},
     ... req.query.startDate && {startDate: req.query.startDate as string},
