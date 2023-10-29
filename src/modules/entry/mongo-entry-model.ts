@@ -5,6 +5,7 @@ import database from "../../mongoose-database";
 interface EntryDocument extends Document, Entry {
     _id: string,
     body: string,
+    title: string,
     journal: Schema.Types.ObjectId;
     dateCreated: Date,
     lastUpdated: Date,
@@ -12,6 +13,9 @@ interface EntryDocument extends Document, Entry {
 
 const EntrySchema = new Schema({
     body: {
+        type: String,
+    },
+    title: {
         type: String,
     },
     journal: {
