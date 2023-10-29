@@ -36,12 +36,7 @@ export const MongoEntriesRepository: EntriesRepository = {
     },
 
     createEntry: async (dto: CreateEntryDTO): Promise<Entry> => {
-        const entry: Entry = await new EntryModel({
-            body: dto.body,
-            journal: dto.journal,
-            dateCreated: now(),
-            lastUpdated: now(),
-        }).save();
+        const entry: Entry = await new EntryModel(mapToCreateEntryQuery(dto)).save();
         await JOURNALS_REPOSITORY.updateJournal({id: dto.journal});
         return entry;
     },
@@ -49,11 +44,7 @@ export const MongoEntriesRepository: EntriesRepository = {
     updateEntry: async (dto: UpdateEntryDTO): Promise<Entry> => {
         const entry: Entry = await EntryModel.findByIdAndUpdate(
             dto.id,
-            {
-                ... dto.body && {body: dto.body},
-                ... dto.journal && {journal: dto.journal},
-                lastUpdated: now()
-            },
+            mapToUpdateEntryQuery(dto),
             {new: true}
         );
         await JOURNALS_REPOSITORY.updateJournal({id: entry.journal.toString()});
@@ -94,9 +85,26 @@ export const MongoEntriesRepository: EntriesRepository = {
 
 const mapToEntriesFilter = (dto: GetEntriesDTO) => ({
     ... dto.journal && {journal: dto.journal},
+    ... dto.title && {title: dto.title},
+    ... dto.titleRegex && {title: {$regex: dto.titleRegex, $options: 'i'}},
     ... dto.body && {body: dto.body},
     ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
     ... (dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
     ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
     ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
+});
+
+const mapToCreateEntryQuery = (dto: CreateEntryDTO) => ({
+    title: dto.title,
+    body: dto.body,
+    journal: dto.journal,
+    dateCreated: now(),
+    lastUpdated: now(),
+});
+
+const mapToUpdateEntryQuery = (dto: UpdateEntryDTO) => ({
+    ... dto.title && {title: dto.title},
+    ... dto.body && {body: dto.body},
+    ... dto.journal && {journal: dto.journal},
+    lastUpdated: now()
 });
