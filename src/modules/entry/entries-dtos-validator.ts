@@ -98,7 +98,7 @@ export const validateUpdateEntryDTO = async (user: User, dto: UpdateEntryDTO): P
         return {error: new ForbiddenError('Insufficient permissions.')};
     if (!(await entriesRepository.exists(dto.id)))
         return {error: new NotFoundError(`Entry ${dto.id} not found.`)};
-    if ((!dto.body) && (!dto.journal))
+    if ((!dto.body) && (!dto.journal) && (!dto.title))
         return {error: new BadRequestError('Update field required.')};
     if (dto.journal) {
         if (!(await journalsRepository.exists(dto.journal)))
