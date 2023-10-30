@@ -59,9 +59,9 @@ export const validateGetEntriesDTO = async (user: User, dto: GetEntriesDTO): Pro
         if (isNaN(Date.parse(dto.endDate)))
             return {error: new BadRequestError('Invalid end date query. Provide a ISO date string.')};
     if (dto.sort)
-        if (dto.sort !== 'id' && dto.sort !== 'body' && dto.sort !== 'journal' && dto.sort !== 'lastUpdated' && dto.sort !== 'dateCreated')
+        if (dto.sort !== 'id' && dto.sort !== 'title'&& dto.sort !== 'body' && dto.sort !== 'journal' && dto.sort !== 'lastUpdated' && dto.sort !== 'dateCreated')
             return {error: new BadRequestError('Invalid query. Sort option must' +
-                    ' be id, body, journal, lastUpdated, or dateCreated.')};
+                    ' be id, title, body, journal, lastUpdated, or dateCreated.')};
     if (dto.order !== undefined)
         if ((dto.order !== 1 && dto.order !== -1))
             return {error: new BadRequestError('Invalid query. Order must be' +
