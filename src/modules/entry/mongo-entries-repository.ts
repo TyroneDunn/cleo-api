@@ -83,16 +83,42 @@ export const MongoEntriesRepository: EntriesRepository = {
     },
 };
 
-const mapToEntriesFilter = (dto: GetEntriesDTO) => ({
-    ... dto.journal && {journal: dto.journal},
-    ... dto.title && {title: dto.title},
-    ... dto.titleRegex && {title: {$regex: dto.titleRegex, $options: 'i'}},
-    ... dto.body && {body: dto.body},
-    ... dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
-    ... (dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
-    ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
-    ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
-});
+const mapToEntriesFilter = (dto: GetEntriesDTO) => {
+    if (dto.titleRegex && dto.bodyRegex) {
+        return ({
+            "$or": [
+                {title: {$regex: dto.titleRegex, $options: 'i'}},
+                {body: {$regex: dto.bodyRegex, $options: 'i'}},
+            ],
+            ...dto.journal && {journal: dto.journal},
+            ...dto.title && {title: dto.title},
+            ...dto.body && {body: dto.body},
+            ...(dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
+            ...(!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
+            ...(dto.startDate && dto.endDate) && {
+                lastUpdated: {
+                    $gte: dto.startDate,
+                    $lte: dto.endDate
+                }
+            },
+        })
+    } else
+        return ({
+            ...dto.journal && {journal: dto.journal},
+            ...dto.title && {title: dto.title},
+            ...dto.titleRegex && {title: {$regex: dto.titleRegex, $options: 'i'}},
+            ...dto.body && {body: dto.body},
+            ...dto.bodyRegex && {body: {$regex: dto.bodyRegex, $options: 'i'}},
+            ...(dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
+            ...(!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
+            ...(dto.startDate && dto.endDate) && {
+                lastUpdated: {
+                    $gte: dto.startDate,
+                    $lte: dto.endDate
+                }
+            },
+        });
+};
 
 const mapToCreateEntryQuery = (dto: CreateEntryDTO) => ({
     title: dto.title,
