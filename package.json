@@ -12,8 +12,8 @@
   "author": "Tyrone B. Dunn",
   "license": "MIT",
   "dependencies": {
-    "@hals/common": "file:../../../lib/@hals/common",
-    "@hals/core": "file:../../../lib/@hals/core",
+    "@hals/common": "file:../../../lib/@hals/common-1.1.23",
+    "@hals/core": "file:../../../lib/@hals/core-1.2.10",
     "connect-mongo": "^4.6.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
