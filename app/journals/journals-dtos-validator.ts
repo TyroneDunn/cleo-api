@@ -1,11 +1,4 @@
-import {
-    CreateJournalRequest,
-    DeleteJournalRequest,
-    DeleteJournalsRequest,
-    GetJournalRequest,
-    GetJournalsRequest,
-    UpdateJournalRequest
-} from "./journals-dtos";
+
 import {
     BadRequestError,
     ForbiddenError,
@@ -18,6 +11,12 @@ import {ValidationResult} from "../utils/validation-result";
 import {User} from "../user/user";
 import {JournalsRepository} from "./journals-repository";
 import {UsersRepository} from "../user/users-repository";
+import {
+    CreateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest, GetJournalRequest, GetJournalsRequest,
+    UpdateJournalRequest,
+} from './journals.types';
 
 const journalsRepository: JournalsRepository = JOURNALS_REPOSITORY;
 const usersRepository: UsersRepository = USERS_REPOSITORY;

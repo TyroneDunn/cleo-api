@@ -1,16 +1,14 @@
-import {Journal} from "./journals.types"
+import {
+    CreateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest, GetJournalRequest, GetJournalsRequest,
+    Journal,
+    UpdateJournalRequest,
+} from "./journals.types";
 import JournalModel from './mongo-journal-model';
 import JournalEntryModel from "../entry/mongo-entry-model";
 import {now} from "mongoose";
 import {JournalsRepository} from "./journals-repository";
-import {
-    CreateJournalRequest,
-    DeleteJournalRequest,
-    DeleteJournalsRequest,
-    GetJournalRequest,
-    GetJournalsRequest,
-    UpdateJournalRequest
-} from "./journals-dtos";
 import {PaginatedResponse} from "../utils/paginated-response";
 
 const deleteJournalEntries = async (journal: string): Promise<void> => {

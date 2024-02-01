@@ -1,12 +1,10 @@
-import {Journal} from "./journals.types";
 import {
     CreateJournalRequest,
     DeleteJournalRequest,
-    DeleteJournalsRequest,
-    GetJournalRequest,
-    GetJournalsRequest,
-    UpdateJournalRequest
-} from "./journals-dtos";
+    DeleteJournalsRequest, GetJournalRequest, GetJournalsRequest,
+    Journal,
+    UpdateJournalRequest,
+} from "./journals.types";
 import {PaginatedResponse} from "../utils/paginated-response";
 
 export type JournalsRepository = {

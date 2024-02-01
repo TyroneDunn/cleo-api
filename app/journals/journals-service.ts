@@ -1,4 +1,10 @@
-import {Journal} from "./journals.types";
+import {
+    CreateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest, GetJournalRequest, GetJournalsRequest,
+    Journal,
+    UpdateJournalRequest,
+} from "./journals.types";
 import {JOURNALS_REPOSITORY} from "../repositories-config";
 import {JournalsRepository} from "./journals-repository";
 import {
@@ -9,14 +15,6 @@ import {
     validateGetJournalsDTO,
     validateUpdateJournalDTO
 } from "./journals-dtos-validator";
-import {
-    CreateJournalRequest,
-    DeleteJournalRequest,
-    DeleteJournalsRequest,
-    GetJournalRequest,
-    GetJournalsRequest,
-    UpdateJournalRequest
-} from "./journals-dtos";
 import {ValidationResult} from "../utils/validation-result";
 import {User} from "../user/user";
 import {PaginatedResponse} from "../utils/paginated-response";

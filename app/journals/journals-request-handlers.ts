@@ -5,14 +5,6 @@ import {
     Response
 } from "express";
 import {
-    GetJournalRequest,
-    GetJournalsRequest,
-    CreateJournalRequest,
-    UpdateJournalRequest,
-    DeleteJournalRequest,
-    DeleteJournalsRequest,
-} from "./journals-dtos";
-import {
     getJournal,
     getJournals,
     createJournal,
@@ -21,7 +13,13 @@ import {
     deleteJournals,
 } from "./journals-service";
 import {sendErrorResponse} from "../utils/send-error-response";
-import {Journal, JournalSortOption} from "./journals.types";
+import {
+    CreateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest, GetJournalRequest, GetJournalsRequest,
+    Journal,
+    JournalSortOption, UpdateJournalRequest,
+} from "./journals.types";
 import {OrderOption} from "../utils/order-option";
 import {PaginatedResponse} from "../utils/paginated-response";
 
