@@ -14,7 +14,7 @@ import {
     validateGetJournalDTO,
     validateGetJournalsDTO,
     validateUpdateJournalDTO
-} from "./journals-dtos-validator";
+} from "./journals.validator";
 import {ValidationResult} from "../utils/validation-result";
 import {User} from "../user/user";
 import {PaginatedResponse} from "../utils/paginated-response";
