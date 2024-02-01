@@ -7,7 +7,7 @@ export const corsOptions: CorsOptions = {
         '*',
         APP_URL,
     ],
-    allowedHeaders: `Content-Type,credentials`,
+    allowedHeaders: 'Content-Type,credentials',
     credentials: true,
     optionsSuccessStatus: OK,
     methods: ["GET", "POST", "DELETE", "PATCH"],
