@@ -12,7 +12,7 @@ import {
     UpdateUserDTO,
     UpdateUsersDTO
 } from "./users-dtos";
-import {generateHash} from "../../utils/password-utils";
+import {generateHash} from "../utils/password-utils";
 
 export const MongoUsersRepository: UsersRepository = {
     getUser: async (dto: GetUserDTO): Promise<User> =>

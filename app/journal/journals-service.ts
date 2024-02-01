@@ -1,5 +1,5 @@
 import {Journal} from "./journal";
-import {JOURNALS_REPOSITORY} from "../../repositories-config";
+import {JOURNALS_REPOSITORY} from "../repositories-config";
 import {JournalsRepository} from "./journals-repository";
 import {
     validateCreateJournalDTO,
@@ -17,9 +17,9 @@ import {
     GetJournalsDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
-import {ValidationResult} from "../../utils/validation-result";
+import {ValidationResult} from "../utils/validation-result";
 import {User} from "../user/user";
-import {PaginatedResponse} from "../../utils/paginated-response";
+import {PaginatedResponse} from "../utils/paginated-response";
 
 const repository: JournalsRepository = JOURNALS_REPOSITORY;
 

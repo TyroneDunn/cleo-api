@@ -1,6 +1,6 @@
 import {User, UserStatusOption} from "./user";
 import {Document, Schema} from 'mongoose';
-import database from "../../mongoose-database";
+import database from "../database/mongoose-database";
 
 interface UserDocument extends Document, User {
     _id: string,

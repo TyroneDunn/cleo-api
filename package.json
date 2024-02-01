@@ -2,15 +2,15 @@
   "name": "cleo",
   "version": "1.4.1",
   "description": "A Journal Repository API.",
-  "main": "src/index.ts",
+  "main": "app/index.ts",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node app/index.ts"
   },
   "keywords": [
     "journal; api; repository; expressjs; passportjs; mongodb; typescript"
   ],
   "author": "Tyrone B. Dunn",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@hals/common": "file:../../../lib/@hals/common",
     "@hals/core": "file:../../../lib/@hals/core",

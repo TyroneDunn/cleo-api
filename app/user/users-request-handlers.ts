@@ -16,8 +16,8 @@ import {
     UpdateUserDTO,
     UpdateUsersDTO
 } from "./users-dtos";
-import {sendErrorResponse} from "../../utils/send-error-response";
-import {OrderOption} from "../../utils/order-option";
+import {sendErrorResponse} from "../utils/send-error-response";
+import {OrderOption} from "../utils/order-option";
 
 export const getUsersHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
@@ -84,7 +84,7 @@ const mapToGetUsersDTO = (req: Request): GetUsersDTO => ({
     ... req.query.isAdmin && {isAdmin: (req.query.isAdmin as string)},
     ... req.query.status && {status: req.query.status as UserStatusOption},
     ... req.query.sort && {sort: req.query.sort as UserSortOption},
-    ... req.query.order && {order: parseInt(req.query.order as string) as OrderOption},
+    ... req.query.order && {order: req.query.order as string as OrderOption},
     ... req.query.page && {page: parseInt(req.query.page as string)},
     ... req.query.limit && {limit: parseInt(req.query.limit as string)},
     ... req.query.startDate && {startDate: req.query.startDate as string},

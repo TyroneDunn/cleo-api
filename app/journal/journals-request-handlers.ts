@@ -20,10 +20,10 @@ import {
     deleteJournal,
     deleteJournals,
 } from "./journals-service";
-import {sendErrorResponse} from "../../utils/send-error-response";
+import {sendErrorResponse} from "../utils/send-error-response";
 import {Journal, JournalSortOption} from "./journal";
-import {OrderOption} from "../../utils/order-option";
-import {PaginatedResponse} from "../../utils/paginated-response";
+import {OrderOption} from "../utils/order-option";
+import {PaginatedResponse} from "../utils/paginated-response";
 
 export const getJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {

@@ -16,10 +16,10 @@ import {
 } from "./entries-service";
 import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
-import {sendErrorResponse} from "../../utils/send-error-response";
+import {sendErrorResponse} from "../utils/send-error-response";
 import {Entry, EntrySortOption} from "./entry";
-import {OrderOption} from "../../utils/order-option";
-import {PaginatedResponse} from "../../utils/paginated-response";
+import {OrderOption} from "../utils/order-option";
+import {PaginatedResponse} from "../utils/paginated-response";
 
 export const getEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {

@@ -4,13 +4,13 @@ import {corsOptions} from "./cors-config";
 const cors = require('cors');
 import {sessionMiddleware} from "./session-config";
 import passport = require("passport");
-require("../modules/auth/passport-config");
-import journalsRouter from "../modules/journal/journals-router";
-import entriesRouter from "../modules/entry/entries-router";
-import {API_PORT, API_TITLE} from "../environment";
-import usersRouter from "../modules/user/users-router";
-import authRouter from "../modules/auth/auth-router";
-import {authGuard} from "../modules/auth/auth-request-handlers";
+require("./auth/passport-config");
+import {API_PORT, API_TITLE} from "./environment";
+import journalsRouter from './journal/journals-router';
+import entriesRouter from './entry/entries-router';
+import usersRouter from './user/users-router';
+import authRouter from './auth/auth-router';
+import { authGuard } from './auth/auth-request-handlers';
 
 const cleoHomeRoute = (req, res): RequestHandler =>
     res.send(API_TITLE);

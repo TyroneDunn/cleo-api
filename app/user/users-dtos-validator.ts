@@ -8,15 +8,15 @@ import {
     UpdateUserDTO,
     UpdateUsersDTO
 } from "./users-dtos";
-import {ValidationResult} from "../../utils/validation-result";
+import {ValidationResult} from "../utils/validation-result";
 import {
     BadRequestError,
     ConflictError,
     ForbiddenError,
     NotFoundError,
     UnauthorizedError
-} from "../../utils/errors";
-import {USERS_REPOSITORY} from "../../repositories-config";
+} from "../utils/errors";
+import {USERS_REPOSITORY} from "../repositories-config";
 import {User} from "./user";
 
 export const validateRegisterUserDTO = async (dto: RegisterUserDTO): Promise<ValidationResult> => {

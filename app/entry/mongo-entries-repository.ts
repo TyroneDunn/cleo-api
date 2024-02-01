@@ -12,8 +12,8 @@ import {
     DeleteEntryDTO,
     DeleteEntriesDTO
 } from "./entries-dtos";
-import {JOURNALS_REPOSITORY} from "../../repositories-config";
-import {PaginatedResponse} from "../../utils/paginated-response";
+import { JOURNALS_REPOSITORY } from '../repositories-config';
+import { PaginatedResponse } from '../utils/paginated-response';
 
 export const MongoEntriesRepository: EntriesRepository = {
     getEntry: async (dto: GetEntryDTO): Promise<Entry> =>
