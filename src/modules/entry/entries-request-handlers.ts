@@ -93,7 +93,7 @@ const mapToGetEntriesDTO = (req: Request): GetEntriesDTO => ({
     ... req.query.startDate && {startDate: req.query.startDate as string},
     ... req.query.endDate && {endDate: req.query.endDate as string},
     ... req.query.sort && {sort: req.query.sort as EntrySortOption},
-    ... req.query.order && {order: parseInt(req.query.order as string) as OrderOption},
+    ... req.query.order && {order: req.query.order as OrderOption},
     ... req.query.page && {page: parseInt(req.query.page as string)},
     ... req.query.limit && {limit: parseInt(req.query.limit as string)},
 });

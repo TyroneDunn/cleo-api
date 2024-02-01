@@ -63,9 +63,9 @@ export const validateGetEntriesDTO = async (user: User, dto: GetEntriesDTO): Pro
             return {error: new BadRequestError('Invalid query. Sort option must' +
                     ' be id, title, body, journal, lastUpdated, or dateCreated.')};
     if (dto.order !== undefined)
-        if ((dto.order !== 1 && dto.order !== -1))
+        if ((dto.order !== 'asc' && dto.order !== 'desc'))
             return {error: new BadRequestError('Invalid query. Order must be' +
-                    ' 1 or -1.')};
+                    ' "asc" or "desc".')};
     if (dto.page !== undefined)
         if (dto.page < 0)
             return {error: new BadRequestError('Invalid query. Page must be' +

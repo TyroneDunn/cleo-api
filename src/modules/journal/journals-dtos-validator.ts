@@ -58,9 +58,9 @@ export const validateGetJournalsDTO = async (user: User, dto: GetJournalsDTO): P
                     ' be id, name, lastUpdated, or dateCreated.')};
     }
     if (dto.order !== undefined) {
-        if ((dto.order !== 1 && dto.order !== -1))
+        if ((dto.order !== 'asc' && dto.order !== 'desc'))
             return {error: new BadRequestError('Invalid query. Order must be' +
-                    ' 1 or -1.')};
+                    ' "asc" or "desc".')};
     }
     if (dto.page !== undefined) {
         if (dto.page < 0)

@@ -26,7 +26,7 @@ export const MongoJournalsRepository: JournalsRepository = {
         const filter = mapToJournalsFilter(dto);
         const count = await JournalModel.count(filter);
         const journals: Journal[] = await JournalModel.find(filter)
-                .sort({[dto.sort]: dto.order})
+                .sort({[dto.sort]: (dto.order === 'asc')? 1 : -1})
                 .skip(skip)
                 .limit(dto.limit);
         return {

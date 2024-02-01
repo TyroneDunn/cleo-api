@@ -24,7 +24,7 @@ export const MongoEntriesRepository: EntriesRepository = {
         const filter = mapToEntriesFilter(dto);
         const count = await EntryModel.count(filter);
         const entries: Entry[] = await EntryModel.find(filter)
-            .sort({[dto.sort]: dto.order})
+            .sort({[dto.sort]: dto.order === 'asc'? 1: -1})
             .skip(skip)
             .limit(dto.limit);
         return {
