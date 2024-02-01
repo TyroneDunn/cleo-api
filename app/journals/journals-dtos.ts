@@ -1,9 +1,9 @@
 import {OrderOption} from "../utils/order-option";
 import {JournalSortOption} from "./journals.types";
 
-export type GetJournalDTO = {id: string};
+export type GetJournalRequest = {id: string};
 
-export type GetJournalsDTO = {
+export type GetJournalsRequest = {
     name?: string,
     nameRegex?: string,
     author?: string,
@@ -16,21 +16,21 @@ export type GetJournalsDTO = {
     limit?: number,
 };
 
-export type CreateJournalDTO = {
+export type CreateJournalRequest = {
     author: string,
     name: string,
 };
 
-export type UpdateJournalDTO = {
+export type UpdateJournalRequest = {
     id: string,
     name?: string,
 };
 
-export type DeleteJournalDTO = {
+export type DeleteJournalRequest = {
     id: string,
 };
 
-export type DeleteJournalsDTO = {
+export type DeleteJournalsRequest = {
     name?: string,
     nameRegex?: string,
     author?: string,

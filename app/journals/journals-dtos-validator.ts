@@ -1,10 +1,10 @@
 import {
-    CreateJournalDTO,
-    DeleteJournalDTO,
-    DeleteJournalsDTO,
-    GetJournalDTO,
-    GetJournalsDTO,
-    UpdateJournalDTO
+    CreateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest,
+    GetJournalRequest,
+    GetJournalsRequest,
+    UpdateJournalRequest
 } from "./journals-dtos";
 import {
     BadRequestError,
@@ -22,7 +22,7 @@ import {UsersRepository} from "../user/users-repository";
 const journalsRepository: JournalsRepository = JOURNALS_REPOSITORY;
 const usersRepository: UsersRepository = USERS_REPOSITORY;
 
-export const validateGetJournalDTO = async (user: User, dto: GetJournalDTO): Promise<ValidationResult> => {
+export const validateGetJournalDTO = async (user: User, dto: GetJournalRequest): Promise<ValidationResult> => {
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
@@ -34,7 +34,7 @@ export const validateGetJournalDTO = async (user: User, dto: GetJournalDTO): Pro
     return {};
 };
 
-export const validateGetJournalsDTO = async (user: User, dto: GetJournalsDTO): Promise<ValidationResult> => {
+export const validateGetJournalsDTO = async (user: User, dto: GetJournalsRequest): Promise<ValidationResult> => {
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!(await usersRepository.isAdmin(user.username)) && (user.username !== dto.author))
@@ -75,7 +75,7 @@ export const validateGetJournalsDTO = async (user: User, dto: GetJournalsDTO): P
     return {};
 };
 
-export const validateCreateJournalDTO = async (user: User, dto: CreateJournalDTO): Promise<ValidationResult> => {
+export const validateCreateJournalDTO = async (user: User, dto: CreateJournalRequest): Promise<ValidationResult> => {
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.name)
@@ -85,7 +85,7 @@ export const validateCreateJournalDTO = async (user: User, dto: CreateJournalDTO
     return {};
 };
 
-export const validateUpdateJournalDTO = async (user: User, dto: UpdateJournalDTO): Promise<ValidationResult> => {
+export const validateUpdateJournalDTO = async (user: User, dto: UpdateJournalRequest): Promise<ValidationResult> => {
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
@@ -99,7 +99,7 @@ export const validateUpdateJournalDTO = async (user: User, dto: UpdateJournalDTO
     return {};
 };
 
-export const validateDeleteJournalDTO = async (user: User, dto: DeleteJournalDTO): Promise<ValidationResult> => {
+export const validateDeleteJournalDTO = async (user: User, dto: DeleteJournalRequest): Promise<ValidationResult> => {
     if (!dto.id)
         return {error: new BadRequestError('JournalsTypes ID required.')};
     if (!(await journalsRepository.ownsJournal(user.username, dto.id)) && !(await usersRepository.isAdmin(user.username)))
@@ -109,7 +109,7 @@ export const validateDeleteJournalDTO = async (user: User, dto: DeleteJournalDTO
     return {};
 };
 
-export const validateDeleteJournalsDTO = async (user: User, dto: DeleteJournalsDTO): Promise<ValidationResult> => {
+export const validateDeleteJournalsDTO = async (user: User, dto: DeleteJournalsRequest): Promise<ValidationResult> => {
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!(await usersRepository.isAdmin(user.username)) && (user.username !== dto.author))

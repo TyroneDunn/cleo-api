@@ -1,21 +1,21 @@
 import {Journal} from "./journals.types";
 import {
-    CreateJournalDTO,
-    DeleteJournalDTO,
-    DeleteJournalsDTO,
-    GetJournalDTO,
-    GetJournalsDTO,
-    UpdateJournalDTO
+    CreateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest,
+    GetJournalRequest,
+    GetJournalsRequest,
+    UpdateJournalRequest
 } from "./journals-dtos";
 import {PaginatedResponse} from "../utils/paginated-response";
 
 export type JournalsRepository = {
-    getJournal: (dto: GetJournalDTO) => Promise<Journal>,
-    getJournals: (dto: GetJournalsDTO) => Promise<PaginatedResponse<Journal>>,
-    createJournal: (dto: CreateJournalDTO) => Promise<Journal>,
-    deleteJournal: (dto: DeleteJournalDTO) => Promise<Journal>,
-    deleteJournals: (dto: DeleteJournalsDTO) => Promise<string>,
-    updateJournal: (dto: UpdateJournalDTO) => Promise<Journal>,
+    getJournal: (dto: GetJournalRequest) => Promise<Journal>,
+    getJournals: (dto: GetJournalsRequest) => Promise<PaginatedResponse<Journal>>,
+    createJournal: (dto: CreateJournalRequest) => Promise<Journal>,
+    deleteJournal: (dto: DeleteJournalRequest) => Promise<Journal>,
+    deleteJournals: (dto: DeleteJournalsRequest) => Promise<string>,
+    updateJournal: (dto: UpdateJournalRequest) => Promise<Journal>,
     exists: (id: string) => Promise<boolean>,
     ownsJournal: (author: string, id: string) => Promise<boolean>,
 };

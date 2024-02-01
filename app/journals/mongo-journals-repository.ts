@@ -4,12 +4,12 @@ import JournalEntryModel from "../entry/mongo-entry-model";
 import {now} from "mongoose";
 import {JournalsRepository} from "./journals-repository";
 import {
-    CreateJournalDTO,
-    DeleteJournalDTO,
-    DeleteJournalsDTO,
-    GetJournalDTO,
-    GetJournalsDTO,
-    UpdateJournalDTO
+    CreateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest,
+    GetJournalRequest,
+    GetJournalsRequest,
+    UpdateJournalRequest
 } from "./journals-dtos";
 import {PaginatedResponse} from "../utils/paginated-response";
 
@@ -18,10 +18,10 @@ const deleteJournalEntries = async (journal: string): Promise<void> => {
 };
 
 export const MongoJournalsRepository: JournalsRepository = {
-    getJournal: async (dto: GetJournalDTO): Promise<Journal> =>
+    getJournal: async (dto: GetJournalRequest): Promise<Journal> =>
         JournalModel.findById(dto.id),
 
-    getJournals: async (dto: GetJournalsDTO): Promise<PaginatedResponse<Journal>> => {
+    getJournals: async (dto: GetJournalsRequest): Promise<PaginatedResponse<Journal>> => {
         const skip = (dto.page) * dto.limit;
         const filter = mapToJournalsFilter(dto);
         const count = await JournalModel.count(filter);
@@ -37,7 +37,7 @@ export const MongoJournalsRepository: JournalsRepository = {
         };
     },
 
-    createJournal: async (dto: CreateJournalDTO): Promise<Journal> =>
+    createJournal: async (dto: CreateJournalRequest): Promise<Journal> =>
          new JournalModel({
             name: dto.name,
             author: dto.author,
@@ -45,7 +45,7 @@ export const MongoJournalsRepository: JournalsRepository = {
             lastUpdated: now(),
         }).save(),
 
-    updateJournal: async (dto: UpdateJournalDTO): Promise<Journal> =>
+    updateJournal: async (dto: UpdateJournalRequest): Promise<Journal> =>
         JournalModel.findByIdAndUpdate(
             dto.id,
             {
@@ -55,12 +55,12 @@ export const MongoJournalsRepository: JournalsRepository = {
             {new: true}
         ),
 
-    deleteJournal: async (dto: DeleteJournalDTO): Promise<Journal> => {
+    deleteJournal: async (dto: DeleteJournalRequest): Promise<Journal> => {
         await deleteJournalEntries(dto.id);
         return JournalModel.findByIdAndDelete(dto.id);
     },
 
-    deleteJournals: async (dto: DeleteJournalsDTO): Promise<string> => {
+    deleteJournals: async (dto: DeleteJournalsRequest): Promise<string> => {
         const filter = mapToJournalsFilter(dto);
         const result = await JournalModel.deleteMany(filter);
         return `${result.deletedCount} journals deleted.`;
@@ -85,7 +85,7 @@ export const MongoJournalsRepository: JournalsRepository = {
     },
 };
 
-const mapToJournalsFilter = (dto: GetJournalsDTO) => ({
+const mapToJournalsFilter = (dto: GetJournalsRequest) => ({
     ... dto.name && {name: dto.name},
     ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
     ... dto.author && {author: dto.author},

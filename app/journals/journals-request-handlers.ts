@@ -5,12 +5,12 @@ import {
     Response
 } from "express";
 import {
-    GetJournalDTO,
-    GetJournalsDTO,
-    CreateJournalDTO,
-    UpdateJournalDTO,
-    DeleteJournalDTO,
-    DeleteJournalsDTO,
+    GetJournalRequest,
+    GetJournalsRequest,
+    CreateJournalRequest,
+    UpdateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest,
 } from "./journals-dtos";
 import {
     getJournal,
@@ -27,7 +27,7 @@ import {PaginatedResponse} from "../utils/paginated-response";
 
 export const getJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: GetJournalDTO = mapToGetJournalDTO(req);
+        const dto: GetJournalRequest = mapToGetJournalDTO(req);
         const journal = await getJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
@@ -37,7 +37,7 @@ export const getJournalHandler: RequestHandler = async (req: Request, res: Respo
 
 export const getJournalsHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: GetJournalsDTO = mapToGetJournalsDTO(req);
+        const dto: GetJournalsRequest = mapToGetJournalsDTO(req);
         const response: PaginatedResponse<Journal> = await getJournals(req.user as User, dto);
         res.json(response);
     } catch (error) {
@@ -47,7 +47,7 @@ export const getJournalsHandler: RequestHandler = async (req: Request, res: Resp
 
 export const createJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: CreateJournalDTO = mapToCreateJournalDTO(req);
+        const dto: CreateJournalRequest = mapToCreateJournalDTO(req);
         const journal = await createJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
@@ -57,7 +57,7 @@ export const createJournalHandler: RequestHandler = async (req: Request, res: Re
 
 export const updateJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: UpdateJournalDTO = mapToUpdateJournalDTO(req);
+        const dto: UpdateJournalRequest = mapToUpdateJournalDTO(req);
         const journal = await updateJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
@@ -67,7 +67,7 @@ export const updateJournalHandler: RequestHandler = async (req: Request, res: Re
 
 export const deleteJournalHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: DeleteJournalDTO = mapToDeleteJournalDTO(req);
+        const dto: DeleteJournalRequest = mapToDeleteJournalDTO(req);
         const journal = await deleteJournal(req.user as User, dto);
         res.json(journal);
     } catch (error) {
@@ -77,7 +77,7 @@ export const deleteJournalHandler: RequestHandler = async (req: Request, res: Re
 
 export const deleteJournalsHandler: RequestHandler = async (req: Request, res: Response): Promise<void> => {
      try {
-         const dto: DeleteJournalsDTO = mapToDeleteJournalsDTO(req);
+         const dto: DeleteJournalsRequest = mapToDeleteJournalsDTO(req);
          const result = await deleteJournals(req.user as User, dto);
          res.json(result);
      } catch (error) {
@@ -85,10 +85,10 @@ export const deleteJournalsHandler: RequestHandler = async (req: Request, res: R
      }
 };
 
-const mapToGetJournalDTO = (req: Request): GetJournalDTO =>
+const mapToGetJournalDTO = (req: Request): GetJournalRequest =>
     ({id: req.params.id});
 
-const mapToGetJournalsDTO = (req: Request): GetJournalsDTO => ({
+const mapToGetJournalsDTO = (req: Request): GetJournalsRequest => ({
     ... req.query.name && {name: req.query.name as string},
     ... req.query.nameRegex && {nameRegex: req.query.nameRegex as string},
     ... req.query.author && {author: req.query.author as string},
@@ -101,20 +101,20 @@ const mapToGetJournalsDTO = (req: Request): GetJournalsDTO => ({
     ... req.query.limit && {limit: parseInt(req.query.limit as string)},
 });
 
-const mapToCreateJournalDTO = (req: Request): CreateJournalDTO => ({
+const mapToCreateJournalDTO = (req: Request): CreateJournalRequest => ({
     author: (req.user as User).username,
     name: req.body.name,
 });
 
-const mapToUpdateJournalDTO = (req: Request): UpdateJournalDTO => ({
+const mapToUpdateJournalDTO = (req: Request): UpdateJournalRequest => ({
     id: req.params.id,
     ... req.body.name && {name: req.body.name},
 });
 
-const mapToDeleteJournalDTO = (req: Request): DeleteJournalDTO =>
+const mapToDeleteJournalDTO = (req: Request): DeleteJournalRequest =>
     ({id: req.params.id});
 
-const mapToDeleteJournalsDTO = (req: Request): DeleteJournalsDTO => ({
+const mapToDeleteJournalsDTO = (req: Request): DeleteJournalsRequest => ({
     ... req.query.name && {name: req.query.name as string},
     ... req.query.nameRegex && {nameRegex: req.query.nameRegex as string},
     ... req.query.author && {author: req.query.author as string},
