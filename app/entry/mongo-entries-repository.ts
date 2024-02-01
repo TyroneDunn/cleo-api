@@ -1,7 +1,7 @@
 import {EntriesRepository} from "./entries-repository";
 import {Entry} from "./entry";
 import EntryModel from "./mongo-entry-model";
-import JournalModel from "../journals/mongo-journal-model";
+import JournalModel from "../journals/mongo-journal-model.type";
 import {Journal} from "../journals/journals.types";
 import {now} from "mongoose";
 import {

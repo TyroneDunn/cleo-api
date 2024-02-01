@@ -11,7 +11,7 @@ import {
     updateJournal,
     deleteJournal,
     deleteJournals,
-} from "./journals-service";
+} from "./journals.service";
 import {sendErrorResponse} from "../utils/send-error-response";
 import {
     CreateJournalRequest,

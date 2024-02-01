@@ -1,4 +1,3 @@
-
 import {
     BadRequestError,
     ForbiddenError,
@@ -9,7 +8,7 @@ import {JOURNALS_REPOSITORY} from "../repositories-config"
 import {USERS_REPOSITORY} from "../repositories-config";
 import {ValidationResult} from "../utils/validation-result";
 import {User} from "../user/user";
-import {JournalsRepository} from "./journals-repository";
+import {JournalsRepository} from "./journals-repository.type";
 import {UsersRepository} from "../user/users-repository";
 import {
     CreateJournalRequest,

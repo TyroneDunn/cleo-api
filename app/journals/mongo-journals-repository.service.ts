@@ -5,10 +5,10 @@ import {
     Journal,
     UpdateJournalRequest,
 } from "./journals.types";
-import JournalModel from './mongo-journal-model';
+import JournalModel from './mongo-journal-model.type';
 import JournalEntryModel from "../entry/mongo-entry-model";
 import {now} from "mongoose";
-import {JournalsRepository} from "./journals-repository";
+import {JournalsRepository} from "./journals-repository.type";
 import {PaginatedResponse} from "../utils/paginated-response";
 
 const deleteJournalEntries = async (journal: string): Promise<void> => {

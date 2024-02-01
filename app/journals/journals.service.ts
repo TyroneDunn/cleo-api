@@ -6,7 +6,7 @@ import {
     UpdateJournalRequest,
 } from "./journals.types";
 import {JOURNALS_REPOSITORY} from "../repositories-config";
-import {JournalsRepository} from "./journals-repository";
+import {JournalsRepository} from "./journals-repository.type";
 import {
     validateCreateJournalDTO,
     validateDeleteJournalDTO,
