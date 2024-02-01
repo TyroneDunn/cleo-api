@@ -1,19 +1,31 @@
 import {
-    CreateJournalRequest,
-    DeleteJournalRequest,
-    DeleteJournalsRequest, GetJournalRequest, GetJournalsRequest,
     Journal,
+    GetJournalRequest,
+    GetJournalsRequest,
+    CreateJournalRequest,
     UpdateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest,
 } from "./journals.types";
-import {PaginatedResponse} from "../utils/paginated-response";
+import { CommandResult, Error } from "@hals/common";
+import { GetRecordsResponse } from '../shared/get-records-response.type';
 
 export type JournalsRepository = {
-    getJournal: (dto: GetJournalRequest) => Promise<Journal>,
-    getJournals: (dto: GetJournalsRequest) => Promise<PaginatedResponse<Journal>>,
-    createJournal: (dto: CreateJournalRequest) => Promise<Journal>,
-    deleteJournal: (dto: DeleteJournalRequest) => Promise<Journal>,
-    deleteJournals: (dto: DeleteJournalsRequest) => Promise<string>,
-    updateJournal: (dto: UpdateJournalRequest) => Promise<Journal>,
-    exists: (id: string) => Promise<boolean>,
-    ownsJournal: (author: string, id: string) => Promise<boolean>,
+    getJournal: GetJournal,
+    getJournals: GetJournals,
+    createJournal: CreateJournal,
+    updateJournal: UpdateJournal,
+    deleteJournal: DeleteJournal,
+    deleteJournals: DeleteJournals,
+    exists: JournalExists,
+    ownsJournal: OwnsJournal,
 };
+
+export type GetJournal = (dto : GetJournalRequest) => Promise<Journal | Error>;
+export type GetJournals = (dto : GetJournalsRequest) => Promise<GetRecordsResponse<Journal> | Error>;
+export type CreateJournal = (dto : CreateJournalRequest) => Promise<Journal | Error>;
+export type UpdateJournal = (dto : UpdateJournalRequest) => Promise<Journal | Error>;
+export type DeleteJournal = (dto : DeleteJournalRequest) => Promise<CommandResult | Error>;
+export type DeleteJournals = (dto : DeleteJournalsRequest) => Promise<CommandResult | Error>;
+export type JournalExists = (id : string) => Promise<boolean | Error>;
+export type OwnsJournal = (author : string, id : string) => Promise<boolean | Error>;
