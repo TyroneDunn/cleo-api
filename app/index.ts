@@ -1,3 +1,3 @@
-import app from "./cleo-api";
+import app from "./app.module";
 
 app.run();
