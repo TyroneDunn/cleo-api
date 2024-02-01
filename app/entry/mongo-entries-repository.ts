@@ -1,8 +1,8 @@
 import {EntriesRepository} from "./entries-repository";
 import {Entry} from "./entry";
 import EntryModel from "./mongo-entry-model";
-import JournalModel from "../journal/mongo-journal-model";
-import {Journal} from "../journal/journal";
+import JournalModel from "../journals/mongo-journal-model";
+import {Journal} from "../journals/journal";
 import {now} from "mongoose";
 import {
     GetEntryDTO,

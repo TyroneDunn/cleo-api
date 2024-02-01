@@ -32,7 +32,7 @@ const journalSchema = new Schema<JournalDocument>({
   toObject: {virtuals: true}
 });
 
-journalSchema.virtual('journal-author', {
+journalSchema.virtual('journals-author', {
   ref: 'User',
   localField: 'author',
   foreignField: 'username',

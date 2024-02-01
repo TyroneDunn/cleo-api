@@ -1,5 +1,5 @@
-import { MongoJournalsRepository } from './journal/mongo-journals-repository';
-import { JournalsRepository } from './journal/journals-repository';
+import { MongoJournalsRepository } from './journals/mongo-journals-repository';
+import { JournalsRepository } from './journals/journals-repository';
 import { EntriesRepository } from './entry/entries-repository';
 import { MongoEntriesRepository } from './entry/mongo-entries-repository';
 import { UsersRepository } from './user/users-repository';

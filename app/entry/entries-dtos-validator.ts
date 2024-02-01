@@ -20,7 +20,7 @@ import {
 } from "../repositories-config";
 import {User} from "../user/user";
 import {UsersRepository} from "../user/users-repository";
-import {JournalsRepository} from "../journal/journals-repository";
+import {JournalsRepository} from "../journals/journals-repository";
 import {EntriesRepository} from "./entries-repository";
 
 const usersRepository: UsersRepository = USERS_REPOSITORY;
@@ -61,7 +61,7 @@ export const validateGetEntriesDTO = async (user: User, dto: GetEntriesDTO): Pro
     if (dto.sort)
         if (dto.sort !== 'id' && dto.sort !== 'title'&& dto.sort !== 'body' && dto.sort !== 'journal' && dto.sort !== 'lastUpdated' && dto.sort !== 'dateCreated')
             return {error: new BadRequestError('Invalid query. Sort option must' +
-                    ' be id, title, body, journal, lastUpdated, or dateCreated.')};
+                    ' be id, title, body, journals, lastUpdated, or dateCreated.')};
     if (dto.order !== undefined)
         if ((dto.order !== 'asc' && dto.order !== 'desc'))
             return {error: new BadRequestError('Invalid query. Order must be' +

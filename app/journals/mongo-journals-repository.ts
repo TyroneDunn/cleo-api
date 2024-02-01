@@ -11,7 +11,7 @@ import {
     GetJournalsDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
-import {PaginatedResponse} from "../../utils/paginated-response";
+import {PaginatedResponse} from "../utils/paginated-response";
 
 const deleteJournalEntries = async (journal: string): Promise<void> => {
     await JournalEntryModel.deleteMany({journal: journal});
