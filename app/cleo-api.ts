@@ -1,4 +1,4 @@
-import {Application, RequestHandler} from "express";
+import {Application as ExpressApplication, RequestHandler} from "express";
 const express = require("express");
 import corsOptions from "./cors.config";
 const cors = require('cors');
@@ -13,28 +13,28 @@ import authRouter from './auth/auth-router';
 import { authGuard } from './auth/auth-request-handlers';
 
 import {hals} from '@hals/core';
-import { ApplicationSchema, NodeEnvironmentOption } from '@hals/common';
+import { Application, ApplicationSchema, NodeEnvironmentOption } from '@hals/common';
 import authStrategy from './auth-strategy.config';
 
 
 const cleoHomeRoute = (req, res): RequestHandler =>
     res.send(API_TITLE);
 
-const app: Application = express();
-app.use(express.json());
-app.use(cors(corsOptions));
-app.use(sessionMiddleware);
-app.use(passport.initialize());
-app.use(passport.session());
+const expressApp: ExpressApplication = express();
+expressApp.use(express.json());
+expressApp.use(cors(corsOptions));
+expressApp.use(sessionMiddleware);
+expressApp.use(passport.initialize());
+expressApp.use(passport.session());
 
-app.get('/', cleoHomeRoute);
-app.use('/auth/', authRouter);
-app.use('/users/', authGuard, usersRouter);
-app.use('/journals/', authGuard, journalsRouter);
-app.use('/entries/', authGuard, entriesRouter);
+expressApp.get('/', cleoHomeRoute);
+expressApp.use('/auth/', authRouter);
+expressApp.use('/users/', authGuard, usersRouter);
+expressApp.use('/journals/', authGuard, journalsRouter);
+expressApp.use('/entries/', authGuard, entriesRouter);
 
 export const run = (): void => {
-    app.listen(API_PORT, () => {
+    expressApp.listen(API_PORT, () => {
         console.log(`${API_TITLE} \n\tport: ${API_PORT}`);
     });
 };
@@ -51,3 +51,7 @@ const appSchema: ApplicationSchema = {
     controllers: [
     ],
 };
+
+const app: Application = hals(appSchema);
+
+export default app;
