@@ -113,7 +113,6 @@ const mapToUsersFilter = (dto: UpdateUsersDTO) => ({
     ...(dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
 
-
 const mapToUpdateUsersQuery = (dto: UpdateUsersDTO) => ({
     ...dto.newIsAdmin && {isAdmin: (dto.newIsAdmin.toLowerCase() === 'true')},
     ...dto.newStatus && {status: dto.newStatus}
