@@ -1,4 +1,4 @@
-import { OrderOption } from '../utils/order-option';
+import { OrderOption } from '@hals/common';
 
 export type Journal = {
     _id: string,
