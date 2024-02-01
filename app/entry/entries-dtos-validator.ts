@@ -81,7 +81,7 @@ export const validateCreateEntryDTO = async (user: User, dto: CreateEntryDTO): P
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.journal)
-        return {error: new BadRequestError('Journal required.')};
+        return {error: new BadRequestError('JournalsTypes required.')};
     if (!(await journalsRepository.exists(dto.journal)))
         return {error: new NotFoundError(`Journal ${dto.journal} not found.`)};
     if (!(await usersRepository.isAdmin(user.username)) && !(await journalsRepository.ownsJournal(user.username, dto.journal)))

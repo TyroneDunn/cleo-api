@@ -21,7 +21,7 @@ import {
     deleteJournals,
 } from "./journals-service";
 import {sendErrorResponse} from "../utils/send-error-response";
-import {Journal, JournalSortOption} from "./journal";
+import {Journal, JournalSortOption} from "./journals.types";
 import {OrderOption} from "../utils/order-option";
 import {PaginatedResponse} from "../utils/paginated-response";
 

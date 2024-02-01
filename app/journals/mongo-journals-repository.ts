@@ -1,4 +1,4 @@
-import {Journal} from "./journal"
+import {Journal} from "./journals.types"
 import JournalModel from './mongo-journal-model';
 import JournalEntryModel from "../entry/mongo-entry-model";
 import {now} from "mongoose";

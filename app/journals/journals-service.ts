@@ -1,4 +1,4 @@
-import {Journal} from "./journal";
+import {Journal} from "./journals.types";
 import {JOURNALS_REPOSITORY} from "../repositories-config";
 import {JournalsRepository} from "./journals-repository";
 import {

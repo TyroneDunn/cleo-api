@@ -1,4 +1,4 @@
-import {Journal} from "./journal";
+import {Journal} from "./journals.types";
 import {
     CreateJournalDTO,
     DeleteJournalDTO,
@@ -7,7 +7,7 @@ import {
     GetJournalsDTO,
     UpdateJournalDTO
 } from "./journals-dtos";
-import {PaginatedResponse} from "../../utils/paginated-response";
+import {PaginatedResponse} from "../utils/paginated-response";
 
 export type JournalsRepository = {
     getJournal: (dto: GetJournalDTO) => Promise<Journal>,

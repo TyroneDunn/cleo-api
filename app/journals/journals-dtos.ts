@@ -1,5 +1,5 @@
 import {OrderOption} from "../utils/order-option";
-import {JournalSortOption} from "./journal";
+import {JournalSortOption} from "./journals.types";
 
 export type GetJournalDTO = {id: string};
 

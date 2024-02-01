@@ -26,7 +26,7 @@ export const validateGetJournalDTO = async (user: User, dto: GetJournalDTO): Pro
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
-        return {error: new BadRequestError('Journal ID required.')};
+        return {error: new BadRequestError('JournalsTypes ID required.')};
     if (!(await journalsRepository.exists(dto.id)))
         return {error: new NotFoundError(`Journal ${dto.id} not found.`)};
     if (!(await journalsRepository.ownsJournal(user.username, dto.id)) && !(await usersRepository.isAdmin(user.username)))
@@ -79,9 +79,9 @@ export const validateCreateJournalDTO = async (user: User, dto: CreateJournalDTO
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.name)
-        return {error: new BadRequestError('Journal name required.')};
+        return {error: new BadRequestError('JournalsTypes name required.')};
     if (!dto.author)
-        return {error: new BadRequestError('Journal author required.')};
+        return {error: new BadRequestError('JournalsTypes author required.')};
     return {};
 };
 
@@ -89,9 +89,9 @@ export const validateUpdateJournalDTO = async (user: User, dto: UpdateJournalDTO
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
-        return {error: new BadRequestError('Journal ID required.')};
+        return {error: new BadRequestError('JournalsTypes ID required.')};
     if (!dto.name)
-        return {error: new BadRequestError('Journal name required.')};
+        return {error: new BadRequestError('JournalsTypes name required.')};
     if (!(await journalsRepository.ownsJournal(user.username, dto.id)) && !(await usersRepository.isAdmin(user.username)))
         return {error: new ForbiddenError('Insufficient permissions.')};
     if (!(await journalsRepository.exists(dto.id)))
@@ -101,7 +101,7 @@ export const validateUpdateJournalDTO = async (user: User, dto: UpdateJournalDTO
 
 export const validateDeleteJournalDTO = async (user: User, dto: DeleteJournalDTO): Promise<ValidationResult> => {
     if (!dto.id)
-        return {error: new BadRequestError('Journal ID required.')};
+        return {error: new BadRequestError('JournalsTypes ID required.')};
     if (!(await journalsRepository.ownsJournal(user.username, dto.id)) && !(await usersRepository.isAdmin(user.username)))
         return {error: new ForbiddenError('Insufficient permissions.')};
     if (!(await journalsRepository.exists(dto.id)))
