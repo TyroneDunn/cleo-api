@@ -1,3 +1,3 @@
-import {run as runCleoApi} from "./cleo-api";
+import app from "./cleo-api";
 
-runCleoApi();
+app.run();
