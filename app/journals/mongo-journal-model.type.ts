@@ -19,16 +19,9 @@ const journalSchema = new Schema<JournalDocument>({
     type: String,
     required: true,
   },
-  dateCreated: {
-    type: Date,
-    required: true,
-  },
-  lastUpdated: {
-    type: Date,
-    required: true,
-  },
 },
 {
+  timestamps: true,
   toObject: {virtuals: true}
 });
 
