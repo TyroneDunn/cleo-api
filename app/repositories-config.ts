@@ -1,7 +1,7 @@
 import { MongoJournalsRepository } from './journals/mongo-journals-repository.service';
 import { JournalsRepository } from './journals/journals-repository.type';
-import { EntriesRepository } from './entry/entries-repository';
-import { MongoEntriesRepository } from './entry/mongo-entries-repository';
+import { EntriesRepository } from './entries/entries-repository';
+import { MongoEntriesRepository } from './entries/mongo-entries-repository';
 import { UsersRepository } from './user/users-repository';
 import { MongoUsersRepository } from './user/mongo-users-repository';
 

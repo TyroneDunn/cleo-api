@@ -8,7 +8,7 @@ import {
     UpdateJournalRequest,
 } from "./journals.types";
 import JournalModel from './mongo-journal-model.type';
-import JournalEntryModel from "../entry/mongo-entry-model";
+import JournalEntryModel from "../entries/mongo-entry-model";
 import { now } from "mongoose";
 import { JournalsRepository } from "./journals-repository.type";
 import { CommandResult, Error } from '@hals/common';

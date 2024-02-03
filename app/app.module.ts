@@ -6,7 +6,7 @@ import {sessionMiddleware} from "./session-config";
 import passport = require("passport");
 require("./auth/passport-config");
 import { API_PORT, API_TITLE, API_VERSION, NODE_ENV } from "./environment";
-import entriesRouter from './entry/entries-router';
+import entriesRouter from './entries/entries-router';
 import usersRouter from './user/users-router';
 import authRouter from './auth/auth-router';
 import { authGuard } from './auth/auth-request-handlers';
