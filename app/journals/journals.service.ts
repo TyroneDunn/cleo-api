@@ -1,58 +1,66 @@
+import { JournalsRepository } from "./journals-repository.type";
+import { JournalsValidator } from "./journals.validator";
+import { handleRequest, Request, RequestHandler, Response } from '@hals/common';
 import {
-    CreateJournalRequest,
-    DeleteJournalRequest,
-    DeleteJournalsRequest, GetJournalRequest, GetJournalsRequest,
-    Journal,
-    UpdateJournalRequest,
-} from "./journals.types";
-import {JOURNALS_REPOSITORY} from "../repositories-config";
-import {JournalsRepository} from "./journals-repository.type";
-import {
-    validateCreateJournalDTO,
-    validateDeleteJournalDTO,
-    validateDeleteJournalsDTO,
-    validateGetJournalDTO,
-    validateGetJournalsDTO,
-    validateUpdateJournalDTO
-} from "./journals.validator";
-import {ValidationResult} from "../utils/validation-result";
-import {User} from "../user/user";
-import {PaginatedResponse} from "../utils/paginated-response";
+   createJournalAndMapToResponse,
+   deleteJournalAndMapToResponse,
+   deleteJournalsAndMapToResponse,
+   getJournalAndMapToResponse,
+   getJournalsAndMapToResponse,
+   mapRequestToCreateJournalRequest,
+   mapRequestToDeleteJournalRequest,
+   mapRequestToDeleteJournalsRequest,
+   mapRequestToGetJournalRequest,
+   mapRequestToGetJournalsRequest,
+   mapRequestToUpdateJournalRequest,
+   updateJournalAndMapToResponse,
+} from './journals.utilities';
 
-const repository: JournalsRepository = JOURNALS_REPOSITORY;
-
-export const getJournal = async (user: User, dto: GetJournalRequest): Promise<Journal> => {
-    const validationResult: ValidationResult = await validateGetJournalDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.getJournal(dto);
+export type JournalsService = {
+   getJournal : RequestHandler,
+   getJournals : RequestHandler,
+   createJournal : RequestHandler,
+   updateJournal : RequestHandler,
+   deleteJournal : RequestHandler,
+   deleteJournals : RequestHandler,
 };
 
-export const getJournals = async (user: User, dto: GetJournalsRequest): Promise<PaginatedResponse<Journal>> => {
-    const validationResult: ValidationResult = await validateGetJournalsDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.getJournals(dto);
-};
+export const JournalsService = (
+   journalsRepository : JournalsRepository,
+   validator : JournalsValidator,
+) : JournalsService => ({
+   getJournal: async (request : Request) : Promise<Response> => handleRequest(
+      mapRequestToGetJournalRequest(request),
+      validator.validateGetJournalRequest,
+      getJournalAndMapToResponse(journalsRepository.getJournal),
+   ),
 
-export const createJournal = async (user: User, dto: CreateJournalRequest): Promise<Journal> => {
-    const validationResult: ValidationResult = await validateCreateJournalDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.createJournal(dto)
-};
+   getJournals: async (request : Request) : Promise<Response> => handleRequest(
+      mapRequestToGetJournalsRequest(request),
+      validator.validateGetJournalsRequest,
+      getJournalsAndMapToResponse(journalsRepository.getJournals),
+   ),
 
-export const updateJournal = async (user: User, dto: UpdateJournalRequest): Promise<Journal> => {
-    const validationResult: ValidationResult = await validateUpdateJournalDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.updateJournal(dto);
-};
+   createJournal: async (request : Request) : Promise<Response> => handleRequest(
+      mapRequestToCreateJournalRequest(request),
+      validator.validateCreateJournalRequest,
+      createJournalAndMapToResponse(journalsRepository.createJournal),
+   ),
 
-export const deleteJournal = async (user: User, dto: DeleteJournalRequest): Promise<Journal> => {
-    const validationResult: ValidationResult = await validateDeleteJournalDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.deleteJournal(dto);
-};
+   updateJournal: async (request : Request) : Promise<Response> => handleRequest(
+      mapRequestToUpdateJournalRequest(request),
+      validator.validateUpdateJournalRequest,
+      updateJournalAndMapToResponse(journalsRepository.updateJournal),
+   ),
 
-export const deleteJournals = async (user: User, dto: DeleteJournalsRequest): Promise<string> => {
-    const validationResult: ValidationResult = await validateDeleteJournalsDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.deleteJournals(dto);
-};
+   deleteJournal : async (request : Request) : Promise<Response> => handleRequest(
+      mapRequestToDeleteJournalRequest(request),
+      validator.validateDeleteJournalRequest,
+      deleteJournalAndMapToResponse(journalsRepository.deleteJournal),
+   ),
+   deleteJournals: async (request : Request) : Promise<Response> => handleRequest(
+      mapRequestToDeleteJournalsRequest(request),
+      validator.validateDeleteJournalsRequest,
+      deleteJournalsAndMapToResponse(journalsRepository.deleteJournals),
+   ),
+});
