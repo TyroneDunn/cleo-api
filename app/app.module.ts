@@ -13,7 +13,7 @@ import authRouter from './auth/auth-router';
 import { authGuard } from './auth/auth-request-handlers';
 
 import {hals} from '@hals/core';
-import { Application, ApplicationSchema, NodeEnvironmentOption } from '@hals/common';
+import { Application, ApplicationSchema, LOCAL_HOST, NodeEnvironmentOption } from '@hals/common';
 import authStrategy from './auth-strategy.config';
 import journalsController from './journals/journals.module';
 
@@ -45,7 +45,7 @@ const appSchema: ApplicationSchema = {
     serverOption: "Express",
     title: API_TITLE,
     version: API_VERSION,
-    host: '127.0.0.1',
+    host: LOCAL_HOST,
     port: API_PORT,
     corsOptions: corsOptions,
     authStrategy: authStrategy,
