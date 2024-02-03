@@ -4,11 +4,14 @@ export type Journal = {
     _id: string,
     name: string,
     author: string,
-    dateCreated: Date,
-    lastUpdated: Date,
+    createdAt: Date,
+    updatedAt: Date,
 };
 
-export type GetJournalRequest = { id : string };
+export type GetJournalRequest = {
+    user : User,
+    id : string,
+};
 
 export type GetJournalsRequest = {
     user : User,
@@ -26,35 +29,34 @@ export type JournalsFilter =  {
 };
 
 export type JournalsSort = {
-    sortBy : JournalsSortOption,
+    sortBy : JournalsSortOptions,
     order : OrderOption
 };
 
-export type JournalsSortOption =
+export type JournalsSortOptions =
    | 'id'
    | 'name'
-   | 'dateCreated'
-   | 'lastUpdated';
+   | 'createdAt'
+   | 'updatedAt';
 
 export type CreateJournalRequest = {
+    user : User,
     author : string,
     name : string,
 };
 
 export type UpdateJournalRequest = {
+    user : User,
     id : string,
     name? : string,
 };
 
 export type DeleteJournalRequest = {
+    user : User,
     id : string,
 };
 
 export type DeleteJournalsRequest = {
-    name? : string,
-    nameRegex? : string,
-    author? : string,
-    authorRegex? : string,
-    startDate? : string,
-    endDate? : string,
+    user : User,
+    filter : JournalsFilter,
 };

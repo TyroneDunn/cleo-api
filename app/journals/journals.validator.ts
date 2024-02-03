@@ -79,8 +79,8 @@ export const JournalsValidator = (
             return ValidationError("BadRequest", 'Invalid sort query. Provide sort by field.');
          if (request.sort.sortBy !== 'id'
             && request.sort.sortBy !== 'name'
-            && request.sort.sortBy !== 'lastUpdated'
-            && request.sort.sortBy !== 'dateCreated')
+            && request.sort.sortBy !== 'updatedAt'
+            && request.sort.sortBy !== 'createdAt')
             return ValidationError('BadRequest', 'Invalid sort query. Sort by option must be id, name,' +
                ' lastUpdated, or dateCreated.');
          if ((request.sort.order !== 'asc' && request.sort.order !== 'desc'))

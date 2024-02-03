@@ -6,8 +6,8 @@ interface JournalDocument extends Document, Journal {
   _id: string,
   name: string,
   author: string;
-  dateCreated: Date,
-  lastUpdated: Date,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 const journalSchema = new Schema<JournalDocument>({

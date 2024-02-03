@@ -70,7 +70,7 @@ const JournalsQueryParamKeys : string[] = [
    'authorRegex',
    'createdAt',
    'updatedAt',
-   'sort',
+   'sortBy',
    'order',
    'index',
    'limit',

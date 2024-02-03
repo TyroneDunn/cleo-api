@@ -19,7 +19,7 @@ import {
    GetJournalRequest,
    GetJournalsRequest,
    Journal,
-   JournalsSortOption,
+   JournalsSortOptions,
    UpdateJournalRequest,
 } from './journals.types';
 import {
@@ -83,9 +83,9 @@ const mapRequestToProductsFilter = (request : Request) => ({
 });
 
 const mapRequestToProductsSort = (request : Request) => ({
-   ...(request.queryParamMap['sort'] && request.queryParamMap['order']) && {
+   ...(request.queryParamMap['sortBy'] && request.queryParamMap['order']) && {
       sortBy: {
-         field: request.queryParamMap['sort'] as JournalsSortOption,
+         field: request.queryParamMap['sortBy'] as JournalsSortOptions,
          order: request.queryParamMap['order'] as OrderOption,
       },
    },
