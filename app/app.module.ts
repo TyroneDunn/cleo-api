@@ -15,6 +15,7 @@ import { authGuard } from './auth/auth-request-handlers';
 import {hals} from '@hals/core';
 import { Application, ApplicationSchema, NodeEnvironmentOption } from '@hals/common';
 import authStrategy from './auth-strategy.config';
+import journalsController from './journals/journals.module';
 
 
 const cleoHomeRoute = (req, res): RequestHandler =>
@@ -49,6 +50,7 @@ const appSchema: ApplicationSchema = {
     corsOptions: corsOptions,
     authStrategy: authStrategy,
     controllers: [
+       journalsController,
     ],
 };
 
