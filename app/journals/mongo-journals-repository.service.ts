@@ -27,17 +27,20 @@ export const MongoJournalsRepository: JournalsRepository = {
         }
     },
 
-    getJournals: async (dto: GetJournalsRequest): Promise<GetRecordsResponse<Journal> | Error> => {
+    getJournals: async (request: GetJournalsRequest): Promise<GetRecordsResponse<Journal> | Error> => {
         try {
-            const filter = mapToJournalsFilter(dto);
+            const filter = mapToJournalsFilter(request);
             const count = await JournalModel.count(filter);
-            const journals: Journal[] = await JournalModel.find(filter)
-              .sort({[dto.sort]: (dto.order === 'asc')? 1 : -1})
-              .skip(dto.page * dto.limit)
-              .limit(dto.limit);
+            const query = JournalModel.find(filter)
+            if (request.sort !== undefined)
+                query.sort({ [request.sort.sortBy]: request.sort.order === 'asc' ? 1 : -1 });
+            if (request.page !== undefined) {
+                query.skip(request.page.index * request.page.limit);
+                query.limit(request.page.limit);
+            }
             return {
                 count: count,
-                collection: journals,
+                collection: await query.exec(),
             };
         }
         catch (error) {
@@ -122,12 +125,23 @@ const deleteJournalEntries = async (journal: string): Promise<void> => {
     await JournalEntryModel.deleteMany({journal: journal});
 };
 
-const mapToJournalsFilter = (dto: GetJournalsRequest) => ({
-    ... dto.name && {name: dto.name},
-    ... dto.nameRegex && {name: {$regex: dto.nameRegex, $options: 'i'}},
-    ... dto.author && {author: dto.author},
-    ... dto.authorRegex && {author: {$regex: dto.authorRegex, $options: 'i'}},
-    ... (dto.startDate && !dto.endDate) && {lastUpdated: {$gt: dto.startDate}},
-    ... (!dto.startDate && dto.endDate) && {lastUpdated: {$lt: dto.endDate}},
-    ... (dto.startDate && dto.endDate) && {lastUpdated: {$gte: dto.startDate, $lte: dto.endDate}},
+const mapToJournalsFilter = (request: GetJournalsRequest) => ({
+    ... request.filter && {
+        ... request.filter.name && {name: request.filter.name},
+        ... request.filter.nameRegex && {name: {$regex: request.filter.nameRegex, $options: 'i'}},
+        ... request.filter.author && {author: request.filter.author},
+        ... request.filter.authorRegex && {author: {$regex: request.filter.authorRegex, $options: 'i'}},
+        ... request.filter.timestamps && {
+            ... request.filter.timestamps.createdAt && {
+                ... (request.filter.timestamps.createdAt.start && !request.filter.timestamps.createdAt.end) && {createdAt: {$gt: request.filter.timestamps.createdAt.start}},
+                ... (!request.filter.timestamps.createdAt.start && request.filter.timestamps.createdAt.end) && {createdAt: {$lt: request.filter.timestamps.createdAt.end}},
+                ... (request.filter.timestamps.createdAt.start && request.filter.timestamps.createdAt.end) && {createdAt: {$gte: request.filter.timestamps.createdAt.start, $lte: request.filter.timestamps.createdAt.end}},
+            },
+            ... request.filter.timestamps.updatedAt && {
+                ... (request.filter.timestamps.updatedAt.start && !request.filter.timestamps.updatedAt.end) && {updatedAt: {$gt: request.filter.timestamps.updatedAt.start}},
+                ... (!request.filter.timestamps.updatedAt.start && request.filter.timestamps.updatedAt.end) && {updatedAt: {$lt: request.filter.timestamps.updatedAt.end}},
+                ... (request.filter.timestamps.updatedAt.start && request.filter.timestamps.updatedAt.end) && {updatedAt: {$gte: request.filter.timestamps.updatedAt.start, $lte: request.filter.timestamps.updatedAt.end}},
+            },
+        }
+    },
 });

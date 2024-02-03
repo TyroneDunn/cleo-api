@@ -1,4 +1,4 @@
-import { OrderOption } from '@hals/common';
+import { OrderOption, Page, Timestamps, User } from '@hals/common';
 
 export type Journal = {
     _id: string,
@@ -11,19 +11,30 @@ export type Journal = {
 export type GetJournalRequest = { id : string };
 
 export type GetJournalsRequest = {
+    user : User,
+    filter? : JournalsFilter,
+    sort? : JournalsSort,
+    page? : Page
+};
+
+export type JournalsFilter =  {
     name? : string,
     nameRegex? : string,
     author? : string,
     authorRegex? : string,
-    startDate? : string,
-    endDate? : string,
-    sort? : JournalSortOption,
-    order? : OrderOption,
-    page? : number,
-    limit? : number,
+    timestamps? : Timestamps
 };
 
-export type JournalSortOption = 'id' | 'name' | 'dateCreated' | 'lastUpdated';
+export type JournalsSort = {
+    sortBy : JournalsSortOption,
+    order : OrderOption
+};
+
+export type JournalsSortOption =
+   | 'id'
+   | 'name'
+   | 'dateCreated'
+   | 'lastUpdated';
 
 export type CreateJournalRequest = {
     author : string,
