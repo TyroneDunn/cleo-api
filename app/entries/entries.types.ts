@@ -5,8 +5,8 @@ export type Entry = {
     title: string,
     body: string,
     journal: any,
-    lastUpdated: Date,
-    dateCreated: Date,
+    updatedAt: Date,
+    createdAt: Date,
 };
 
 export type EntriesSortOption =

@@ -7,8 +7,6 @@ interface EntryDocument extends Document, Entry {
     body: string,
     title: string,
     journal: Schema.Types.ObjectId;
-    dateCreated: Date,
-    lastUpdated: Date,
 }
 
 const EntrySchema = new Schema({
@@ -23,14 +21,9 @@ const EntrySchema = new Schema({
         ref: "JournalSchema",
         required: true,
     },
-    dateCreated: {
-        type: Date,
-        required: true,
-    },
-    lastUpdated: {
-        type: Date,
-        required: true,
-    },
+},
+{
+    timestamps: true,
 });
 
 const EntryModel = database.model<EntryDocument>('Entry', EntrySchema);
