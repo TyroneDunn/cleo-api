@@ -1,4 +1,3 @@
-
 import {ValidationResult} from "../utils/validation-result";
 import {
     BadRequestError,
@@ -16,18 +15,18 @@ import {UsersRepository} from "../user/users-repository";
 import {JournalsRepository} from "../journals/journals-repository.type";
 import {EntriesRepository} from "./entries-repository";
 import {
-    CreateEntryDTO,
-    DeleteEntriesDTO,
-    DeleteEntryDTO,
-    GetEntriesDTO, GetEntryDTO,
-    UpdateEntryDTO,
+    CreateEntryRequest,
+    DeleteEntriesRequest,
+    DeleteEntryRequest,
+    GetEntriesRequest, GetEntryRequest,
+    UpdateEntryRequest,
 } from './entries.types';
 
 const usersRepository: UsersRepository = USERS_REPOSITORY;
 const journalsRepository: JournalsRepository = JOURNALS_REPOSITORY;
 const entriesRepository: EntriesRepository = ENTRIES_REPOSITORY;
 
-export const validateGetEntryDTO = async (user: User, dto: GetEntryDTO): Promise<ValidationResult> => {
+export const validateGetEntryDTO = async (user: User, dto: GetEntryRequest): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
@@ -39,7 +38,7 @@ export const validateGetEntryDTO = async (user: User, dto: GetEntryDTO): Promise
     return {};
 };
 
-export const validateGetEntriesDTO = async (user: User, dto: GetEntriesDTO): Promise<ValidationResult> => {
+export const validateGetEntriesDTO = async (user: User, dto: GetEntriesRequest): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
     if (dto.journal)
@@ -77,7 +76,7 @@ export const validateGetEntriesDTO = async (user: User, dto: GetEntriesDTO): Pro
     return {};
 };
 
-export const validateCreateEntryDTO = async (user: User, dto: CreateEntryDTO): Promise<ValidationResult> => {
+export const validateCreateEntryDTO = async (user: User, dto: CreateEntryRequest): Promise<ValidationResult> => {
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.journal)
@@ -89,7 +88,7 @@ export const validateCreateEntryDTO = async (user: User, dto: CreateEntryDTO): P
     return {};
 };
 
-export const validateUpdateEntryDTO = async (user: User, dto: UpdateEntryDTO): Promise<ValidationResult> => {
+export const validateUpdateEntryDTO = async (user: User, dto: UpdateEntryRequest): Promise<ValidationResult> => {
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.id)
@@ -107,7 +106,7 @@ export const validateUpdateEntryDTO = async (user: User, dto: UpdateEntryDTO): P
     return {};
 };
 
-export const validateDeleteEntryDTO = async (user: User, dto: DeleteEntryDTO): Promise<ValidationResult> => {
+export const validateDeleteEntryDTO = async (user: User, dto: DeleteEntryRequest): Promise<ValidationResult> => {
     if (!dto.id)
         return {error: new BadRequestError('Entry ID required.')};
     if (!(await ENTRIES_REPOSITORY.exists(dto.id)))
@@ -117,7 +116,7 @@ export const validateDeleteEntryDTO = async (user: User, dto: DeleteEntryDTO): P
     return {};
 };
 
-export const validateDeleteEntriesDTO = async (user: User, dto: DeleteEntriesDTO): Promise<ValidationResult> => {
+export const validateDeleteEntriesDTO = async (user: User, dto: DeleteEntriesRequest): Promise<ValidationResult> => {
     if (!user)
         return {error: new UnauthorizedError('Unauthorized.')};
     if (dto.journal)

@@ -1,10 +1,10 @@
 import {EntriesRepository} from "./entries-repository";
 import {
-    CreateEntryDTO,
-    DeleteEntriesDTO,
-    DeleteEntryDTO,
-    Entry, GetEntriesDTO, GetEntryDTO,
-    UpdateEntryDTO,
+    CreateEntryRequest,
+    DeleteEntriesRequest,
+    DeleteEntryRequest,
+    Entry, GetEntriesRequest, GetEntryRequest,
+    UpdateEntryRequest,
 } from "./entries.types";
 import EntryModel from "./mongo-entry-model";
 import JournalModel from "../journals/mongo-journal-model.type";
@@ -14,10 +14,10 @@ import { JOURNALS_REPOSITORY } from '../repositories-config';
 import { PaginatedResponse } from '../utils/paginated-response';
 
 export const MongoEntriesRepository: EntriesRepository = {
-    getEntry: async (dto: GetEntryDTO): Promise<Entry> =>
+    getEntry: async (dto: GetEntryRequest): Promise<Entry> =>
         EntryModel.findById(dto.id),
 
-    getEntries: async (dto: GetEntriesDTO): Promise<PaginatedResponse<Entry>> => {
+    getEntries: async (dto: GetEntriesRequest): Promise<PaginatedResponse<Entry>> => {
         const skip = (dto.page) * dto.limit;
         const filter = mapToEntriesFilter(dto);
         const count = await EntryModel.count(filter);
@@ -33,13 +33,13 @@ export const MongoEntriesRepository: EntriesRepository = {
         };
     },
 
-    createEntry: async (dto: CreateEntryDTO): Promise<Entry> => {
+    createEntry: async (dto: CreateEntryRequest): Promise<Entry> => {
         const entry: Entry = await new EntryModel(mapToCreateEntryQuery(dto)).save();
         await JOURNALS_REPOSITORY.updateJournal({id: dto.journal});
         return entry;
     },
 
-    updateEntry: async (dto: UpdateEntryDTO): Promise<Entry> => {
+    updateEntry: async (dto: UpdateEntryRequest): Promise<Entry> => {
         const entry: Entry = await EntryModel.findByIdAndUpdate(
             dto.id,
             mapToUpdateEntryQuery(dto),
@@ -49,13 +49,13 @@ export const MongoEntriesRepository: EntriesRepository = {
         return entry;
     },
 
-    deleteEntry: async (dto: DeleteEntryDTO): Promise<Entry> => {
+    deleteEntry: async (dto: DeleteEntryRequest): Promise<Entry> => {
         const entry: Entry = await EntryModel.findByIdAndDelete(dto.id);
         await JOURNALS_REPOSITORY.updateJournal({id: entry.journal.toString()});
         return entry;
     },
 
-    deleteEntries: async (dto: DeleteEntriesDTO): Promise<string> => {
+    deleteEntries: async (dto: DeleteEntriesRequest): Promise<string> => {
         const filter = mapToEntriesFilter(dto);
         const result = await EntryModel.deleteMany(filter);
         return `${result.deletedCount} entries deleted.`;
@@ -81,7 +81,7 @@ export const MongoEntriesRepository: EntriesRepository = {
     },
 };
 
-const mapToEntriesFilter = (dto: GetEntriesDTO) => {
+const mapToEntriesFilter = (dto: GetEntriesRequest) => {
     if (dto.titleRegex && dto.bodyRegex) {
         return ({
             "$or": [
@@ -118,7 +118,7 @@ const mapToEntriesFilter = (dto: GetEntriesDTO) => {
         });
 };
 
-const mapToCreateEntryQuery = (dto: CreateEntryDTO) => ({
+const mapToCreateEntryQuery = (dto: CreateEntryRequest) => ({
     title: dto.title,
     body: dto.body,
     journal: dto.journal,
@@ -126,7 +126,7 @@ const mapToCreateEntryQuery = (dto: CreateEntryDTO) => ({
     lastUpdated: now(),
 });
 
-const mapToUpdateEntryQuery = (dto: UpdateEntryDTO) => ({
+const mapToUpdateEntryQuery = (dto: UpdateEntryRequest) => ({
     ... dto.title && {title: dto.title},
     ... dto.body && {body: dto.body},
     ... dto.journal && {journal: dto.journal},

@@ -1,4 +1,3 @@
-
 import {
     getEntry,
     getEntries,
@@ -11,19 +10,19 @@ import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
 import {sendErrorResponse} from "../utils/send-error-response";
 import {
-    CreateEntryDTO,
-    DeleteEntriesDTO,
-    DeleteEntryDTO,
+    CreateEntryRequest,
+    DeleteEntriesRequest,
+    DeleteEntryRequest,
     Entry,
-    EntrySortOption, GetEntriesDTO, GetEntryDTO,
-    UpdateEntryDTO,
+    EntrySortOption, GetEntriesRequest, GetEntryRequest,
+    UpdateEntryRequest,
 } from "./entries.types";
 import {OrderOption} from "../utils/order-option";
 import {PaginatedResponse} from "../utils/paginated-response";
 
 export const getEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: GetEntryDTO = mapToGetEntryDTO(req);
+        const dto: GetEntryRequest = mapToGetEntryDTO(req);
         const entry = await getEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
@@ -33,7 +32,7 @@ export const getEntryHandler: RequestHandler = async (req: Request, res: Respons
 
 export const getEntriesHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: GetEntriesDTO = mapToGetEntriesDTO(req);
+        const dto: GetEntriesRequest = mapToGetEntriesDTO(req);
         let getEntriesResponse: PaginatedResponse<Entry> = await getEntries(req.user as User, dto);
         res.json(getEntriesResponse);
     } catch (error) {
@@ -43,7 +42,7 @@ export const getEntriesHandler: RequestHandler = async (req: Request, res: Respo
 
 export const createEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: CreateEntryDTO = mapToCreateEntryDTO(req);
+        const dto: CreateEntryRequest = mapToCreateEntryDTO(req);
         const entry = await createEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
@@ -53,7 +52,7 @@ export const createEntryHandler: RequestHandler = async (req: Request, res: Resp
 
 export const updateEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: UpdateEntryDTO = mapToUpdateEntryDTO(req);
+        const dto: UpdateEntryRequest = mapToUpdateEntryDTO(req);
         const entry = await updateEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
@@ -63,7 +62,7 @@ export const updateEntryHandler: RequestHandler = async (req: Request, res: Resp
 
 export const deleteEntryHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteEntryDTO = mapToDeleteEntryDTO(req);
+        const dto: DeleteEntryRequest = mapToDeleteEntryDTO(req);
         const entry = await deleteEntry(req.user as User, dto);
         res.json(entry);
     } catch (error) {
@@ -73,7 +72,7 @@ export const deleteEntryHandler: RequestHandler = async (req: Request, res: Resp
 
 export const deleteEntriesHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteEntriesDTO = mapToDeleteEntriesDTO(req);
+        const dto: DeleteEntriesRequest = mapToDeleteEntriesDTO(req);
         const result = await deleteEntries(req.user as User, dto);
         res.json(result);
     } catch (error) {
@@ -81,10 +80,10 @@ export const deleteEntriesHandler: RequestHandler = async (req: Request, res: Re
     }
 };
 
-const mapToGetEntryDTO = (req: Request): GetEntryDTO =>
+const mapToGetEntryDTO = (req: Request): GetEntryRequest =>
     ({id: req.params.id});
 
-const mapToGetEntriesDTO = (req: Request): GetEntriesDTO => ({
+const mapToGetEntriesDTO = (req: Request): GetEntriesRequest => ({
     ... req.query.journal && {journal: req.query.journal as string},
     ... req.query.title && {title: req.query.title as string},
     ... req.query.titleRegex && {titleRegex: req.query.titleRegex as string},
@@ -98,23 +97,23 @@ const mapToGetEntriesDTO = (req: Request): GetEntriesDTO => ({
     ... req.query.limit && {limit: parseInt(req.query.limit as string)},
 });
 
-const mapToCreateEntryDTO = (req: Request): CreateEntryDTO => ({
+const mapToCreateEntryDTO = (req: Request): CreateEntryRequest => ({
     journal: req.params.id,
     title: req.body.title,
     body: req.body.body,
 });
 
-const mapToUpdateEntryDTO = (req: Request): UpdateEntryDTO => ({
+const mapToUpdateEntryDTO = (req: Request): UpdateEntryRequest => ({
     id: req.params.id,
     ... req.body.journal && {journal: req.body.journal},
     ... req.body.title && {title: req.body.title},
     ... req.body.body && {body: req.body.body},
 });
 
-const mapToDeleteEntryDTO = (req: Request): DeleteEntryDTO =>
+const mapToDeleteEntryDTO = (req: Request): DeleteEntryRequest =>
     ({id: req.params.id});
 
-const mapToDeleteEntriesDTO = (req: Request): DeleteEntriesDTO => ({
+const mapToDeleteEntriesDTO = (req: Request): DeleteEntriesRequest => ({
     ... req.query.journal && {journal: req.query.journal as string},
     ... req.query.title && {title: req.query.title as string},
     ... req.query.titleRegex && {titleRegex: req.query.titleRegex as string},

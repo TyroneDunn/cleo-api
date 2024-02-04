@@ -11,9 +11,9 @@ export type Entry = {
 
 export type EntrySortOption = 'id' | 'journal' | 'title' | 'body' | 'dateCreated' | 'lastUpdated';
 
-export type GetEntryDTO = { id : string };
+export type GetEntryRequest = { id : string };
 
-export type GetEntriesDTO = {
+export type GetEntriesRequest = {
     title? : string,
     titleRegex? : string,
     body? : string,
@@ -27,21 +27,21 @@ export type GetEntriesDTO = {
     limit? : number,
 };
 
-export type CreateEntryDTO = {
+export type CreateEntryRequest = {
     journal : string,
     title : string,
     body : string,
 };
 
-export type UpdateEntryDTO = {
+export type UpdateEntryRequest = {
     id : string,
     title? : string,
     body? : string,
     journal? : string,
 };
-export type DeleteEntryDTO = { id : string };
+export type DeleteEntryRequest = { id : string };
 
-export type DeleteEntriesDTO = {
+export type DeleteEntriesRequest = {
     title? : string,
     titleRegex? : string,
     body? : string,
