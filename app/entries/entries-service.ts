@@ -14,7 +14,7 @@ import {
     validateUpdateEntryDTO,
     validateDeleteEntryDTO,
     validateDeleteEntriesDTO,
-} from "./entries-dtos-validator";
+} from "./entries.validator";
 import {ValidationResult} from "../utils/validation-result";
 import {User} from "../user/user";
 import {PaginatedResponse} from "../utils/paginated-response";
