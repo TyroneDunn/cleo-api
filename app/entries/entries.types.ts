@@ -1,4 +1,4 @@
-import { OrderOption } from '@hals/common';
+import { OrderOption, Page, Timestamps, User } from '@hals/common';
 
 export type Entry = {
     _id: string,
@@ -9,50 +9,61 @@ export type Entry = {
     createdAt: Date,
 };
 
-export type EntriesSortOption =
-   | 'id'
-   | 'journal'
-   | 'title'
-   | 'body'
-   | 'dateCreated'
-   | 'lastUpdated';
-
-export type GetEntryRequest = { id : string };
+export type GetEntryRequest = {
+    user : User,
+    id : string
+};
 
 export type GetEntriesRequest = {
+    user : User,
+    filter? : EntriesFilter,
+    sort? : EntriesSort,
+    page : Page,
+};
+
+export type EntriesFilter = {
     title? : string,
     titleRegex? : string,
     body? : string,
     bodyRegex? : string,
     journal? : string,
-    startDate? : string,
-    endDate? : string,
-    sort? : EntriesSortOption,
-    order? : OrderOption,
-    page? : number,
-    limit? : number,
+    timestamps? : Timestamps
 };
 
+export type EntriesSort = {
+    sortBy : EntriesSortOptions,
+    order : OrderOption,
+}
+
+export type EntriesSortOptions =
+   | 'id'
+   | 'journal'
+   | 'title'
+   | 'body'
+   | 'createdAt'
+   | 'updatedAt';
+
 export type CreateEntryRequest = {
+    user : User,
     journal : string,
     title : string,
     body : string,
 };
 
 export type UpdateEntryRequest = {
+    user : User,
     id : string,
     title? : string,
     body? : string,
     journal? : string,
 };
-export type DeleteEntryRequest = { id : string };
+
+export type DeleteEntryRequest = {
+    user : User,
+    id : string
+};
 
 export type DeleteEntriesRequest = {
-    title? : string,
-    titleRegex? : string,
-    body? : string,
-    bodyRegex? : string,
-    journal? : string,
-    startDate? : string,
-    endDate? : string,
+    user : User,
+    filter : EntriesFilter,
 };

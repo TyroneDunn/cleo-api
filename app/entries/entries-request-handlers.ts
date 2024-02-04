@@ -14,7 +14,9 @@ import {
     DeleteEntriesRequest,
     DeleteEntryRequest,
     Entry,
-    EntriesSortOption, GetEntriesRequest, GetEntryRequest,
+    EntriesSortOptions,
+    GetEntriesRequest,
+    GetEntryRequest,
     UpdateEntryRequest,
 } from "./entries.types";
 import {OrderOption} from "../utils/order-option";
@@ -91,7 +93,7 @@ const mapToGetEntriesDTO = (req: Request): GetEntriesRequest => ({
     ... req.query.bodyRegex && {bodyRegex: req.query.bodyRegex as string},
     ... req.query.startDate && {startDate: req.query.startDate as string},
     ... req.query.endDate && {endDate: req.query.endDate as string},
-    ... req.query.sort && {sort: req.query.sort as EntriesSortOption},
+    ... req.query.sort && {sort: req.query.sort as EntriesSortOptions},
     ... req.query.order && {order: req.query.order as OrderOption},
     ... req.query.page && {page: parseInt(req.query.page as string)},
     ... req.query.limit && {limit: parseInt(req.query.limit as string)},
