@@ -21,11 +21,11 @@ export type JournalsRepository = {
     ownsJournal: OwnsJournal,
 };
 
-export type GetJournal = (dto : GetJournalRequest) => Promise<Journal | Error>;
-export type GetJournals = (dto : GetJournalsRequest) => Promise<GetRecordsResponse<Journal> | Error>;
-export type CreateJournal = (dto : CreateJournalRequest) => Promise<Journal | Error>;
-export type UpdateJournal = (dto : UpdateJournalRequest) => Promise<Journal | Error>;
-export type DeleteJournal = (dto : DeleteJournalRequest) => Promise<CommandResult | Error>;
-export type DeleteJournals = (dto : DeleteJournalsRequest) => Promise<CommandResult | Error>;
+export type GetJournal = (request : GetJournalRequest) => Promise<Journal | Error>;
+export type GetJournals = (request : GetJournalsRequest) => Promise<GetRecordsResponse<Journal> | Error>;
+export type CreateJournal = (request : CreateJournalRequest) => Promise<Journal | Error>;
+export type UpdateJournal = (request : UpdateJournalRequest) => Promise<Journal | Error>;
+export type DeleteJournal = (request : DeleteJournalRequest) => Promise<CommandResult | Error>;
+export type DeleteJournals = (request : DeleteJournalsRequest) => Promise<CommandResult | Error>;
 export type JournalExists = (id : string) => Promise<boolean | Error>;
 export type OwnsJournal = (author : string, id : string) => Promise<boolean | Error>;
