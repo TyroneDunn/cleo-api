@@ -1,5 +1,5 @@
-import {OrderOption} from "../../utils/order-option";
 import {EntrySortOption} from "./entries.types";
+import { OrderOption } from '@hals/common';
 
 export type GetEntryDTO = {id: string};
 
