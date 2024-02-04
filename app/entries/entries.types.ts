@@ -9,7 +9,13 @@ export type Entry = {
     dateCreated: Date,
 };
 
-export type EntrySortOption = 'id' | 'journal' | 'title' | 'body' | 'dateCreated' | 'lastUpdated';
+export type EntriesSortOption =
+   | 'id'
+   | 'journal'
+   | 'title'
+   | 'body'
+   | 'dateCreated'
+   | 'lastUpdated';
 
 export type GetEntryRequest = { id : string };
 
@@ -21,7 +27,7 @@ export type GetEntriesRequest = {
     journal? : string,
     startDate? : string,
     endDate? : string,
-    sort? : EntrySortOption,
+    sort? : EntriesSortOption,
     order? : OrderOption,
     page? : number,
     limit? : number,
