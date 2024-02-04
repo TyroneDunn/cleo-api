@@ -5,7 +5,7 @@ import {
     updateEntry,
     deleteEntry,
     deleteEntries,
-} from "./entries-service";
+} from "./entries.service";
 import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
 import {sendErrorResponse} from "../utils/send-error-response";
