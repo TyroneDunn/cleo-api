@@ -1,12 +1,10 @@
-import {Entry} from "./entries.types";
 import {
-    GetEntryDTO,
-    GetEntriesDTO,
     CreateEntryDTO,
-    UpdateEntryDTO,
-    DeleteEntryDTO,
     DeleteEntriesDTO,
-} from "./entries-dtos";
+    DeleteEntryDTO,
+    Entry, GetEntriesDTO, GetEntryDTO,
+    UpdateEntryDTO,
+} from "./entries.types";
 import {PaginatedResponse} from "../../utils/paginated-response";
 
 export type EntriesRepository = {

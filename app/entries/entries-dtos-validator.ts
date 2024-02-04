@@ -1,11 +1,4 @@
-import {
-    CreateEntryDTO,
-    GetEntriesDTO,
-    GetEntryDTO,
-    UpdateEntryDTO,
-    DeleteEntryDTO,
-    DeleteEntriesDTO,
-} from "./entries-dtos";
+
 import {ValidationResult} from "../utils/validation-result";
 import {
     BadRequestError,
@@ -22,6 +15,13 @@ import {User} from "../user/user";
 import {UsersRepository} from "../user/users-repository";
 import {JournalsRepository} from "../journals/journals-repository.type";
 import {EntriesRepository} from "./entries-repository";
+import {
+    CreateEntryDTO,
+    DeleteEntriesDTO,
+    DeleteEntryDTO,
+    GetEntriesDTO, GetEntryDTO,
+    UpdateEntryDTO,
+} from './entries.types';
 
 const usersRepository: UsersRepository = USERS_REPOSITORY;
 const journalsRepository: JournalsRepository = JOURNALS_REPOSITORY;

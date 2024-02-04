@@ -1,17 +1,15 @@
 import {EntriesRepository} from "./entries-repository";
-import {Entry} from "./entries.types";
+import {
+    CreateEntryDTO,
+    DeleteEntriesDTO,
+    DeleteEntryDTO,
+    Entry, GetEntriesDTO, GetEntryDTO,
+    UpdateEntryDTO,
+} from "./entries.types";
 import EntryModel from "./mongo-entry-model";
 import JournalModel from "../journals/mongo-journal-model.type";
 import {Journal} from "../journals/journals.types";
 import {now} from "mongoose";
-import {
-    GetEntryDTO,
-    GetEntriesDTO,
-    CreateEntryDTO,
-    UpdateEntryDTO,
-    DeleteEntryDTO,
-    DeleteEntriesDTO
-} from "./entries-dtos";
 import { JOURNALS_REPOSITORY } from '../repositories-config';
 import { PaginatedResponse } from '../utils/paginated-response';
 

@@ -1,14 +1,12 @@
-import {Entry} from "./entries.types";
+import {
+    CreateEntryDTO,
+    DeleteEntriesDTO,
+    DeleteEntryDTO,
+    Entry, GetEntriesDTO, GetEntryDTO,
+    UpdateEntryDTO,
+} from "./entries.types";
 import {EntriesRepository} from "./entries-repository";
 import {ENTRIES_REPOSITORY} from "../repositories-config";
-import {
-    GetEntryDTO,
-    GetEntriesDTO,
-    CreateEntryDTO,
-    UpdateEntryDTO,
-    DeleteEntryDTO,
-    DeleteEntriesDTO,
-} from "./entries-dtos";
 import {
     validateGetEntryDTO,
     validateGetEntriesDTO,

@@ -1,11 +1,4 @@
-import {
-    GetEntryDTO,
-    GetEntriesDTO,
-    CreateEntryDTO,
-    UpdateEntryDTO,
-    DeleteEntriesDTO,
-    DeleteEntryDTO,
-} from "./entries-dtos";
+
 import {
     getEntry,
     getEntries,
@@ -17,7 +10,14 @@ import {
 import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
 import {sendErrorResponse} from "../utils/send-error-response";
-import {Entry, EntrySortOption} from "./entries.types";
+import {
+    CreateEntryDTO,
+    DeleteEntriesDTO,
+    DeleteEntryDTO,
+    Entry,
+    EntrySortOption, GetEntriesDTO, GetEntryDTO,
+    UpdateEntryDTO,
+} from "./entries.types";
 import {OrderOption} from "../utils/order-option";
 import {PaginatedResponse} from "../utils/paginated-response";
 
