@@ -6,7 +6,7 @@ import {
     Entry, GetEntriesRequest, GetEntryRequest,
     UpdateEntryRequest,
 } from "./entries.types";
-import EntryModel from "./mongo-entry-model";
+import EntryModel from "./mongo-entry-model.type";
 import JournalModel from "../journals/mongo-journal-model.type";
 import {Journal} from "../journals/journals.types";
 import {now} from "mongoose";
