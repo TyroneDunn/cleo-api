@@ -5,7 +5,7 @@ import {
     Entry, GetEntriesRequest, GetEntryRequest,
     UpdateEntryRequest,
 } from "./entries.types";
-import {EntriesRepository} from "./entries-repository";
+import {EntriesRepository} from "./entries-repository.type";
 import {ENTRIES_REPOSITORY} from "../repositories-config";
 import {
     validateGetEntryDTO,

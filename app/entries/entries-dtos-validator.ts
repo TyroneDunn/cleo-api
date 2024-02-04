@@ -13,7 +13,7 @@ import {
 import {User} from "../user/user";
 import {UsersRepository} from "../user/users-repository";
 import {JournalsRepository} from "../journals/journals-repository.type";
-import {EntriesRepository} from "./entries-repository";
+import {EntriesRepository} from "./entries-repository.type";
 import {
     CreateEntryRequest,
     DeleteEntriesRequest,

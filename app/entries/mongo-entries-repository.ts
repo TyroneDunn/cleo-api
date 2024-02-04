@@ -1,4 +1,4 @@
-import {EntriesRepository} from "./entries-repository";
+import {EntriesRepository} from "./entries-repository.type";
 import {
     CreateEntryRequest,
     DeleteEntriesRequest,
