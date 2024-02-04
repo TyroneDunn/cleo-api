@@ -1,4 +1,4 @@
-import {Entry} from "./entry";
+import {Entry} from "./entries.types";
 import {Document, Schema} from 'mongoose';
 import database from "../database/mongoose-database";
 

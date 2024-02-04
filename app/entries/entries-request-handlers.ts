@@ -17,7 +17,7 @@ import {
 import {User} from "../user/user";
 import {Request, RequestHandler, Response} from "express";
 import {sendErrorResponse} from "../utils/send-error-response";
-import {Entry, EntrySortOption} from "./entry";
+import {Entry, EntrySortOption} from "./entries.types";
 import {OrderOption} from "../utils/order-option";
 import {PaginatedResponse} from "../utils/paginated-response";
 

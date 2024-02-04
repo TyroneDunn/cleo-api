@@ -1,4 +1,4 @@
-import {Entry} from "./entry";
+import {Entry} from "./entries.types";
 import {
     GetEntryDTO,
     GetEntriesDTO,

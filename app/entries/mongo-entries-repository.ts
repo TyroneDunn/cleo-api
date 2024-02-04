@@ -1,5 +1,5 @@
 import {EntriesRepository} from "./entries-repository";
-import {Entry} from "./entry";
+import {Entry} from "./entries.types";
 import EntryModel from "./mongo-entry-model";
 import JournalModel from "../journals/mongo-journal-model.type";
 import {Journal} from "../journals/journals.types";

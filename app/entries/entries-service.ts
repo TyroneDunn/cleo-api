@@ -1,4 +1,4 @@
-import {Entry} from "./entry";
+import {Entry} from "./entries.types";
 import {EntriesRepository} from "./entries-repository";
 import {ENTRIES_REPOSITORY} from "../repositories-config";
 import {
