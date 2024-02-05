@@ -29,7 +29,7 @@ export const MongoJournalsRepository: JournalsRepository = {
 
     getJournals: async (request: GetJournalsRequest): Promise<GetRecordsResponse<Journal> | Error> => {
         try {
-            const filter = mapToJournalsFilter(request);
+            const filter = mapToJournalsFilter(request.filter);
             const count = await JournalModel.count(filter);
             const query = JournalModel.find(filter)
             if (request.sort !== undefined)
@@ -93,7 +93,7 @@ export const MongoJournalsRepository: JournalsRepository = {
 
     deleteJournals: async (dto: DeleteJournalsRequest): Promise<CommandResult | Error> => {
         try {
-            const filter = mapToJournalsFilter(dto);
+            const filter = mapToJournalsFilter(request.filter);
             const result: DeleteResult = await JournalModel.deleteMany(filter);
             return CommandResult(result.acknowledged, result.deletedCount);
         }
@@ -125,22 +125,22 @@ const deleteJournalEntries = async (journal: string): Promise<void> => {
     await JournalEntryModel.deleteMany({journal: journal});
 };
 
-const mapToJournalsFilter = (request: GetJournalsRequest) => ({
-    ... request.filter && {
-        ... request.filter.name && {name: request.filter.name},
-        ... request.filter.nameRegex && {name: {$regex: request.filter.nameRegex, $options: 'i'}},
-        ... request.filter.author && {author: request.filter.author},
-        ... request.filter.authorRegex && {author: {$regex: request.filter.authorRegex, $options: 'i'}},
-        ... request.filter.timestamps && {
-            ... request.filter.timestamps.createdAt && {
-                ... (request.filter.timestamps.createdAt.start && !request.filter.timestamps.createdAt.end) && {createdAt: {$gt: request.filter.timestamps.createdAt.start}},
-                ... (!request.filter.timestamps.createdAt.start && request.filter.timestamps.createdAt.end) && {createdAt: {$lt: request.filter.timestamps.createdAt.end}},
-                ... (request.filter.timestamps.createdAt.start && request.filter.timestamps.createdAt.end) && {createdAt: {$gte: request.filter.timestamps.createdAt.start, $lte: request.filter.timestamps.createdAt.end}},
+const mapToJournalsFilter = (filter: JournalsFilter | undefined) => ({
+    ... filter && {
+        ... filter.name && {name: filter.name},
+        ... filter.nameRegex && {name: {$regex: filter.nameRegex, $options: 'i'}},
+        ... filter.author && {author: filter.author},
+        ... filter.authorRegex && {author: {$regex: filter.authorRegex, $options: 'i'}},
+        ... filter.timestamps && {
+            ... filter.timestamps.createdAt && {
+                ... (filter.timestamps.createdAt.start && !filter.timestamps.createdAt.end) && {createdAt: {$gt: filter.timestamps.createdAt.start}},
+                ... (!filter.timestamps.createdAt.start && filter.timestamps.createdAt.end) && {createdAt: {$lt: filter.timestamps.createdAt.end}},
+                ... (filter.timestamps.createdAt.start && filter.timestamps.createdAt.end) && {createdAt: {$gte: filter.timestamps.createdAt.start, $lte: filter.timestamps.createdAt.end}},
             },
-            ... request.filter.timestamps.updatedAt && {
-                ... (request.filter.timestamps.updatedAt.start && !request.filter.timestamps.updatedAt.end) && {updatedAt: {$gt: request.filter.timestamps.updatedAt.start}},
-                ... (!request.filter.timestamps.updatedAt.start && request.filter.timestamps.updatedAt.end) && {updatedAt: {$lt: request.filter.timestamps.updatedAt.end}},
-                ... (request.filter.timestamps.updatedAt.start && request.filter.timestamps.updatedAt.end) && {updatedAt: {$gte: request.filter.timestamps.updatedAt.start, $lte: request.filter.timestamps.updatedAt.end}},
+            ... filter.timestamps.updatedAt && {
+                ... (filter.timestamps.updatedAt.start && !filter.timestamps.updatedAt.end) && {updatedAt: {$gt: filter.timestamps.updatedAt.start}},
+                ... (!filter.timestamps.updatedAt.start && filter.timestamps.updatedAt.end) && {updatedAt: {$lt: filter.timestamps.updatedAt.end}},
+                ... (filter.timestamps.updatedAt.start && filter.timestamps.updatedAt.end) && {updatedAt: {$gte: filter.timestamps.updatedAt.start, $lte: filter.timestamps.updatedAt.end}},
             },
         }
     },
