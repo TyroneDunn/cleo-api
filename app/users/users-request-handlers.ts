@@ -7,7 +7,7 @@ import {
     getUsers,
     updateUser,
     updateUsers
-} from "./users-service";
+} from "./users.service";
 import {
     DeleteUserDTO,
     DeleteUsersDTO,
