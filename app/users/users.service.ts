@@ -21,7 +21,7 @@ import {
     validateUpdateUsersDTO
 } from "./users-dtos-validator";
 import {ValidationResult} from "../utils/validation-result";
-import {UsersRepository} from "./users-repository";
+import {UsersRepository} from "./users-repository.type";
 
 const repository: UsersRepository = USERS_REPOSITORY;
 

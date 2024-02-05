@@ -1,4 +1,4 @@
-import {UsersRepository} from "../users/users-repository";
+import {UsersRepository} from "../users/users-repository.type";
 import {JournalsRepository} from "../journals/journals-repository.type";
 import {EntriesRepository} from "./entries-repository.type";
 import {

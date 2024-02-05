@@ -1,5 +1,5 @@
-import {UsersRepository} from "./users-repository";
-import UserModel from "./mongo-user-model";
+import {UsersRepository} from "./users-repository.type";
+import UserModel from "./mongo-user-model.type";
 import {User} from "./users.types";
 import {now} from "mongoose";
 import {

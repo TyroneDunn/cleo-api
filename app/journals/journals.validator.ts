@@ -1,5 +1,5 @@
 import { JournalsRepository } from "./journals-repository.type";
-import { UsersRepository } from "../users/users-repository";
+import { UsersRepository } from "../users/users-repository.type";
 import {
    CreateJournalRequest,
    DeleteJournalRequest,
