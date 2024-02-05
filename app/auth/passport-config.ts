@@ -1,7 +1,7 @@
-import {GetUserDTO} from "../user/users-dtos";
+import {GetUserDTO} from "../users/users-dtos";
 const passportConfig = require('passport');
 import LocalStrategy = require('passport-local');
-import {User} from "../user/user";
+import {User} from "../users/user";
 import { USERS_REPOSITORY } from '../repositories-config';
 import { validateHash } from '../utils/password-utils';
 

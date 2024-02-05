@@ -1,4 +1,4 @@
-import {UsersRepository} from "../user/users-repository";
+import {UsersRepository} from "../users/users-repository";
 import {JournalsRepository} from "../journals/journals-repository.type";
 import {EntriesRepository} from "./entries-repository.type";
 import {
@@ -26,7 +26,7 @@ export const EntriesValidator = (
 ) : EntriesValidator => ({
     validateGetEntryRequest : async (request : GetEntryRequest) : Promise<ValidationError | null> => {
         if (!request.user)
-            return ValidationError('Unauthorized', 'Unauthorized user.');
+            return ValidationError('Unauthorized', 'Unauthorized users.');
         if (!request.id)
             return ValidationError('BadRequest', 'Entry ID required.');
         if (!(await entriesRepository.exists(request.id)))
@@ -38,7 +38,7 @@ export const EntriesValidator = (
 
     validateGetEntriesRequest : async (request : GetEntriesRequest) : Promise<ValidationError | null> => {
         if (!request.user)
-            return ValidationError('Unauthorized', 'Unauthorized user.');
+            return ValidationError('Unauthorized', 'Unauthorized users.');
         if (request.filter) {
             if (request.filter.journal) {
                 if (!(await journalsRepository.exists(request.filter.journal)))
@@ -105,7 +105,7 @@ export const EntriesValidator = (
 
     validateCreateEntryRequest : async (request : CreateEntryRequest) : Promise<ValidationError | null> => {
         if (!request.user)
-            return ValidationError('Unauthorized', 'Unauthorized user.');
+            return ValidationError('Unauthorized', 'Unauthorized users.');
         if (!request.journal)
             return ValidationError('BadRequest', 'Journal required.');
         if (!(await journalsRepository.exists(request.journal)))
@@ -117,7 +117,7 @@ export const EntriesValidator = (
 
     validateUpdateEntryRequest : async (request : UpdateEntryRequest) : Promise<ValidationError | null> => {
         if (!request.user)
-            return ValidationError('Unauthorized', 'Unauthorized user.');
+            return ValidationError('Unauthorized', 'Unauthorized users.');
         if (!request.id)
             return ValidationError('BadRequest', 'Entry ID required.');
         if (!(await usersRepository.isAdmin(request.user.username)) && !(await entriesRepository.ownsEntry(request.user.username, request.id)))
@@ -135,7 +135,7 @@ export const EntriesValidator = (
 
     validateDeleteEntryRequest : async (request : DeleteEntryRequest) : Promise<ValidationError | null> => {
         if (!request.user)
-            return ValidationError('Unauthorized', 'Unauthorized user.');
+            return ValidationError('Unauthorized', 'Unauthorized users.');
         if (!request.id)
             return ValidationError('BadRequest', 'Entry ID required.');
         if (!(await entriesRepository.exists(request.id)))
@@ -147,7 +147,7 @@ export const EntriesValidator = (
 
     validateDeleteEntriesRequest : async (request : DeleteEntriesRequest) : Promise<ValidationError | null> => {
         if (!request.user)
-            return ValidationError('Unauthorized', 'Unauthorized user.');
+            return ValidationError('Unauthorized', 'Unauthorized users.');
         if (request.filter) {
             if (request.filter.journal) {
                 if (!(await journalsRepository.exists(request.filter.journal)))
