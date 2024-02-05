@@ -8,8 +8,8 @@ interface UserDocument extends Document, User {
     hash: string,
     isAdmin: boolean,
     status: UserStatusOption,
-    dateCreated: Date,
-    lastUpdated: Date,
+    createdAt: Date,
+    updatedAt: Date,
 }
 
 const userSchema = new Schema<UserDocument>({
@@ -30,14 +30,8 @@ const userSchema = new Schema<UserDocument>({
         type: String,
         required: true
     },
-    dateCreated: {
-        type: Date,
-        required: true,
-    },
-    lastUpdated: {
-        type: Date,
-        required: true,
-    },
+}, {
+    timestamps: true
 });
 
 const UserModel = database.model<UserDocument>('User', userSchema);
