@@ -18,7 +18,7 @@ export type GetEntriesRequest = {
     user : User,
     filter? : EntriesFilter,
     sort? : EntriesSort,
-    page : Page,
+    page? : Page,
 };
 
 export type EntriesFilter = {
