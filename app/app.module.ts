@@ -15,6 +15,7 @@ import {hals} from '@hals/core';
 import { Application, ApplicationSchema, LOCAL_HOST, NodeEnvironmentOption } from '@hals/common';
 import authStrategy from './auth-strategy.config';
 import journalsController from './journals/journals.module';
+import entriesController from './entries/entries.module';
 
 
 const cleoHomeRoute = (req, res): RequestHandler =>
@@ -49,6 +50,7 @@ const appSchema: ApplicationSchema = {
     authStrategy: authStrategy,
     controllers: [
        journalsController,
+       entriesController,
     ],
 };
 
