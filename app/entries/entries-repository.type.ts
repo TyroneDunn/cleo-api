@@ -8,7 +8,7 @@ import {
     UpdateEntryRequest,
 } from "./entries.types";
 import { GetRecordsResponse } from '../shared/get-records-response.type';
-import { CommandResult } from '@hals/common';
+import { CommandResult, Error } from '@hals/common';
 
 export type EntriesRepository = {
     getEntry: GetEntry,
