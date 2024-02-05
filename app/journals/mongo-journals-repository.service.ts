@@ -1,24 +1,24 @@
 import {
-    CreateJournalRequest,
-    DeleteJournalRequest,
-    DeleteJournalsRequest,
+    Journal,
+    JournalsFilter,
     GetJournalRequest,
     GetJournalsRequest,
-    Journal,
+    CreateJournalRequest,
     UpdateJournalRequest,
+    DeleteJournalRequest,
+    DeleteJournalsRequest,
 } from "./journals.types";
 import JournalModel from './mongo-journal-model.type';
 import JournalEntryModel from "../entries/mongo-entry-model.type";
-import { now } from "mongoose";
 import { JournalsRepository } from "./journals-repository.type";
 import { CommandResult, Error } from '@hals/common';
 import { GetRecordsResponse } from '../shared/get-records-response.type';
 import { DeleteResult } from "mongodb";
 
 export const MongoJournalsRepository: JournalsRepository = {
-    getJournal: async (dto: GetJournalRequest): Promise<Journal | Error> => {
+    getJournal: async (request: GetJournalRequest): Promise<Journal | Error> => {
         try {
-            const journal: Journal | null = await JournalModel.findById(dto.id);
+            const journal: Journal | null = await JournalModel.findById(request.id);
             if (!journal) return Error('NotFound', 'Journal not found.');
             else return journal;
         }
@@ -48,13 +48,11 @@ export const MongoJournalsRepository: JournalsRepository = {
         }
     },
 
-    createJournal: async (dto: CreateJournalRequest): Promise<Journal | Error> => {
+    createJournal: async (request: CreateJournalRequest): Promise<Journal | Error> => {
         try {
             return new JournalModel({
-                name       : dto.name,
-                author     : dto.author,
-                dateCreated: now(),
-                lastUpdated: now(),
+                name       : request.name,
+                author     : request.author,
             }).save();
         }
         catch (error) {
@@ -62,14 +60,11 @@ export const MongoJournalsRepository: JournalsRepository = {
         }
     },
 
-    updateJournal: async (dto: UpdateJournalRequest): Promise<Journal | Error> => {
+    updateJournal: async (request: UpdateJournalRequest): Promise<Journal | Error> => {
         try {
             const journal: Journal | null = await JournalModel.findByIdAndUpdate(
-               dto.id,
-               {
-                   ...dto.name && { name: dto.name },
-                   lastUpdated: now(),
-               },
+               request.id,
+               { ...request.name && { name: request.name } },
                { new: true },
             );
             if (!journal) return Error('NotFound', 'Journal not found.');
@@ -80,10 +75,10 @@ export const MongoJournalsRepository: JournalsRepository = {
         }
     },
 
-    deleteJournal: async (dto: DeleteJournalRequest): Promise<CommandResult | Error> => {
+    deleteJournal: async (request: DeleteJournalRequest): Promise<CommandResult | Error> => {
         try {
-            await deleteJournalEntries(dto.id);
-            const result: DeleteResult = await JournalModel.deleteOne({_id: dto.id});
+            await deleteJournalEntries(request.id);
+            const result: DeleteResult = await JournalModel.deleteOne({_id: request.id});
             return CommandResult(result.acknowledged, result.deletedCount);
         }
         catch (error) {
@@ -91,7 +86,7 @@ export const MongoJournalsRepository: JournalsRepository = {
         }
     },
 
-    deleteJournals: async (dto: DeleteJournalsRequest): Promise<CommandResult | Error> => {
+    deleteJournals: async (request: DeleteJournalsRequest): Promise<CommandResult | Error> => {
         try {
             const filter = mapToJournalsFilter(request.filter);
             const result: DeleteResult = await JournalModel.deleteMany(filter);
@@ -104,7 +99,7 @@ export const MongoJournalsRepository: JournalsRepository = {
 
     exists: async (id: string): Promise<boolean | Error> => {
         try {
-            const journal: Journal = await JournalModel.findById(id);
+            const journal: Journal | null = await JournalModel.findById(id);
             return !!journal;
         } catch (error) {
             return Error("Internal", (error as Error).message);
@@ -113,7 +108,9 @@ export const MongoJournalsRepository: JournalsRepository = {
 
     ownsJournal: async (author: string, id: string): Promise<boolean | Error> => {
         try {
-            const journal: Journal = await JournalModel.findById(id);
+            const journal: Journal | null = await JournalModel.findById(id);
+            if (journal === null)
+                return Error("NotFound", `Journal ${id} not found.`);
             return journal.author === author;
         } catch (error) {
             return Error("Internal", (error as Error).message);
