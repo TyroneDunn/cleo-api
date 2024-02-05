@@ -3,11 +3,9 @@ import {
    CREATED,
    DateRange,
    Error,
-   INTERNAL_SERVER_ERROR,
    isError,
    mapErrorToInternalServerErrorResponse,
    mapRequestToPage,
-   NOT_FOUND,
    OK,
    Request,
    Response,
@@ -24,13 +22,15 @@ import {
 } from './journals.types';
 import {
    CreateJournal,
-   DeleteJournal, DeleteJournals,
+   DeleteJournal,
+   DeleteJournals,
    GetJournal,
    GetJournals,
    UpdateJournal,
 } from './journals-repository.type';
 import { OrderOption } from '../utils/order-option';
 import { GetRecordsResponse } from '../shared/get-records-response.type';
+import { mapDeleteResultToResponse } from '../shared/map-delete-result-to-response.utility';
 
 export const mapRequestToGetJournalRequest = (request : Request) : GetJournalRequest => ({
    user : request.user,
@@ -147,19 +147,6 @@ export const deleteJournalAndMapToResponse = (deleteJournal : DeleteJournal) : R
       if (isError(result)) return mapErrorToInternalServerErrorResponse(result);
       else return mapDeleteResultToResponse(result);
    };
-
-const mapDeleteResultToResponse = (result : CommandResult) : Response => ({
-   status: result.success && result.affectedCount > 0
-      ? OK
-      : result.success && result.affectedCount === 0
-         ? NOT_FOUND
-         : INTERNAL_SERVER_ERROR,
-   ...result.success && { count: result.affectedCount },
-   ...(!result.success) && {
-      error: 'Delete Error: An unexpected error occurred. Please try again' +
-         ' or contact support for assistance.',
-   },
-});
 
 export const mapRequestToDeleteJournalsRequest = (request : Request) : DeleteJournalsRequest => ({
    user : request.user,
