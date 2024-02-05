@@ -82,13 +82,13 @@ export const JournalsValidator = (
             && request.sort.sortBy !== 'updatedAt'
             && request.sort.sortBy !== 'createdAt')
             return ValidationError('BadRequest', 'Invalid sort query. Sort by option must be id, name,' +
-               ' lastUpdated, or dateCreated.');
+               ' updatedAt, or createdAt.');
          if ((request.sort.order !== 'asc' && request.sort.order !== 'desc'))
             return ValidationError('BadRequest', 'Invalid sort query. Order must be "asc" or "desc".');
       }
 
       if (request.page === undefined)
-         return ValidationError('BadRequest', 'Invalid query. Page required.');
+         return ValidationError('BadRequest', 'Invalid query. Page index and limit required.');
 
       if (request.page.index < 0)
          return ValidationError('BadRequest', 'Invalid query. Page index must be 0 or greater.');
