@@ -1,4 +1,4 @@
-import {User} from "./user";
+import {User} from "./users.types";
 import {USERS_REPOSITORY} from "../repositories-config";
 import {
     DeleteUserDTO,

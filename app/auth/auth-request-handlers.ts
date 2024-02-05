@@ -3,7 +3,7 @@ import {CREATED, INTERNAL_SERVER_ERROR, UNAUTHORIZED} from "../utils/http-status
 import {RegisterAdminDTO, RegisterUserDTO} from "../users/users-dtos";
 import {registerAdminUser, registerUser} from "../users/users-service";
 import {sendErrorResponse} from "../utils/send-error-response";
-import {User} from "../users/user";
+import {User} from "../users/users.types";
 import passport = require("passport");
 
 export const authenticate: RequestHandler = passport.authenticate('local');

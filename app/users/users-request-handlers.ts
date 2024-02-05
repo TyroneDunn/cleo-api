@@ -1,5 +1,5 @@
 import {Request, RequestHandler, Response} from "express";
-import {User, UserSortOption, UserStatusOption} from "./user";
+import {User, UserSortOption, UserStatusOption} from "./users.types";
 import {
     deleteUser,
     deleteUsers,

@@ -1,6 +1,6 @@
 import {UsersRepository} from "./users-repository";
 import UserModel from "./mongo-user-model";
-import {User} from "./user";
+import {User} from "./users.types";
 import {now} from "mongoose";
 import {
     DeleteUserDTO,

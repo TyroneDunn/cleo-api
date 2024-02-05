@@ -17,7 +17,7 @@ import {
     UnauthorizedError
 } from "../utils/errors";
 import {USERS_REPOSITORY} from "../repositories-config";
-import {User} from "./user";
+import {User} from "./users.types";
 
 export const validateRegisterUserDTO = async (dto: RegisterUserDTO): Promise<ValidationResult> => {
     if (!dto.username)

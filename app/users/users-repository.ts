@@ -1,4 +1,4 @@
-import {User} from "./user";
+import {User} from "./users.types";
 import {
     DeleteUserDTO,
     DeleteUsersDTO,
