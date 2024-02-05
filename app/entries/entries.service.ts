@@ -1,58 +1,67 @@
+import { EntriesRepository } from "./entries-repository.type";
+import { EntriesValidator } from "./entries.validator";
+import { handleRequest, Request, RequestHandler, Response } from '@hals/common';
 import {
-    CreateEntryRequest,
-    DeleteEntriesRequest,
-    DeleteEntryRequest,
-    Entry, GetEntriesRequest, GetEntryRequest,
-    UpdateEntryRequest,
-} from "./entries.types";
-import {EntriesRepository} from "./entries-repository.type";
-import {ENTRIES_REPOSITORY} from "../repositories-config";
-import {
-    validateGetEntryDTO,
-    validateGetEntriesDTO,
-    validateCreateEntryDTO,
-    validateUpdateEntryDTO,
-    validateDeleteEntryDTO,
-    validateDeleteEntriesDTO,
-} from "./entries.validator";
-import {ValidationResult} from "../utils/validation-result";
-import {User} from "../user/user";
-import {PaginatedResponse} from "../utils/paginated-response";
+    createEntryAndMapToResponse,
+    deleteEntriesAndMapToResponse,
+    deleteEntryAndMapToResponse,
+    getEntriesAndMapToResponse,
+    getEntryAndMapToResponse,
+    mapRequestToCreateEntryRequest,
+    mapRequestToDeleteEntriesRequest,
+    mapRequestToDeleteEntryRequest,
+    mapRequestToGetEntriesRequest,
+    mapRequestToGetEntryRequest,
+    mapRequestToUpdateEntryRequest,
+    updateEntryAndMapToResponse,
+} from './entries.utilities';
 
-const repository: EntriesRepository = ENTRIES_REPOSITORY;
-
-export const getEntry = async (user: User, dto: GetEntryRequest): Promise<Entry> => {
-    const validationResult: ValidationResult = await validateGetEntryDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.getEntry(dto);
+export type EntriesService = {
+    getEntry : RequestHandler,
+    getEntries : RequestHandler,
+    createEntry : RequestHandler,
+    updateEntry : RequestHandler,
+    deleteEntry : RequestHandler,
+    deleteEntries : RequestHandler,
 };
 
-export const getEntries = async (user: User, dto: GetEntriesRequest): Promise<PaginatedResponse<Entry>> => {
-    const validationResult: ValidationResult = await validateGetEntriesDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.getEntries(dto);
-};
+export const EntriesService = (
+   entriesRepository : EntriesRepository,
+   validator : EntriesValidator
+) : EntriesService => ({
+    getEntry: async (request : Request) : Promise<Response> => handleRequest(
+       mapRequestToGetEntryRequest(request),
+       validator.validateGetEntryRequest,
+       getEntryAndMapToResponse(entriesRepository.getEntry),
+    ),
 
-export const createEntry = async (user: User, dto: CreateEntryRequest): Promise<Entry> => {
-    const validationResult: ValidationResult = await validateCreateEntryDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.createEntry(dto);
-};
+    getEntries: (request : Request) : Promise<Response> => handleRequest(
+       mapRequestToGetEntriesRequest(request),
+       validator.validateGetEntriesRequest,
+       getEntriesAndMapToResponse(entriesRepository.getEntries),
+    ),
 
-export const updateEntry = async (user: User, dto: UpdateEntryRequest): Promise<Entry> => {
-    const validationResult: ValidationResult = await validateUpdateEntryDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.updateEntry(dto);
-};
+    createEntry: (request : Request) : Promise<Response> => handleRequest(
+       mapRequestToCreateEntryRequest(request),
+       validator.validateCreateEntryRequest,
+       createEntryAndMapToResponse(entriesRepository.createEntry)
+    ),
 
-export const deleteEntry = async (user: User, dto: DeleteEntryRequest): Promise<Entry> => {
-    const validationResult: ValidationResult = await validateDeleteEntryDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.deleteEntry(dto);
-};
+    updateEntry: (request : Request) : Promise<Response> => handleRequest(
+       mapRequestToUpdateEntryRequest(request),
+       validator.validateUpdateEntryRequest,
+       updateEntryAndMapToResponse(entriesRepository.updateEntry)
+    ),
 
-export const deleteEntries = async (user: User, dto: DeleteEntriesRequest): Promise<string> => {
-    const validationResult: ValidationResult = await validateDeleteEntriesDTO(user, dto);
-    if (validationResult.error) throw validationResult.error;
-    return repository.deleteEntries(dto);
-};
+    deleteEntry: (request : Request) : Promise<Response> => handleRequest(
+       mapRequestToDeleteEntryRequest(request),
+       validator.validateDeleteEntryRequest,
+       deleteEntryAndMapToResponse(entriesRepository.deleteEntry)
+    ),
+
+    deleteEntries: (request : Request) : Promise<Response> => handleRequest(
+       mapRequestToDeleteEntriesRequest(request),
+       validator.validateDeleteEntriesRequest,
+       deleteEntriesAndMapToResponse(entriesRepository.deleteEntries)
+    ),
+});
