@@ -62,11 +62,11 @@ export const MongoEntriesRepository: EntriesRepository = {
         }
     },
 
-    updateEntry: async (dto: UpdateEntryRequest): Promise<Entry | Error> => {
+    updateEntry: async (request: UpdateEntryRequest): Promise<Entry | Error> => {
         try {
             const entry: Entry | null = await EntryModel.findByIdAndUpdate(
-               dto.id,
-               mapToUpdateEntryQuery(dto),
+               request.id,
+               mapToUpdateEntryQuery(request),
                {new: true}
             );
             if (!entry) return Error("NotFound", 'Entry not found.');
@@ -77,9 +77,9 @@ export const MongoEntriesRepository: EntriesRepository = {
         }
     },
 
-    deleteEntry: async (dto: DeleteEntryRequest): Promise<CommandResult | Error> => {
+    deleteEntry: async (request: DeleteEntryRequest): Promise<CommandResult | Error> => {
         try {
-            const result: DeleteResult = await EntryModel.deleteOne({ _id: dto.id });
+            const result: DeleteResult = await EntryModel.deleteOne({ _id: request.id });
             return CommandResult(result.acknowledged, result.deletedCount);
         }
         catch (error) {
