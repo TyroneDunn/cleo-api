@@ -19,7 +19,7 @@ import {
     validateRegisterUserDTO,
     validateUpdateUserDTO,
     validateUpdateUsersDTO
-} from "./users-dtos-validator";
+} from "./users.validator";
 import {ValidationResult} from "../utils/validation-result";
 import {UsersRepository} from "./users-repository.type";
 
