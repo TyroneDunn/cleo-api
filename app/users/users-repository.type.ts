@@ -1,23 +1,23 @@
 import {User} from "./users.types";
 import {
-    DeleteUserDTO,
-    DeleteUsersDTO,
-    GetUserDTO,
-    GetUsersDTO,
-    RegisterUserDTO,
-    UpdateUserDTO,
-    UpdateUsersDTO
+    DeleteUserRequest,
+    DeleteUsersRequest,
+    GetUserRequest,
+    GetUsersRequest,
+    RegisterUserRequest,
+    UpdateUserRequest,
+    UpdateUsersRequest
 } from "./users-dtos";
 
 export type UsersRepository = {
-    getUser: (dto: GetUserDTO) => Promise<User>,
-    getUsers: (dto: GetUsersDTO) => Promise<User[]>,
-    registerUser: (dto: RegisterUserDTO) => Promise<User>,
-    registerAdminUser: (dto: RegisterUserDTO) => Promise<User>,
-    deleteUser: (dto: DeleteUserDTO) => Promise<User>,
-    deleteUsers: (dto: DeleteUsersDTO) => Promise<string>,
-    updateUser: (dto: UpdateUserDTO) => Promise<User>,
-    updateUsers: (dto: UpdateUsersDTO) => Promise<User[]>,
+    getUser: (dto: GetUserRequest) => Promise<User>,
+    getUsers: (dto: GetUsersRequest) => Promise<User[]>,
+    registerUser: (dto: RegisterUserRequest) => Promise<User>,
+    registerAdminUser: (dto: RegisterUserRequest) => Promise<User>,
+    deleteUser: (dto: DeleteUserRequest) => Promise<User>,
+    deleteUsers: (dto: DeleteUsersRequest) => Promise<string>,
+    updateUser: (dto: UpdateUserRequest) => Promise<User>,
+    updateUsers: (dto: UpdateUsersRequest) => Promise<User[]>,
     exists: (username: string) => Promise<boolean>,
     isAdmin: (username: string) => Promise<boolean>,
 };

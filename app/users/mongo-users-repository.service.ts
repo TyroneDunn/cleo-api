@@ -3,22 +3,22 @@ import UserModel from "./mongo-user-model.type";
 import {User} from "./users.types";
 import {now} from "mongoose";
 import {
-    DeleteUserDTO,
-    DeleteUsersDTO,
-    GetUserDTO,
-    GetUsersDTO,
-    RegisterAdminDTO,
-    RegisterUserDTO,
-    UpdateUserDTO,
-    UpdateUsersDTO
+    DeleteUserRequest,
+    DeleteUsersRequest,
+    GetUserRequest,
+    GetUsersRequest,
+    RegisterAdminRequest,
+    RegisterUserRequest,
+    UpdateUserRequest,
+    UpdateUsersRequest
 } from "./users-dtos";
 import {generateHash} from "../utils/password-utils";
 
 export const MongoUsersRepository: UsersRepository = {
-    getUser: async (dto: GetUserDTO): Promise<User> =>
+    getUser: async (dto: GetUserRequest): Promise<User> =>
         UserModel.findOne({username: dto.username}),
 
-    getUsers: async (dto: GetUsersDTO): Promise<User[]> => {
+    getUsers: async (dto: GetUsersRequest): Promise<User[]> => {
         const filter = mapToGetUsersFilter(dto);
         const skip = (dto.page - 1) * dto.limit;
         return UserModel.find(filter)
@@ -27,7 +27,7 @@ export const MongoUsersRepository: UsersRepository = {
             .limit(dto.limit);
     },
 
-    registerUser: async (dto: RegisterUserDTO): Promise<User> =>
+    registerUser: async (dto: RegisterUserRequest): Promise<User> =>
         new UserModel({
             username: dto.username,
             hash: generateHash(dto.password),
@@ -37,7 +37,7 @@ export const MongoUsersRepository: UsersRepository = {
             status: 'active',
         }).save(),
 
-    registerAdminUser: async (dto: RegisterAdminDTO): Promise<User> =>
+    registerAdminUser: async (dto: RegisterAdminRequest): Promise<User> =>
         new UserModel({
             username: dto.username,
             hash: generateHash(dto.password),
@@ -47,7 +47,7 @@ export const MongoUsersRepository: UsersRepository = {
             status: 'active',
         }).save(),
 
-    updateUsers: async (dto: UpdateUsersDTO): Promise<User[]> => {
+    updateUsers: async (dto: UpdateUsersRequest): Promise<User[]> => {
         const filter = mapToUsersFilter(dto);
         const query = mapToUpdateUsersQuery(dto);
         await UserModel.updateMany(
@@ -57,7 +57,7 @@ export const MongoUsersRepository: UsersRepository = {
         return UserModel.find(filter);
     },
 
-    updateUser: async (dto: UpdateUserDTO): Promise<User> => {
+    updateUser: async (dto: UpdateUserRequest): Promise<User> => {
         const query = mapToUpdateUserQuery(dto);
         return UserModel.findOneAndUpdate(
             {username: dto.username},
@@ -66,13 +66,13 @@ export const MongoUsersRepository: UsersRepository = {
         );
     },
 
-    deleteUsers: async (dto: DeleteUsersDTO): Promise<string> => {
+    deleteUsers: async (dto: DeleteUsersRequest): Promise<string> => {
         const filter = mapToUsersFilter(dto);
         const result = await UserModel.deleteMany(filter);
         return `${result.deletedCount} users deleted.`;
     },
 
-    deleteUser: async (dto: DeleteUserDTO): Promise<User> =>
+    deleteUser: async (dto: DeleteUserRequest): Promise<User> =>
         UserModel.findOneAndDelete({username: dto.username}),
 
     isAdmin: async (username: string): Promise<boolean> => {
@@ -94,7 +94,7 @@ export const MongoUsersRepository: UsersRepository = {
     },
 };
 
-const mapToGetUsersFilter = (dto: GetUsersDTO) => ({
+const mapToGetUsersFilter = (dto: GetUsersRequest) => ({
     ...dto.username && {username: dto.username},
     ...dto.usernameRegex && {username: {$regex: dto.usernameRegex, $options: 'i'}},
     ...dto.isAdmin && {isAdmin: (dto.isAdmin.toLowerCase() === 'true')},
@@ -104,7 +104,7 @@ const mapToGetUsersFilter = (dto: GetUsersDTO) => ({
     ...(dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
 
-const mapToUsersFilter = (dto: UpdateUsersDTO) => ({
+const mapToUsersFilter = (dto: UpdateUsersRequest) => ({
     ...dto.usernameRegex && {username: {$regex: dto.usernameRegex, $options: 'i'}},
     ...dto.isAdmin && {isAdmin: (dto.isAdmin.toLowerCase() === 'true')},
     ...dto.status && {status: dto.status},
@@ -113,12 +113,12 @@ const mapToUsersFilter = (dto: UpdateUsersDTO) => ({
     ...(dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
 });
 
-const mapToUpdateUsersQuery = (dto: UpdateUsersDTO) => ({
+const mapToUpdateUsersQuery = (dto: UpdateUsersRequest) => ({
     ...dto.newIsAdmin && {isAdmin: (dto.newIsAdmin.toLowerCase() === 'true')},
     ...dto.newStatus && {status: dto.newStatus}
 });
 
-const mapToUpdateUserQuery = (dto: UpdateUserDTO) => ({
+const mapToUpdateUserQuery = (dto: UpdateUserRequest) => ({
     lastUpdated: now(),
     ...dto.newUsername && {username: dto.newUsername},
     ...dto.newPassword && {hash: generateHash(dto.newPassword)},

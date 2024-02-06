@@ -1,14 +1,14 @@
 import {User} from "./users.types";
 import {USERS_REPOSITORY} from "../repositories-config";
 import {
-    DeleteUserDTO,
-    DeleteUsersDTO,
-    GetUserDTO,
-    GetUsersDTO,
-    RegisterAdminDTO,
-    RegisterUserDTO,
-    UpdateUserDTO,
-    UpdateUsersDTO,
+    DeleteUserRequest,
+    DeleteUsersRequest,
+    GetUserRequest,
+    GetUsersRequest,
+    RegisterAdminRequest,
+    RegisterUserRequest,
+    UpdateUserRequest,
+    UpdateUsersRequest,
 } from "./users-dtos";
 import {
     validateDeleteUserDTO,
@@ -25,49 +25,49 @@ import {UsersRepository} from "./users-repository.type";
 
 const repository: UsersRepository = USERS_REPOSITORY;
 
-export const getUser = async (user: User, dto: GetUserDTO): Promise<User> => {
+export const getUser = async (user: User, dto: GetUserRequest): Promise<User> => {
     const validationResult: ValidationResult = await validateGetUserDTO(user, dto);
     if (validationResult.error) throw validationResult.error;
     return repository.getUser(dto);
 };
 
-export const getUsers = async (user: User, dto: GetUsersDTO): Promise<User[]> => {
+export const getUsers = async (user: User, dto: GetUsersRequest): Promise<User[]> => {
     const validationResult: ValidationResult = await validateGetUsersDTO(user, dto);
     if (validationResult.error) throw validationResult.error;
     return repository.getUsers(dto);
 };
 
-export const registerUser = async (dto: RegisterUserDTO): Promise<User> => {
+export const registerUser = async (dto: RegisterUserRequest): Promise<User> => {
     const validationResult: ValidationResult = await validateRegisterUserDTO(dto);
     if (validationResult.error) throw validationResult.error;
     return repository.registerUser(dto);
 };
 
-export const registerAdminUser = async (user: User, dto: RegisterAdminDTO): Promise<User> => {
+export const registerAdminUser = async (user: User, dto: RegisterAdminRequest): Promise<User> => {
     const validationResult: ValidationResult = await validateRegisterAdminDTO(user, dto);
     if (validationResult.error) throw validationResult.error;
     return repository.registerAdminUser(dto);
 };
 
-export const updateUsers = async (user: User, dto: UpdateUsersDTO): Promise<User[]> => {
+export const updateUsers = async (user: User, dto: UpdateUsersRequest): Promise<User[]> => {
     const validationResult: ValidationResult = await validateUpdateUsersDTO(user, dto);
     if (validationResult.error) throw validationResult.error;
     return repository.updateUsers(dto);
 };
 
-export const updateUser = async (user: User, dto: UpdateUserDTO): Promise<User> => {
+export const updateUser = async (user: User, dto: UpdateUserRequest): Promise<User> => {
     const validationResult: ValidationResult = await validateUpdateUserDTO(user, dto);
     if (validationResult.error) throw validationResult.error;
     return repository.updateUser(dto);
 };
 
-export const deleteUsers = async (user: User, dto: DeleteUsersDTO): Promise<string> => {
+export const deleteUsers = async (user: User, dto: DeleteUsersRequest): Promise<string> => {
     const validationResult: ValidationResult = await validateDeleteUsersDTO(user, dto);
     if (validationResult.error) throw validationResult.error;
     return repository.deleteUsers(dto);
 };
 
-export const deleteUser = async (user: User, dto: DeleteUserDTO): Promise<User> => {
+export const deleteUser = async (user: User, dto: DeleteUserRequest): Promise<User> => {
     const validationResult: ValidationResult = await validateDeleteUserDTO(user, dto);
     if (validationResult.error) throw validationResult.error;
     return repository.deleteUser(dto);

@@ -1,6 +1,6 @@
 import {NextFunction, Request, RequestHandler, Response} from "express";
 import {CREATED, INTERNAL_SERVER_ERROR, UNAUTHORIZED} from "../utils/http-status-constants";
-import {RegisterAdminDTO, RegisterUserDTO} from "../users/users-dtos";
+import {RegisterAdminRequest, RegisterUserRequest} from "../users/users-dtos";
 import {registerAdminUser, registerUser} from "../users/users.service";
 import {sendErrorResponse} from "../utils/send-error-response";
 import {User} from "../users/users.types";
@@ -16,7 +16,7 @@ export const authGuard: RequestHandler = (req: Request, res: Response, next: Nex
 
 export const register: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const dto: RegisterUserDTO = mapToRegisterUserDTO(req);
+        const dto: RegisterUserRequest = mapToRegisterUserDTO(req);
         await registerUser(dto);
         return next();
     } catch (error) {
@@ -26,7 +26,7 @@ export const register: RequestHandler = async (req: Request, res: Response, next
 
 export const registerAdmin: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const dto: RegisterAdminDTO = mapToRegisterAdminDTO(req);
+        const dto: RegisterAdminRequest = mapToRegisterAdminDTO(req);
         const user = await registerAdminUser(req.user as User, dto);
         res.status(CREATED).json(user);
     } catch (error) {
@@ -52,12 +52,12 @@ export const logout: RequestHandler = (req: Request, res: Response): void => {
     });
 };
 
-const mapToRegisterUserDTO = (req: Request): RegisterUserDTO => ({
+const mapToRegisterUserDTO = (req: Request): RegisterUserRequest => ({
     username: req.body.username,
     password: req.body.password,
 });
 
-const mapToRegisterAdminDTO = (req: Request): RegisterAdminDTO => ({
+const mapToRegisterAdminDTO = (req: Request): RegisterAdminRequest => ({
     username: req.body.username,
     password: req.body.password,
 });

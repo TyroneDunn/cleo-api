@@ -1,12 +1,12 @@
 import {
-    DeleteUserDTO,
-    DeleteUsersDTO,
-    GetUserDTO,
-    GetUsersDTO,
-    RegisterAdminDTO,
-    RegisterUserDTO,
-    UpdateUserDTO,
-    UpdateUsersDTO
+    DeleteUserRequest,
+    DeleteUsersRequest,
+    GetUserRequest,
+    GetUsersRequest,
+    RegisterAdminRequest,
+    RegisterUserRequest,
+    UpdateUserRequest,
+    UpdateUsersRequest
 } from "./users-dtos";
 import {ValidationResult} from "../utils/validation-result";
 import {
@@ -19,7 +19,7 @@ import {
 import {USERS_REPOSITORY} from "../repositories-config";
 import {User} from "./users.types";
 
-export const validateRegisterUserDTO = async (dto: RegisterUserDTO): Promise<ValidationResult> => {
+export const validateRegisterUserDTO = async (dto: RegisterUserRequest): Promise<ValidationResult> => {
     if (!dto.username)
         return {error: new BadRequestError('Username required.')};
     if (!dto.password)
@@ -29,7 +29,7 @@ export const validateRegisterUserDTO = async (dto: RegisterUserDTO): Promise<Val
     return {};
 };
 
-export const validateRegisterAdminDTO = async (user: User, dto: RegisterAdminDTO): Promise<ValidationResult> => {
+export const validateRegisterAdminDTO = async (user: User, dto: RegisterAdminRequest): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!dto.username)
@@ -43,7 +43,7 @@ export const validateRegisterAdminDTO = async (user: User, dto: RegisterAdminDTO
     return {};
 };
 
-export const validateGetUserDTO = async (user: User, dto: GetUserDTO): Promise<ValidationResult> => {
+export const validateGetUserDTO = async (user: User, dto: GetUserRequest): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!(await USERS_REPOSITORY.isAdmin(user.username)))
@@ -55,7 +55,7 @@ export const validateGetUserDTO = async (user: User, dto: GetUserDTO): Promise<V
     return {};
 };
 
-export const validateGetUsersDTO = async (user: User, dto: GetUsersDTO): Promise<ValidationResult> => {
+export const validateGetUsersDTO = async (user: User, dto: GetUsersRequest): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!(await USERS_REPOSITORY.isAdmin(user.username)))
@@ -104,7 +104,7 @@ export const validateGetUsersDTO = async (user: User, dto: GetUsersDTO): Promise
     return {};
 };
 
-export const validateUpdateUsersDTO = async (user: User, dto: UpdateUsersDTO): Promise<ValidationResult> => {
+export const validateUpdateUsersDTO = async (user: User, dto: UpdateUsersRequest): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!(await USERS_REPOSITORY.isAdmin(user.username)))
@@ -140,7 +140,7 @@ export const validateUpdateUsersDTO = async (user: User, dto: UpdateUsersDTO): P
     return {};
 }
 
-export const validateUpdateUserDTO = async (user: User, dto: UpdateUserDTO): Promise<ValidationResult> => {
+export const validateUpdateUserDTO = async (user: User, dto: UpdateUserRequest): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
     if (user.username !== dto.username &&
@@ -179,7 +179,7 @@ export const validateUpdateUserDTO = async (user: User, dto: UpdateUserDTO): Pro
     return {};
 };
 
-export const validateDeleteUsersDTO = async (user: User, dto: DeleteUsersDTO): Promise<ValidationResult> => {
+export const validateDeleteUsersDTO = async (user: User, dto: DeleteUsersRequest): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!(await USERS_REPOSITORY.isAdmin(user.username)))
@@ -205,7 +205,7 @@ export const validateDeleteUsersDTO = async (user: User, dto: DeleteUsersDTO): P
     return {};
 };
 
-export const validateDeleteUserDTO = async (user: User, dto: DeleteUserDTO): Promise<ValidationResult> => {
+export const validateDeleteUserDTO = async (user: User, dto: DeleteUserRequest): Promise<ValidationResult> => {
     if (!(user))
         return {error: new UnauthorizedError('Unauthorized.')};
     if (!(await USERS_REPOSITORY.isAdmin(user.username)))

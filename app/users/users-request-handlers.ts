@@ -9,19 +9,19 @@ import {
     updateUsers
 } from "./users.service";
 import {
-    DeleteUserDTO,
-    DeleteUsersDTO,
-    GetUserDTO,
-    GetUsersDTO,
-    UpdateUserDTO,
-    UpdateUsersDTO
+    DeleteUserRequest,
+    DeleteUsersRequest,
+    GetUserRequest,
+    GetUsersRequest,
+    UpdateUserRequest,
+    UpdateUsersRequest
 } from "./users-dtos";
 import {sendErrorResponse} from "../utils/send-error-response";
 import {OrderOption} from "../utils/order-option";
 
 export const getUsersHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: GetUsersDTO = mapToGetUsersDTO(req);
+        const dto: GetUsersRequest = mapToGetUsersDTO(req);
         const users: User[] = await getUsers(req.user as User, dto);
         res.json(users);
     } catch (error) {
@@ -31,7 +31,7 @@ export const getUsersHandler: RequestHandler = async (req: Request, res: Respons
 
 export const getUserHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: GetUserDTO = mapToGetUserDTO(req);
+        const dto: GetUserRequest = mapToGetUserDTO(req);
         const user: User = await getUser(req.user as User, dto);
         res.json(user);
     } catch (error) {
@@ -41,7 +41,7 @@ export const getUserHandler: RequestHandler = async (req: Request, res: Response
 
 export const updateUsersHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: UpdateUsersDTO = mapToUpdateUsersDTO(req);
+        const dto: UpdateUsersRequest = mapToUpdateUsersDTO(req);
         const users: User[] = await updateUsers(req.user as User, dto);
         res.json(users);
     } catch (error) {
@@ -51,7 +51,7 @@ export const updateUsersHandler: RequestHandler = async (req: Request, res: Resp
 
 export const updateUserHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: UpdateUserDTO = mapToUpdateUserDTO(req);
+        const dto: UpdateUserRequest = mapToUpdateUserDTO(req);
         const user: User = await updateUser(req.user as User, dto);
         res.json(user);
     } catch (error) {
@@ -61,7 +61,7 @@ export const updateUserHandler: RequestHandler = async (req: Request, res: Respo
 
 export const deleteUsersHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteUsersDTO = mapToDeleteUsersDTO(req);
+        const dto: DeleteUsersRequest = mapToDeleteUsersDTO(req);
         res.json(await deleteUsers(req.user as User, dto));
     } catch (error) {
         sendErrorResponse(error, res);
@@ -70,7 +70,7 @@ export const deleteUsersHandler: RequestHandler = async (req: Request, res: Resp
 
 export const deleteUserHandler: RequestHandler = async (req: Request, res: Response) => {
     try {
-        const dto: DeleteUserDTO = mapToDeleteUserDTO(req);
+        const dto: DeleteUserRequest = mapToDeleteUserDTO(req);
         const user: User = await deleteUser(req.user as User, dto);
         res.json(user);
     } catch (error) {
@@ -78,7 +78,7 @@ export const deleteUserHandler: RequestHandler = async (req: Request, res: Respo
     }
 };
 
-const mapToGetUsersDTO = (req: Request): GetUsersDTO => ({
+const mapToGetUsersDTO = (req: Request): GetUsersRequest => ({
     ... req.query.username && {username: req.query.username as string},
     ... req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
     ... req.query.isAdmin && {isAdmin: (req.query.isAdmin as string)},
@@ -91,10 +91,10 @@ const mapToGetUsersDTO = (req: Request): GetUsersDTO => ({
     ... req.query.endDate && {endDate: req.query.endDate as string},
 });
 
-const mapToGetUserDTO = (req: Request): GetUserDTO =>
+const mapToGetUserDTO = (req: Request): GetUserRequest =>
     ({username: req.params.username});
 
-const mapToUpdateUsersDTO = (req: Request): UpdateUsersDTO => ({
+const mapToUpdateUsersDTO = (req: Request): UpdateUsersRequest => ({
     ... req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
     ... req.query.isAdmin && {isAdmin: (req.query.isAdmin as string)},
     ... req.query.status && {status: req.query.status as UserStatusOption},
@@ -104,7 +104,7 @@ const mapToUpdateUsersDTO = (req: Request): UpdateUsersDTO => ({
     ... req.body.status && {newStatus: req.body.status},
 });
 
-const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => ({
+const mapToUpdateUserDTO = (req: Request): UpdateUserRequest => ({
     username: req.params.username,
     ... req.body.username && {newUsername: req.body.username},
     ... req.body.password && {newPassword: req.body.password},
@@ -112,7 +112,7 @@ const mapToUpdateUserDTO = (req: Request): UpdateUserDTO => ({
     ... req.body.status && {newStatus: req.body.status},
 });
 
-const mapToDeleteUsersDTO = (req: Request): DeleteUsersDTO => ({
+const mapToDeleteUsersDTO = (req: Request): DeleteUsersRequest => ({
     ... req.query.usernameRegex && {usernameRegex: req.query.usernameRegex as string},
     ... req.query.isAdmin && {isAdmin: (req.query.isAdmin as string)},
     ... req.query.status && {status: req.query.status as UserStatusOption},
@@ -120,5 +120,5 @@ const mapToDeleteUsersDTO = (req: Request): DeleteUsersDTO => ({
     ... req.query.endDate && {endDate: req.query.endDate as string},
 });
 
-const mapToDeleteUserDTO = (req: Request): DeleteUserDTO =>
+const mapToDeleteUserDTO = (req: Request): DeleteUserRequest =>
     ({username: req.params.username});
