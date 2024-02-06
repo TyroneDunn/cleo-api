@@ -1,15 +1,12 @@
-import {User, UserStatusOption} from "./users.types";
 import {Document, Schema} from 'mongoose';
 import database from "../database/mongoose-database";
+import { USERS_DB_NAME } from '../environment';
+import { User } from '@hals/common';
 
 interface UserDocument extends Document, User {
     _id: string,
     username: string,
     hash: string,
-    isAdmin: boolean,
-    status: UserStatusOption,
-    createdAt: Date,
-    updatedAt: Date,
 }
 
 const userSchema = new Schema<UserDocument>({
@@ -22,17 +19,9 @@ const userSchema = new Schema<UserDocument>({
         type: String,
         required: true
     },
-    isAdmin: {
-        type: Boolean,
-        required: true
-    },
-    status: {
-        type: String,
-        required: true
-    },
 }, {
     timestamps: true
 });
 
-const UserModel = database.model<UserDocument>('User', userSchema);
+const UserModel = database.model<UserDocument>(USERS_DB_NAME, userSchema);
 export default UserModel;
