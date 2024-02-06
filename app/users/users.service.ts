@@ -1,15 +1,11 @@
-import {User} from "./users.types";
-import {USERS_REPOSITORY} from "../repositories-config";
 import {
     DeleteUserRequest,
-    DeleteUsersRequest,
-    GetUserRequest,
-    GetUsersRequest,
-    RegisterAdminRequest,
-    RegisterUserRequest,
+    DeleteUsersRequest, GetUserRequest, GetUsersRequest, RegisterAdminRequest, RegisterUserRequest,
     UpdateUserRequest,
     UpdateUsersRequest,
-} from "./users-dtos";
+    User,
+} from "./users.types";
+import {USERS_REPOSITORY} from "../repositories-config";
 import {
     validateDeleteUserDTO,
     validateDeleteUsersDTO,

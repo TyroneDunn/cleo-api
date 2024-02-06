@@ -1,17 +1,13 @@
 import {UsersRepository} from "./users-repository.type";
 import UserModel from "./mongo-user-model.type";
-import {User} from "./users.types";
-import {now} from "mongoose";
 import {
     DeleteUserRequest,
-    DeleteUsersRequest,
-    GetUserRequest,
-    GetUsersRequest,
-    RegisterAdminRequest,
-    RegisterUserRequest,
+    DeleteUsersRequest, GetUserRequest, GetUsersRequest, RegisterAdminRequest, RegisterUserRequest,
     UpdateUserRequest,
-    UpdateUsersRequest
-} from "./users-dtos";
+    UpdateUsersRequest,
+    User,
+} from "./users.types";
+import {now} from "mongoose";
 import {generateHash} from "../utils/password-utils";
 
 export const MongoUsersRepository: UsersRepository = {

@@ -1,5 +1,11 @@
 import {Request, RequestHandler, Response} from "express";
-import {User, UserSortOption, UserStatusOption} from "./users.types";
+import {
+    DeleteUserRequest,
+    DeleteUsersRequest, GetUserRequest, GetUsersRequest, UpdateUserRequest, UpdateUsersRequest,
+    User,
+    UserSortOption,
+    UserStatusOption,
+} from "./users.types";
 import {
     deleteUser,
     deleteUsers,
@@ -8,14 +14,6 @@ import {
     updateUser,
     updateUsers
 } from "./users.service";
-import {
-    DeleteUserRequest,
-    DeleteUsersRequest,
-    GetUserRequest,
-    GetUsersRequest,
-    UpdateUserRequest,
-    UpdateUsersRequest
-} from "./users-dtos";
 import {sendErrorResponse} from "../utils/send-error-response";
 import {OrderOption} from "../utils/order-option";
 

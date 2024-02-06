@@ -1,13 +1,10 @@
-import {User} from "./users.types";
 import {
     DeleteUserRequest,
-    DeleteUsersRequest,
-    GetUserRequest,
-    GetUsersRequest,
-    RegisterUserRequest,
+    DeleteUsersRequest, GetUserRequest, GetUsersRequest, RegisterUserRequest,
     UpdateUserRequest,
-    UpdateUsersRequest
-} from "./users-dtos";
+    UpdateUsersRequest,
+    User,
+} from "./users.types";
 
 export type UsersRepository = {
     getUser: (dto: GetUserRequest) => Promise<User>,

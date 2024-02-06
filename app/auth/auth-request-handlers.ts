@@ -1,9 +1,8 @@
 import {NextFunction, Request, RequestHandler, Response} from "express";
 import {CREATED, INTERNAL_SERVER_ERROR, UNAUTHORIZED} from "../utils/http-status-constants";
-import {RegisterAdminRequest, RegisterUserRequest} from "../users/users-dtos";
 import {registerAdminUser, registerUser} from "../users/users.service";
 import {sendErrorResponse} from "../utils/send-error-response";
-import {User} from "../users/users.types";
+import { RegisterAdminRequest, RegisterUserRequest, User } from "../users/users.types";
 import passport = require("passport");
 
 export const authenticate: RequestHandler = passport.authenticate('local');

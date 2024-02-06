@@ -1,13 +1,4 @@
-import {
-    DeleteUserRequest,
-    DeleteUsersRequest,
-    GetUserRequest,
-    GetUsersRequest,
-    RegisterAdminRequest,
-    RegisterUserRequest,
-    UpdateUserRequest,
-    UpdateUsersRequest
-} from "./users-dtos";
+
 import {ValidationResult} from "../utils/validation-result";
 import {
     BadRequestError,
@@ -17,7 +8,13 @@ import {
     UnauthorizedError
 } from "../utils/errors";
 import {USERS_REPOSITORY} from "../repositories-config";
-import {User} from "./users.types";
+import {
+    DeleteUserRequest,
+    DeleteUsersRequest, GetUserRequest, GetUsersRequest, RegisterAdminRequest, RegisterUserRequest,
+    UpdateUserRequest,
+    UpdateUsersRequest,
+    User,
+} from "./users.types";
 
 export const validateRegisterUserDTO = async (dto: RegisterUserRequest): Promise<ValidationResult> => {
     if (!dto.username)
