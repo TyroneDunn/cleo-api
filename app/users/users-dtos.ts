@@ -1,9 +1,9 @@
 import {UserSortOption, UserStatusOption} from "./users.types";
 import {OrderOption} from "../../utils/order-option";
 
-export type GetUserDTO = {username: string};
+export type GetUserRequest = {username: string};
 
-export type GetUsersDTO = {
+export type GetUsersRequest = {
     username?: string,
     usernameRegex?: string,
     isAdmin?: string,
@@ -16,17 +16,17 @@ export type GetUsersDTO = {
     limit?: number,
 };
 
-export type RegisterUserDTO = {
+export type RegisterUserRequest = {
     username: string,
     password: string,
 };
 
-export type RegisterAdminDTO = {
+export type RegisterAdminRequest = {
     username: string,
     password: string,
 };
 
-export type UpdateUserDTO = {
+export type UpdateUserRequest = {
     username: string,
     newUsername?: string,
     newPassword?: string,
@@ -34,7 +34,7 @@ export type UpdateUserDTO = {
     newStatus: string,
 };
 
-export type UpdateUsersDTO = {
+export type UpdateUsersRequest = {
     usernameRegex?: string,
     isAdmin?: string,
     status?: UserStatusOption,
@@ -44,9 +44,9 @@ export type UpdateUsersDTO = {
     newStatus?: UserStatusOption,
 };
 
-export type DeleteUserDTO = {username: string};
+export type DeleteUserRequest = {username: string};
 
-export type DeleteUsersDTO = {
+export type DeleteUsersRequest = {
     usernameRegex?: string,
     isAdmin?: string,
     status?: UserStatusOption,
