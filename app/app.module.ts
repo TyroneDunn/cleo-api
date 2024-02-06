@@ -15,6 +15,7 @@ import { Application, ApplicationSchema, LOCAL_HOST, NodeEnvironmentOption } fro
 import authStrategy from './auth-strategy.config';
 import journalsController from './journals/journals.module';
 import entriesController from './entries/entries.module';
+import usersController from './users/users.module';
 
 
 const cleoHomeRoute = (req, res): RequestHandler =>
@@ -47,6 +48,7 @@ const appSchema: ApplicationSchema = {
     corsOptions: corsOptions,
     authStrategy: authStrategy,
     controllers: [
+       usersController,
        journalsController,
        entriesController,
     ],
