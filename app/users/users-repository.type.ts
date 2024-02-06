@@ -1,20 +1,28 @@
 import {
-    DeleteUserRequest,
-    DeleteUsersRequest, GetUserRequest, GetUsersRequest, RegisterUserRequest,
+    GetUserRequest,
+    GetUsersRequest,
     UpdateUserRequest,
     UpdateUsersRequest,
-    User,
+    DeleteUserRequest,
+    DeleteUsersRequest,
 } from "./users.types";
+import { CommandResult, Error, User } from '@hals/common';
+import { GetRecordsResponse } from '../shared/get-records-response.type';
 
 export type UsersRepository = {
-    getUser: (dto: GetUserRequest) => Promise<User>,
-    getUsers: (dto: GetUsersRequest) => Promise<User[]>,
-    registerUser: (dto: RegisterUserRequest) => Promise<User>,
-    registerAdminUser: (dto: RegisterUserRequest) => Promise<User>,
-    deleteUser: (dto: DeleteUserRequest) => Promise<User>,
-    deleteUsers: (dto: DeleteUsersRequest) => Promise<string>,
-    updateUser: (dto: UpdateUserRequest) => Promise<User>,
-    updateUsers: (dto: UpdateUsersRequest) => Promise<User[]>,
-    exists: (username: string) => Promise<boolean>,
-    isAdmin: (username: string) => Promise<boolean>,
+    getUser: GetUser,
+    getUsers: GetUsers,
+    deleteUser: DeleteUser,
+    deleteUsers: DeleteUsers,
+    updateUser: UpdateUser,
+    updateUsers: UpdateUsers,
+    exists: UserExists,
 };
+
+export type GetUser = (request : GetUserRequest) => Promise<User | Error>;
+export type GetUsers = (request : GetUsersRequest) => Promise<GetRecordsResponse<User> | Error>;
+export type UpdateUser = (request : UpdateUserRequest) => Promise<User | Error>;
+export type UpdateUsers = (request : UpdateUsersRequest) => Promise<CommandResult | Error>;
+export type DeleteUser = (request : DeleteUserRequest) => Promise<CommandResult | Error>;
+export type DeleteUsers = (request : DeleteUsersRequest) => Promise<CommandResult | Error>;
+export type UserExists = (username : string) => Promise<boolean>;
