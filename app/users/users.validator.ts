@@ -1,215 +1,161 @@
-
-import {ValidationResult} from "../utils/validation-result";
 import {
-    BadRequestError,
-    ConflictError,
-    ForbiddenError,
-    NotFoundError,
-    UnauthorizedError
-} from "../utils/errors";
-import {USERS_REPOSITORY} from "../repositories-config";
-import {
-    DeleteUserRequest,
-    DeleteUsersRequest, GetUserRequest, GetUsersRequest, RegisterAdminRequest, RegisterUserRequest,
+    GetUserRequest,
+    GetUsersRequest,
     UpdateUserRequest,
-    UpdateUsersRequest,
-    User,
 } from "./users.types";
+import { ValidationError } from '@hals/common';
+import { UsersRepository } from './users-repository.type';
+import { UsersMetadataRepository } from './users-metadata-repository.type';
 
-export const validateRegisterUserDTO = async (dto: RegisterUserRequest): Promise<ValidationResult> => {
-    if (!dto.username)
-        return {error: new BadRequestError('Username required.')};
-    if (!dto.password)
-        return {error: new BadRequestError('Password required.')};
-    if (await USERS_REPOSITORY.exists(dto.username))
-        return {error: new ConflictError('Username taken.')};
-    return {};
+export type UsersValidator = {
+    validateGetUserRequest : (request : GetUserRequest) => Promise<ValidationError | null>,
+    validateGetUsersRequest : (request : GetUsersRequest) => Promise<ValidationError | null>,
+    validateUpdateUserRequest : (request : UpdateUserRequest) => Promise<ValidationError | null>,
 };
 
-export const validateRegisterAdminDTO = async (user: User, dto: RegisterAdminRequest): Promise<ValidationResult> => {
-    if (!(user))
-        return {error: new UnauthorizedError('Unauthorized.')};
-    if (!dto.username)
-        return {error: new BadRequestError('Username required.')};
-    if (!dto.password)
-        return {error: new BadRequestError('Password required.')};
-    if (!(await USERS_REPOSITORY.isAdmin(user.username)))
-        return {error: new ForbiddenError('Insufficient permissions.')};
-    if (await USERS_REPOSITORY.exists(dto.username))
-        return {error: new ConflictError('Username taken.')};
-    return {};
-};
+export const UsersValidator = (
+   usersRepository : UsersRepository,
+   usersMetadataRepository : UsersMetadataRepository
+) : UsersValidator => ({
+    validateGetUserRequest : async (request : GetUserRequest) : Promise<ValidationError | null> => {
+        if (!(request.user))
+            return ValidationError('Unauthorized', 'Unauthorized user.');
+        if (!(await usersMetadataRepository.userIsAdmin(request.user.username)))
+            return ValidationError('Forbidden', 'Insufficient permissions.');
+        if (!request.username)
+            return ValidationError('BadRequest', 'Username required.');
+        if (!(await usersRepository.exists(request.username)))
+            return ValidationError('NotFound', `User ${request.username} not found.`);
+        return null;
+    },
 
-export const validateGetUserDTO = async (user: User, dto: GetUserRequest): Promise<ValidationResult> => {
-    if (!(user))
-        return {error: new UnauthorizedError('Unauthorized.')};
-    if (!(await USERS_REPOSITORY.isAdmin(user.username)))
-        return {error: new ForbiddenError('Insufficient permissions.')};
-    if (!dto.username)
-        return {error: new BadRequestError('Username required.')};
-    if (!(await USERS_REPOSITORY.exists(dto.username)))
-        return {error: new NotFoundError('User not found.')};
-    return {};
-};
+    validateGetUsersRequest : async (request : GetUsersRequest) : Promise<ValidationError | null> => {
+        if (!(request.user))
+            return ValidationError('Unauthorized', 'Unauthorized user.');
+        if (!(await usersMetadataRepository.userIsAdmin(request.user.username)))
+            return ValidationError('Forbidden', 'Insufficient permissions.');
 
-export const validateGetUsersDTO = async (user: User, dto: GetUsersRequest): Promise<ValidationResult> => {
-    if (!(user))
-        return {error: new UnauthorizedError('Unauthorized.')};
-    if (!(await USERS_REPOSITORY.isAdmin(user.username)))
-        return {error: new ForbiddenError('Insufficient permissions.')};
-    if (dto.username && dto.usernameRegex)
-        return {error: new BadRequestError('Invalid query. Provide either "username" or' +
-                ' "usernameRegex".')};
-    if (dto.isAdmin) {
-        if (dto.isAdmin.toLowerCase() !== 'true' && dto.isAdmin.toLowerCase() !== 'false')
-            return {error: new BadRequestError('Invalid query. isAdmin must be' +
-                    ' true or false')};
-    }
-    if (dto.status) {
-        if (dto.status !== 'active' && dto.status !== 'inactive' && dto.status !== 'suspended')
-            return {error: new BadRequestError('Invalid query. Status must be' +
-                    ' active, inactive, or suspended.')};
-    }
-    if (dto.sort) {
-        if (dto.sort !== 'id' && dto.sort !== 'username' && dto.sort !== 'lastUpdated' && dto.sort !== 'dateCreated')
-            return {error: new BadRequestError('Invalid query. Sort option must' +
-                    ' be id, username, lastUpdated, or dateCreated.')};
-    }
-    if (dto.order !== undefined) {
-        if ((dto.order !== 1 && dto.order !== -1))
-            return {error: new BadRequestError('Invalid query. Order must be' +
-                    ' 1 or -1.')};
-    }
-    if (dto.page !== undefined) {
-        if (dto.page < 1)
-            return {error: new BadRequestError('Invalid query. Page must be' +
-                    ' 1 or greater.')};
-    }
-    if (dto.limit !== undefined) {
-        if (dto.limit < 0)
-            return {error: new BadRequestError('Invalid query. Limit must be' +
-                    ' 0 or greater.')};
-    }
-    if (dto.startDate) {
-        if (isNaN(Date.parse(dto.startDate)))
-            return {error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};
-    }
-    if (dto.endDate) {
-        if (isNaN(Date.parse(dto.endDate)))
-            return {error: new BadRequestError('Invalid end date query. Provide a ISO date string.')};
-    }
-    return {};
-};
+        if (request.filter) {
+            if (request.filter.username && request.filter.usernameRegex)
+                return ValidationError('BadRequest', 'Invalid query. Provide either "name" or "nameRegex".');
 
-export const validateUpdateUsersDTO = async (user: User, dto: UpdateUsersRequest): Promise<ValidationResult> => {
-    if (!(user))
-        return {error: new UnauthorizedError('Unauthorized.')};
-    if (!(await USERS_REPOSITORY.isAdmin(user.username)))
-        return {error: new ForbiddenError('Insufficient permissions.')};
-    if (dto.isAdmin) {
-        if (dto.isAdmin.toLowerCase() !== 'true' && dto.isAdmin.toLowerCase() !== 'false')
-            return {error: new BadRequestError('Invalid query. isAdmin must be' +
-                    ' true or false')};
-    }
-    if (dto.status) {
-        if (dto.status !== 'active' && dto.status !== 'inactive' && dto.status !== 'suspended')
-            return {error: new BadRequestError('Invalid query. Status must be' +
-                    ' active, inactive, or suspended.')};
-    }
-    if (dto.startDate) {
-        if (isNaN(Date.parse(dto.startDate)))
-            return {error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};
-    }
-    if (dto.endDate) {
-        if (isNaN(Date.parse(dto.endDate)))
-            return {error: new BadRequestError('Invalid end date query. Provide a ISO date string.')};
-    }
-    if (dto.newIsAdmin) {
-        if (dto.newIsAdmin.toLowerCase() !== 'true' && dto.newIsAdmin.toLowerCase() !== 'false')
-            return {error: new BadRequestError('Invalid query. isAdmin must be' +
-                    ' true or false')};
-    }
-    if (dto.newStatus) {
-        if (dto.newStatus !== 'active' && dto.newStatus !== 'inactive' && dto.newStatus !== 'suspended')
-            return {error: new BadRequestError('Invalid query. Status must be' +
-                    ' active, inactive, or suspended.')};
-    }
-    return {};
-}
+            if (request.filter.privilege) {
+                for (const query of request.filter.privilege) {
+                    if (query !== 'admin'
+                    && query !== 'superuser')
+                        return ValidationError('BadRequest', 'Invalid privilege query. Privilege' +
+                           ' options are "admin" and "superuser".');
+                }
+            }
+            if (request.filter.status) {
+                for (const query of request.filter.status) {
+                    if (query !== 'active'
+                       && query !== 'suspended'
+                       && query !== 'inactive')
+                        return ValidationError('BadRequest', 'Invalid status query. Status' +
+                           ' options are "active", "inactive" and "suspended".');
+                }
+            }
+            if (request.filter.timestamps) {
+                if (request.filter.timestamps.createdAt) {
+                    if (request.filter.timestamps.createdAt.start) {
+                        if (isNaN(Date.parse(request.filter.timestamps.createdAt.start)))
+                            return ValidationError('BadRequest', 'Invalid created at start date query.' +
+                               ' Provide a ISO date string.');
+                    }
+                    if (request.filter.timestamps.createdAt.end) {
+                        if (isNaN(Date.parse(request.filter.timestamps.createdAt.end)))
+                            return ValidationError('BadRequest', 'Invalid created at end date query.' +
+                               ' Provide a ISO date string.');
+                    }
+                }
+                if (request.filter.timestamps.updatedAt) {
+                    if (request.filter.timestamps.updatedAt.start) {
+                        if (isNaN(Date.parse(request.filter.timestamps.updatedAt.start)))
+                            return ValidationError('BadRequest', 'Invalid updated at start date query.' +
+                               ' Provide a ISO date string.');
+                    }
+                    if (request.filter.timestamps.updatedAt.end) {
+                        if (isNaN(Date.parse(request.filter.timestamps.updatedAt.end)))
+                            return ValidationError('BadRequest', 'Invalid updated at end date query.' +
+                               ' Provide a ISO date string.');
+                    }
+                }
+            }
+        }
 
-export const validateUpdateUserDTO = async (user: User, dto: UpdateUserRequest): Promise<ValidationResult> => {
-    if (!(user))
-        return {error: new UnauthorizedError('Unauthorized.')};
-    if (user.username !== dto.username &&
-        !(await USERS_REPOSITORY.isAdmin(user.username)))
-        return {error: new ForbiddenError('Insufficient permissions.')};
-    if (!(await USERS_REPOSITORY.exists(dto.username)))
-        return {error: new NotFoundError(`User ${dto.username} not found.`)};
-    if (dto.newUsername) {
-        if (dto.newUsername.length < 3)
-            return {error: new BadRequestError('Username must be at least 3' +
-                    ' characters.')};
-        if (await USERS_REPOSITORY.exists(dto.newUsername))
-            return {error: new ConflictError('Username already taken.')};
-    }
-    if (dto.newPassword) {
-        if (dto.newPassword.length < 8)
-            return {error: new BadRequestError('Password must be at least 8' +
-                    ' characters.')};
-    }
-    if (dto.newIsAdmin) {
-        if (!(await USERS_REPOSITORY.isAdmin(user.username)))
-            return {error: new ForbiddenError('Insufficient permissions.')};
+        if (request.sort) {
+            if (request.sort.sortBy && !request.sort.order)
+                return ValidationError("BadRequest", 'Invalid sort query. Provide sort order.');
+            if (!request.sort.sortBy && request.sort.order)
+                return ValidationError("BadRequest", 'Invalid sort query. Provide sort by field.');
+            if (request.sort.sortBy !== 'id'
+               && request.sort.sortBy !== 'username'
+               && request.sort.sortBy !== 'updatedAt'
+               && request.sort.sortBy !== 'createdAt')
+                return ValidationError('BadRequest', 'Invalid sort query. Sort by option must be' +
+                   ' id, username, updatedAt, or createdAt.');
+            if ((request.sort.order !== 'asc' && request.sort.order !== 'desc'))
+                return ValidationError('BadRequest', 'Invalid sort query. Order must be "asc" or "desc".');
+        }
 
-        if (dto.newIsAdmin.toLowerCase() !== 'true' && dto.newIsAdmin.toLowerCase() !== 'false')
-            return {error: new BadRequestError('Invalid query. isAdmin must be' +
-                    ' true or false')};
-    }
-    if (dto.newStatus) {
-        if (!(await USERS_REPOSITORY.isAdmin(user.username)))
-            return {error: new ForbiddenError('Insufficient permissions.')};
+        if (request.page === undefined)
+            return ValidationError('BadRequest', 'Invalid query. Page index and limit required.');
+        if (request.page.index < 0)
+            return ValidationError('BadRequest', 'Invalid query. Page index must be 0 or greater.');
+        if (request.page.limit < 1)
+            return ValidationError('BadRequest', 'Invalid query. Page limit must be greater than 0.');
 
-        if (dto.newStatus !== 'active' && dto.newStatus !== 'inactive' && dto.newStatus !== 'suspended')
-            return {error: new BadRequestError('Invalid query. Status must be' +
-                    ' active, inactive, or suspended.')};
-    }
-    return {};
-};
+        return null;
+    },
 
-export const validateDeleteUsersDTO = async (user: User, dto: DeleteUsersRequest): Promise<ValidationResult> => {
-    if (!(user))
-        return {error: new UnauthorizedError('Unauthorized.')};
-    if (!(await USERS_REPOSITORY.isAdmin(user.username)))
-        return {error: new ForbiddenError('Insufficient permissions.')};
-    if (dto.isAdmin) {
-        if (dto.isAdmin.toLowerCase() !== 'true' && dto.isAdmin.toLowerCase() !== 'false')
-            return {error: new BadRequestError('Invalid query. isAdmin must be' +
-                    ' true or false')};
-    }
-    if (dto.status) {
-        if (dto.status !== 'active' && dto.status !== 'inactive' && dto.status !== 'suspended')
-            return {error: new BadRequestError('Invalid query. Status must be' +
-                    ' active, inactive, or suspended.')};
-    }
-    if (dto.startDate) {
-        if (isNaN(Date.parse(dto.startDate)))
-            return {error: new BadRequestError('Invalid start date query. Provide a ISO date string.')};
-    }
-    if (dto.endDate) {
-        if (isNaN(Date.parse(dto.endDate)))
-            return {error: new BadRequestError('Invalid end date query. Provide a ISO date string.')};
-    }
-    return {};
-};
+    validateUpdateUserRequest : async (request : UpdateUserRequest) : Promise<ValidationError | null> => {
+        if (!(request.user))
+            return ValidationError('Unauthorized', 'Unauthorized user.');
+        if (!(await usersMetadataRepository.userIsAdmin(request.user.username)) && (request.user.username !== request.username))
+            return ValidationError('Forbidden', 'Insufficient permissions.');
+        if (!(await usersRepository.exists(request.username)))
+            return ValidationError('NotFound', `User ${request.username} not found.`);
 
-export const validateDeleteUserDTO = async (user: User, dto: DeleteUserRequest): Promise<ValidationResult> => {
-    if (!(user))
-        return {error: new UnauthorizedError('Unauthorized.')};
-    if (!(await USERS_REPOSITORY.isAdmin(user.username)))
-        return {error: new ForbiddenError('Insufficient permissions.')};
-    if (!dto.username)
-        return {error: new BadRequestError('Username required.')};
-    if (!(await USERS_REPOSITORY.exists(dto.username)))
-        return {error: new NotFoundError(`User ${dto.username} not found.`)};
-    return {};
-};
+        if (!request.updateFields)
+            return ValidationError('BadRequest', 'Invalid query. Update fields required.');
+
+        if (request.updateFields.username) {
+            if (request.updateFields.username.length < 3)
+                return ValidationError('BadRequest', 'Username must be at least 3 characters.');
+
+            if (await usersRepository.exists(request.username))
+                return ValidationError('Conflict', 'Username already taken.');
+        }
+
+        if (request.updateFields.password) {
+            if (request.updateFields.password.length < 8)
+                return ValidationError('BadRequest', 'Password must be at least 8 characters.');
+        }
+
+        if (request.updateFields.privilege) {
+            if (!(await usersMetadataRepository.userIsAdmin(request.user.username)))
+                return ValidationError('Forbidden', 'Insufficient permissions.');
+            for (const query of request.updateFields.privilege) {
+                if (query !== 'admin'
+                   && query !== 'superuser')
+                    return ValidationError('BadRequest', 'Invalid privilege query. Privilege' +
+                       ' options are "admin" and "superuser".');
+            }
+        }
+
+        if (request.updateFields.status) {
+            if (!(await usersMetadataRepository.userIsAdmin(request.user.username)))
+                return ValidationError('Forbidden', 'Insufficient permissions.');
+            for (const query of request.updateFields.status) {
+                if (query !== 'active'
+                   && query !== 'suspended'
+                   && query !== 'inactive')
+                    return ValidationError('BadRequest', 'Invalid status query. Status' +
+                       ' options are "active", "inactive" and "suspended".');
+            }
+        }
+
+        return null;
+    }
+});
