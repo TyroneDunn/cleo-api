@@ -1,53 +1,66 @@
-import { OrderOption } from '@hals/common';
+import { OrderOption, Page, Timestamps, User } from '@hals/common';
 
-export type User = {
-    _id: string,
+export type UserMetadata = {
     username: string,
-    hash: string,
-    createdAt: Date,
-    updatedAt: Date,
-    isAdmin: boolean,
     status: UserStatusOption,
+    privileges: UserPrivilegeOptions[],
 };
 
-export type UserStatusOption = 'active' | 'inactive' | 'suspended';
+export type UserStatusOption =
+   | 'active'
+   | 'inactive'
+   | 'suspended';
 
-export type UserSortOption = 'username' | 'id' | 'createdAt' | 'updatedAt';
+export type UserPrivilegeOptions =
+   | "admin"
+   | "superuser";
 
-export type GetUserRequest = { username : string };
+export type GetUserRequest = {
+    user : User,
+    username : string
+};
 
 export type GetUsersRequest = {
+    user : User,
+    filter? : UsersFilter,
+    sort? : UsersSort,
+    page? : Page,
+};
+
+export type UsersFilter = {
     username? : string,
     usernameRegex? : string,
-    isAdmin? : string,
-    status? : UserStatusOption,
-    sort? : UserSortOption,
-    order? : OrderOption,
-    startDate? : string,
-    endDate? : string,
-    page? : number,
-    limit? : number,
+    privilege? : UserPrivilegeOptions[];
+    status? : UserStatusOption[],
+    timestamps? : Timestamps
 };
 
-export type RegisterUserRequest = {
-    username : string,
-    password : string,
-};
+export type UsersSort = {
+    sortBy: UserSortOption,
+    order: OrderOption
+}
 
-export type RegisterAdminRequest = {
-    username : string,
-    password : string,
-};
+export type UserSortOption =
+   | 'username'
+   | 'id'
+   | 'createdAt'
+   | 'updatedAt';
 
 export type UpdateUserRequest = {
+    user : User,
     username : string,
-    newUsername? : string,
-    newPassword? : string,
-    newIsAdmin? : string,
-    newStatus : string,
+    updateFields: UserUpdateFields,
+};
+
+export type UserUpdateFields = {
+    username? : string,
+    password? : string,
+    privilege? : UserPrivilegeOptions[],
+    status? : UserStatusOption[],
 };
 
 export type UpdateUsersRequest = {
+    user : User,
     usernameRegex? : string,
     isAdmin? : string,
     status? : UserStatusOption,
@@ -57,9 +70,13 @@ export type UpdateUsersRequest = {
     newStatus? : UserStatusOption,
 };
 
-export type DeleteUserRequest = { username : string };
+export type DeleteUserRequest = {
+    user : User,
+    username : string
+};
 
 export type DeleteUsersRequest = {
+    user : User,
     usernameRegex? : string,
     isAdmin? : string,
     status? : UserStatusOption,
