@@ -10,10 +10,21 @@ import {
     UsersFilter,
     UserUpdateFields,
 } from "./users.types";
-import {generateHash} from "../utils/password-utils";
-import { CommandResult, User, Error } from '@hals/common';
+import { CommandResult, User, Error, HashUtility} from '@hals/common';
 import { GetRecordsResponse } from '../shared/get-records-response.type';
 import { DeleteResult, UpdateResult } from 'mongodb';
+import {
+    HASHING_ALGORITHM,
+    HASHING_ITERATIONS,
+    PASSWORD_LENGTH,
+    PASSWORD_SALT,
+} from '../environment';
+
+const generateHash : (password: string) => string  = HashUtility(
+   PASSWORD_SALT,
+   HASHING_ITERATIONS,
+   PASSWORD_LENGTH,
+   HASHING_ALGORITHM).generateHash;
 
 export const MongoUsersRepository: UsersRepository = {
     getUser: async (request: GetUserRequest): Promise<User | Error> => {
