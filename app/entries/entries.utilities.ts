@@ -7,7 +7,7 @@ import {
    mapDeleteResultToResponse,
    mapErrorToInternalServerErrorResponse,
    mapRequestToPage,
-   OK,
+   OK, OrderOption,
    Request,
    Response,
 } from '@hals/common';
@@ -29,7 +29,6 @@ import {
    GetEntry,
    UpdateEntry,
 } from './entries-repository.type';
-import { OrderOption } from '../utils/order-option';
 import { GetRecordsResponse } from '../shared/get-records-response.type';
 
 export const mapRequestToGetEntryRequest = (request : Request) : GetEntryRequest => ({

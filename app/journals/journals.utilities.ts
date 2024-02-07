@@ -6,7 +6,7 @@ import {
    isError,
    mapErrorToInternalServerErrorResponse,
    mapRequestToPage,
-   OK,
+   OK, OrderOption,
    Request,
    Response,
 } from '@hals/common';
@@ -28,7 +28,6 @@ import {
    GetJournals,
    UpdateJournal,
 } from './journals-repository.type';
-import { OrderOption } from '../utils/order-option';
 import { GetRecordsResponse } from '../shared/get-records-response.type';
 import { mapDeleteResultToResponse } from '../shared/map-delete-result-to-response.utility';
 

@@ -5,7 +5,7 @@ import {
    isError,
    mapErrorToInternalServerErrorResponse,
    mapRequestToPage,
-   OK,
+   OK, OrderOption,
    Request,
    Response,
    User,
@@ -19,7 +19,6 @@ import {
    UserStatusOption,
 } from './users.types';
 import { GetUser, GetUsers } from './users-repository.type';
-import { OrderOption } from '../utils/order-option';
 import { GetRecordsResponse } from '../shared/get-records-response.type';
 
 import { UpdateUserUtility } from './update-user.utility';
