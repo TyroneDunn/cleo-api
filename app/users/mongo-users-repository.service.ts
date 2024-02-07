@@ -2,102 +2,130 @@ import {UsersRepository} from "./users-repository.type";
 import UserModel from "./mongo-user-model.type";
 import {
     DeleteUserRequest,
-    DeleteUsersRequest, GetUserRequest, GetUsersRequest, RegisterAdminRequest, RegisterUserRequest,
+    DeleteUsersRequest,
+    GetUserRequest,
+    GetUsersRequest,
     UpdateUserRequest,
     UpdateUsersRequest,
-    User,
+    UsersFilter,
+    UserUpdateFields,
 } from "./users.types";
-import {now} from "mongoose";
 import {generateHash} from "../utils/password-utils";
+import { CommandResult, User, Error } from '@hals/common';
+import { GetRecordsResponse } from '../shared/get-records-response.type';
+import { DeleteResult, UpdateResult } from 'mongodb';
 
 export const MongoUsersRepository: UsersRepository = {
-    getUser: async (dto: GetUserRequest): Promise<User> =>
-        UserModel.findOne({username: dto.username}),
-
-    getUsers: async (dto: GetUsersRequest): Promise<User[]> => {
-        const filter = mapToGetUsersFilter(dto);
-        const skip = (dto.page - 1) * dto.limit;
-        return UserModel.find(filter)
-            .sort({[dto.sort]: dto.order})
-            .skip(skip)
-            .limit(dto.limit);
-    },
-
-    registerUser: async (dto: RegisterUserRequest): Promise<User> =>
-        new UserModel({
-            username: dto.username,
-            hash: generateHash(dto.password),
-            dateCreated: now(),
-            lastUpdated: now(),
-            isAdmin: false,
-            status: 'active',
-        }).save(),
-
-    registerAdminUser: async (dto: RegisterAdminRequest): Promise<User> =>
-        new UserModel({
-            username: dto.username,
-            hash: generateHash(dto.password),
-            dateCreated: now(),
-            lastUpdated: now(),
-            isAdmin: true,
-            status: 'active',
-        }).save(),
-
-    updateUsers: async (dto: UpdateUsersRequest): Promise<User[]> => {
-        const filter = mapToUsersFilter(dto);
-        const query = mapToUpdateUsersQuery(dto);
-        await UserModel.updateMany(
-            filter,
-            query
-        );
-        return UserModel.find(filter);
-    },
-
-    updateUser: async (dto: UpdateUserRequest): Promise<User> => {
-        const query = mapToUpdateUserQuery(dto);
-        return UserModel.findOneAndUpdate(
-            {username: dto.username},
-            query,
-            {new: true}
-        );
-    },
-
-    deleteUsers: async (dto: DeleteUsersRequest): Promise<string> => {
-        const filter = mapToUsersFilter(dto);
-        const result = await UserModel.deleteMany(filter);
-        return `${result.deletedCount} users deleted.`;
-    },
-
-    deleteUser: async (dto: DeleteUserRequest): Promise<User> =>
-        UserModel.findOneAndDelete({username: dto.username}),
-
-    isAdmin: async (username: string): Promise<boolean> => {
+    getUser: async (request: GetUserRequest): Promise<User | Error> => {
         try {
-            const user: User = await UserModel.findOne({username: username});
-            return user.isAdmin;
-        } catch (error) {
-            return false;
+            const user : User | null = await UserModel.findOne({ username: request.username });
+            if (!user) return Error('NotFound', `User ${request.username} not found.`);
+            else return user;
+        }
+        catch (error) {
+            return Error("Internal", (error as Error).message);
         }
     },
 
-    exists: async (username: string): Promise<boolean> => {
+    getUsers: async (request: GetUsersRequest): Promise<GetRecordsResponse<User> | Error> => {
         try {
-            const user: User = await UserModel.findOne({username: username});
+            const filter = mapToGetUsersFilter(request.filter);
+            const count = await UserModel.count(filter);
+            const query = UserModel.find(filter);
+            if (request.sort !== undefined)
+                query.sort({ [request.sort.sortBy]: request.sort.order === 'asc' ? 1 : -1 });
+            if (request.page !== undefined) {
+                query.skip(request.page.index * request.page.limit);
+                query.limit(request.page.limit);
+            }
+            return {
+                count: count,
+                collection: await query.exec(),
+            };
+        }
+        catch (error) {
+            return Error("Internal", (error as Error).message);
+        }
+    },
+
+    updateUsers: async (request: UpdateUsersRequest): Promise<CommandResult | Error> => {
+        try {
+            const filter = mapToUsersFilter(request);
+            const query = mapToUpdateUsersQuery(request);
+            const result: UpdateResult = await UserModel.updateMany(
+               filter,
+               query,
+               { new: true }
+            );
+            return CommandResult(result.acknowledged, result.modifiedCount);
+        }
+        catch (error) {
+            return Error("Internal", (error as Error).message);
+        }
+    },
+
+    updateUser: async (request: UpdateUserRequest): Promise<User | Error> => {
+        try {
+            const query = mapToUpdateUserQuery(request.updateFields);
+            return UserModel.findOneAndUpdate(
+               { username: request.username },
+               query,
+               { new: true }
+            );
+        }
+        catch (error) {
+            return Error("Internal", (error as Error).message);
+        }
+    },
+
+    deleteUsers: async (request: DeleteUsersRequest): Promise<CommandResult | Error> => {
+        try {
+            const filter = mapToUsersFilter(request);
+            const result: DeleteResult = await UserModel.deleteMany(filter);
+            return CommandResult(result.acknowledged, result.deletedCount);
+        }
+        catch (error) {
+            return Error("Internal", (error as Error).message);
+        }
+    },
+
+    deleteUser: async (request: DeleteUserRequest): Promise<CommandResult | Error> => {
+        try {
+            const result: DeleteResult = await UserModel.deleteOne({ username: request.username });
+            return CommandResult(result.acknowledged, result.deletedCount);
+        }
+        catch (error) {
+            return Error("Internal", (error as Error).message);
+        }
+    },
+
+    exists: async (username: string): Promise<boolean | Error> => {
+        try {
+            const user: User | null = await UserModel.findOne({username: username});
             return !!user;
         } catch (error) {
-            return false;
+            return Error("Internal", (error as Error).message);
         }
     },
 };
 
-const mapToGetUsersFilter = (dto: GetUsersRequest) => ({
-    ...dto.username && {username: dto.username},
-    ...dto.usernameRegex && {username: {$regex: dto.usernameRegex, $options: 'i'}},
-    ...dto.isAdmin && {isAdmin: (dto.isAdmin.toLowerCase() === 'true')},
-    ...dto.status && {status: dto.status},
-    ...(dto.startDate && !dto.endDate) && {dateCreated: {$gt: dto.startDate}},
-    ...(!dto.startDate && dto.endDate) && {dateCreated: {$lt: dto.endDate}},
-    ...(dto.startDate && dto.endDate) && {dateCreated: {$gte: dto.startDate, $lte: dto.endDate}},
+const mapToGetUsersFilter = (filter: UsersFilter) => ({
+    ... filter && {
+        ...filter.username && {username: filter.username},
+        ...filter.usernameRegex && {username: {$regex: filter.usernameRegex, $options: 'i'}},
+        ... filter.timestamps && {
+            ... filter.timestamps.createdAt && {
+                ... (filter.timestamps.createdAt.start && !filter.timestamps.createdAt.end) && {createdAt: {$gt: filter.timestamps.createdAt.start}},
+                ... (!filter.timestamps.createdAt.start && filter.timestamps.createdAt.end) && {createdAt: {$lt: filter.timestamps.createdAt.end}},
+                ... (filter.timestamps.createdAt.start && filter.timestamps.createdAt.end) && {createdAt: {$gte: filter.timestamps.createdAt.start, $lte: filter.timestamps.createdAt.end}},
+            },
+            ... filter.timestamps.updatedAt && {
+                ... (filter.timestamps.updatedAt.start && !filter.timestamps.updatedAt.end) && {updatedAt: {$gt: filter.timestamps.updatedAt.start}},
+                ... (!filter.timestamps.updatedAt.start && filter.timestamps.updatedAt.end) && {updatedAt: {$lt: filter.timestamps.updatedAt.end}},
+                ... (filter.timestamps.updatedAt.start && filter.timestamps.updatedAt.end) && {updatedAt: {$gte: filter.timestamps.updatedAt.start, $lte: filter.timestamps.updatedAt.end}},
+            },
+        },
+    },
 });
 
 const mapToUsersFilter = (dto: UpdateUsersRequest) => ({
@@ -114,10 +142,7 @@ const mapToUpdateUsersQuery = (dto: UpdateUsersRequest) => ({
     ...dto.newStatus && {status: dto.newStatus}
 });
 
-const mapToUpdateUserQuery = (dto: UpdateUserRequest) => ({
-    lastUpdated: now(),
-    ...dto.newUsername && {username: dto.newUsername},
-    ...dto.newPassword && {hash: generateHash(dto.newPassword)},
-    ...dto.newIsAdmin && {isAdmin: (dto.newIsAdmin.toLowerCase() === 'true')},
-    ...dto.newStatus && {status: dto.newStatus}
+const mapToUpdateUserQuery = (update: UserUpdateFields) => ({
+    ...update.username && {username: update.username},
+    ...update.password && {hash: generateHash(update.password)},
 });
