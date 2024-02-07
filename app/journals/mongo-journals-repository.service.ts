@@ -30,7 +30,7 @@ export const MongoJournalsRepository: JournalsRepository = {
     getJournals: async (request: GetJournalsRequest): Promise<GetRecordsResponse<Journal> | Error> => {
         try {
             const filter = mapToJournalsFilter(request.filter);
-            const count = await JournalModel.count(filter);
+            const count = await JournalModel.countDocuments(filter);
             const query = JournalModel.find(filter)
             if (request.sort !== undefined)
                 query.sort({ [request.sort.sortBy]: request.sort.order === 'asc' ? 1 : -1 });
