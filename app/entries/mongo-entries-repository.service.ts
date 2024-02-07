@@ -31,7 +31,7 @@ export const MongoEntriesRepository: EntriesRepository = {
     getEntries: async (request: GetEntriesRequest): Promise<GetRecordsResponse<Entry> | Error> => {
         try {
             const filter = mapToEntriesFilter(request.filter);
-            const count = await EntryModel.count(filter);
+            const count = await EntryModel.countDocuments(filter);
             const query = EntryModel.find(filter);
             if (request.sort !== undefined)
                 query.sort({ [request.sort.sortBy]: request.sort.order === 'asc' ? 1 : -1 });
