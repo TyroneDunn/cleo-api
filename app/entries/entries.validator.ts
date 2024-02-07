@@ -1,4 +1,3 @@
-import {UsersRepository} from "../users/users-repository.type";
 import {JournalsRepository} from "../journals/journals-repository.type";
 import {EntriesRepository} from "./entries-repository.type";
 import {
@@ -9,6 +8,7 @@ import {
     UpdateEntryRequest,
 } from './entries.types';
 import { ValidationError } from '@hals/common';
+import { UsersMetadataRepository } from '../users/users-metadata-repository.type';
 
 export type EntriesValidator = {
     validateGetEntryRequest : (request : GetEntryRequest) => Promise<ValidationError | null>,
@@ -20,7 +20,7 @@ export type EntriesValidator = {
 };
 
 export const EntriesValidator = (
-   usersRepository: UsersRepository,
+   usersMetadataRepository: UsersMetadataRepository,
    journalsRepository: JournalsRepository,
    entriesRepository: EntriesRepository,
 ) : EntriesValidator => ({
@@ -31,7 +31,7 @@ export const EntriesValidator = (
             return ValidationError('BadRequest', 'Entry ID required.');
         if (!(await entriesRepository.exists(request.id)))
             return ValidationError('NotFound', `Entry ${request.id} not found.`);
-        if (!(await usersRepository.isAdmin(request.user.username)) && !(await entriesRepository.ownsEntry(request.user.username, request.id)))
+        if (!(await usersMetadataRepository.isAdmin(request.user.username)) && !(await entriesRepository.ownsEntry(request.user.username, request.id)))
             return ValidationError('Forbidden', 'Insufficient permissions.');
         return null;
     },
@@ -43,7 +43,7 @@ export const EntriesValidator = (
             if (request.filter.journal) {
                 if (!(await journalsRepository.exists(request.filter.journal)))
                     return ValidationError('NotFound', `Journal ${request.filter.journal} not found.`);
-                if (!(await usersRepository.isAdmin(request.user.username)) && !(await journalsRepository.ownsJournal(request.user.username, request.filter.journal)))
+                if (!(await usersMetadataRepository.isAdmin(request.user.username)) && !(await journalsRepository.ownsJournal(request.user.username, request.filter.journal)))
                     return ValidationError('Forbidden', 'Insufficient permissions.');
             }
             if ((request.filter.title && request.filter.titleRegex))
@@ -110,7 +110,7 @@ export const EntriesValidator = (
             return ValidationError('BadRequest', 'Journal required.');
         if (!(await journalsRepository.exists(request.journal)))
             return ValidationError('NotFound', `Journal ${request.journal} not found.`);
-        if (!(await usersRepository.isAdmin(request.user.username)) && !(await journalsRepository.ownsJournal(request.user.username, request.journal)))
+        if (!(await usersMetadataRepository.isAdmin(request.user.username)) && !(await journalsRepository.ownsJournal(request.user.username, request.journal)))
             return ValidationError('Forbidden', 'Insufficient permissions.');
         return null;
     },
@@ -120,7 +120,7 @@ export const EntriesValidator = (
             return ValidationError('Unauthorized', 'Unauthorized users.');
         if (!request.id)
             return ValidationError('BadRequest', 'Entry ID required.');
-        if (!(await usersRepository.isAdmin(request.user.username)) && !(await entriesRepository.ownsEntry(request.user.username, request.id)))
+        if (!(await usersMetadataRepository.isAdmin(request.user.username)) && !(await entriesRepository.ownsEntry(request.user.username, request.id)))
             return ValidationError('Forbidden', 'Insufficient permissions.');
         if (!(await entriesRepository.exists(request.id)))
             return ValidationError('NotFound', `Entry ${request.id} not found.`);
@@ -140,7 +140,7 @@ export const EntriesValidator = (
             return ValidationError('BadRequest', 'Entry ID required.');
         if (!(await entriesRepository.exists(request.id)))
             return ValidationError('NotFound', `Entry ${request.id} not found.`);
-        if (!(await usersRepository.isAdmin(request.user.username)) && !(await entriesRepository.ownsEntry(request.user.username, request.id)))
+        if (!(await usersMetadataRepository.isAdmin(request.user.username)) && !(await entriesRepository.ownsEntry(request.user.username, request.id)))
             return ValidationError('Forbidden', 'Insufficient permissions.');
         return null;
     },
@@ -152,7 +152,7 @@ export const EntriesValidator = (
             if (request.filter.journal) {
                 if (!(await journalsRepository.exists(request.filter.journal)))
                     return ValidationError('NotFound', `Journal ${request.filter.journal} not found.`);
-                if (!(await usersRepository.isAdmin(request.user.username)) && !(await journalsRepository.ownsJournal(request.user.username, request.filter.journal)))
+                if (!(await usersMetadataRepository.isAdmin(request.user.username)) && !(await journalsRepository.ownsJournal(request.user.username, request.filter.journal)))
                     return ValidationError('Forbidden', 'Insufficient permissions.');
             }
             if ((request.filter.title && request.filter.titleRegex))

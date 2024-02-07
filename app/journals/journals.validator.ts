@@ -1,5 +1,4 @@
 import { JournalsRepository } from "./journals-repository.type";
-import { UsersRepository } from "../users/users-repository.type";
 import {
    CreateJournalRequest,
    DeleteJournalRequest,
@@ -9,6 +8,7 @@ import {
    UpdateJournalRequest,
 } from './journals.types';
 import { ValidationError } from '@hals/common';
+import { UsersMetadataRepository } from '../users/users-metadata-repository.type';
 
 export type JournalsValidator = {
    validateGetJournalRequest : (request : GetJournalRequest) => Promise<ValidationError | null>,
@@ -21,24 +21,24 @@ export type JournalsValidator = {
 
 export const JournalsValidator = (
    journalsRepository : JournalsRepository,
-   usersRepository : UsersRepository
+   usersMetadataRepository : UsersMetadataRepository
 ) : JournalsValidator => ({
    validateGetJournalRequest : async (request : GetJournalRequest) : Promise<ValidationError | null> => {
       if (!request.user)
-         return ValidationError('Unauthorized', 'Unauthorized users.');
+         return ValidationError('Unauthorized', 'Unauthorized user.');
       if (!request.id)
          return ValidationError('BadRequest', 'Journal ID required.');
       if (!(await journalsRepository.exists(request.id)))
          return ValidationError('NotFound', `Journal ${request.id} not found.`);
-      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersRepository.isAdmin(request.user.username)))
+      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersMetadataRepository.isAdmin(request.user.username)))
          return ValidationError('Forbidden', 'Insufficient permissions.');
       return null;
    },
 
    validateGetJournalsRequest : async (request : GetJournalsRequest): Promise<ValidationError | null> => {
       if (!request.user)
-         return ValidationError('Unauthorized', 'Unauthorized users.');
-      if (!(await usersRepository.isAdmin(request.user.username)) && (request.filter.author || request.filter.authorRegex))
+         return ValidationError('Unauthorized', 'Unauthorized user.');
+      if (!(await usersMetadataRepository.isAdmin(request.user.username)) && (request.filter.author || request.filter.authorRegex))
          return ValidationError('Forbidden', 'Insufficient permissions.');
       if (request.filter) {
          if (request.filter.name && request.filter.nameRegex)
@@ -100,7 +100,7 @@ export const JournalsValidator = (
 
    validateCreateJournalRequest : async (request : CreateJournalRequest): Promise<ValidationError | null> => {
       if (!request.user)
-         return ValidationError('Unauthorized', 'Unauthorized users.');
+         return ValidationError('Unauthorized', 'Unauthorized user.');
       if (!request.name)
          return ValidationError('BadRequest', 'Journal name required.');
       if (!request.author)
@@ -110,12 +110,12 @@ export const JournalsValidator = (
 
    validateUpdateJournalRequest : async (request : UpdateJournalRequest): Promise<ValidationError | null> => {
       if (!request.user)
-         return ValidationError('Unauthorized', 'Unauthorized users.');
+         return ValidationError('Unauthorized', 'Unauthorized user.');
       if (!request.id)
          return ValidationError('BadRequest', 'Journal ID required.');
       if (!request.name)
          return ValidationError('BadRequest', 'Journal name required.');
-      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersRepository.isAdmin(request.user.username)))
+      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersMetadataRepository.isAdmin(request.user.username)))
          return ValidationError('Forbidden', 'Insufficient permissions.');
       if (!(await journalsRepository.exists(request.id)))
          return ValidationError('NotFound', `Journal ${request.id} not found.`);
@@ -124,10 +124,10 @@ export const JournalsValidator = (
 
    validateDeleteJournalRequest : async (request : DeleteJournalRequest): Promise<ValidationError | null> => {
       if (!request.user)
-         return ValidationError('Unauthorized', 'Unauthorized users.');
+         return ValidationError('Unauthorized', 'Unauthorized user.');
       if (!request.id)
          return ValidationError('BadRequest', 'Journal ID required.');
-      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersRepository.isAdmin(request.user.username)))
+      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersMetadataRepository.isAdmin(request.user.username)))
          return ValidationError('Forbidden', 'Insufficient permissions.');
       if (!(await journalsRepository.exists(request.id)))
          return ValidationError('NotFound', `Journal ${request.id} not found.`);
@@ -136,8 +136,8 @@ export const JournalsValidator = (
 
    validateDeleteJournalsRequest : async (request : DeleteJournalsRequest): Promise<ValidationError | null> => {
       if (!request.user)
-         return ValidationError('Unauthorized', 'Unauthorized users.');
-      if (!(await usersRepository.isAdmin(request.user.username)) && (request.filter.author || request.filter.authorRegex))
+         return ValidationError('Unauthorized', 'Unauthorized user.');
+      if (!(await usersMetadataRepository.isAdmin(request.user.username)) && (request.filter.author || request.filter.authorRegex))
          return ValidationError('Forbidden', 'Insufficient permissions.');
       if (request.filter.name && request.filter.nameRegex)
          return ValidationError('BadRequest', 'Invalid query. Provide either "name" or "nameRegex".');

@@ -20,7 +20,7 @@ export const UsersValidator = (
     validateGetUserRequest : async (request : GetUserRequest) : Promise<ValidationError | null> => {
         if (!(request.user))
             return ValidationError('Unauthorized', 'Unauthorized user.');
-        if (!(await usersMetadataRepository.userIsAdmin(request.user.username)))
+        if (!(await usersMetadataRepository.isAdmin(request.user.username)))
             return ValidationError('Forbidden', 'Insufficient permissions.');
         if (!request.username)
             return ValidationError('BadRequest', 'Username required.');
@@ -32,7 +32,7 @@ export const UsersValidator = (
     validateGetUsersRequest : async (request : GetUsersRequest) : Promise<ValidationError | null> => {
         if (!(request.user))
             return ValidationError('Unauthorized', 'Unauthorized user.');
-        if (!(await usersMetadataRepository.userIsAdmin(request.user.username)))
+        if (!(await usersMetadataRepository.isAdmin(request.user.username)))
             return ValidationError('Forbidden', 'Insufficient permissions.');
 
         if (request.filter) {
@@ -112,7 +112,7 @@ export const UsersValidator = (
     validateUpdateUserRequest : async (request : UpdateUserRequest) : Promise<ValidationError | null> => {
         if (!(request.user))
             return ValidationError('Unauthorized', 'Unauthorized user.');
-        if (!(await usersMetadataRepository.userIsAdmin(request.user.username)) && (request.user.username !== request.username))
+        if (!(await usersMetadataRepository.isAdmin(request.user.username)) && (request.user.username !== request.username))
             return ValidationError('Forbidden', 'Insufficient permissions.');
         if (!(await usersRepository.exists(request.username)))
             return ValidationError('NotFound', `User ${request.username} not found.`);
@@ -134,7 +134,7 @@ export const UsersValidator = (
         }
 
         if (request.updateFields.privilege) {
-            if (!(await usersMetadataRepository.userIsAdmin(request.user.username)))
+            if (!(await usersMetadataRepository.isAdmin(request.user.username)))
                 return ValidationError('Forbidden', 'Insufficient permissions.');
             for (const query of request.updateFields.privilege) {
                 if (query !== 'admin'
@@ -145,7 +145,7 @@ export const UsersValidator = (
         }
 
         if (request.updateFields.status) {
-            if (!(await usersMetadataRepository.userIsAdmin(request.user.username)))
+            if (!(await usersMetadataRepository.isAdmin(request.user.username)))
                 return ValidationError('Forbidden', 'Insufficient permissions.');
             for (const query of request.updateFields.status) {
                 if (query !== 'active'

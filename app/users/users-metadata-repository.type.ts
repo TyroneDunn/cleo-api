@@ -5,5 +5,5 @@ export type UsersMetadataRepository = {
    getUserMetadata: (username: string) => Promise<UserMetadata | Error>,
    updateUserMetadata: (request : UpdateUserRequest) => Promise<CommandResult | Error>,
    deleteUserMetadata: (username: string) => Promise<CommandResult | Error>,
-   userIsAdmin: (username: string) => Promise<boolean | Error>,
+   isAdmin: (username: string) => Promise<boolean | Error>,
 };

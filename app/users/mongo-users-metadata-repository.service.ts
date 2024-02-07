@@ -40,7 +40,7 @@ export const MongoUsersMetadataRepository : UsersMetadataRepository = {
       }
    },
 
-   userIsAdmin : async (username : string) : Promise<boolean | Error> => {
+   isAdmin: async (username : string) : Promise<boolean | Error> => {
       try {
          const userMetadata: UserMetadata | null = await UsersMetadataModel.findOne({username: username});
          if (!userMetadata) return Error("NotFound", 'User metadata not found.');
