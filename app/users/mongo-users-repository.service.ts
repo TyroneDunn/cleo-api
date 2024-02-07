@@ -12,7 +12,8 @@ import {
 } from "./users.types";
 import { CommandResult, User, Error, HashUtility} from '@hals/common';
 import { GetRecordsResponse } from '../shared/get-records-response.type';
-import { DeleteResult, UpdateResult } from 'mongodb';
+import { DeleteResult } from 'mongodb';
+import { UpdateWriteOpResult } from "mongoose";
 import {
     HASHING_ALGORITHM,
     HASHING_ITERATIONS,
@@ -63,11 +64,7 @@ export const MongoUsersRepository: UsersRepository = {
         try {
             const filter = mapToUsersFilter(request);
             const query = mapToUpdateUsersQuery(request);
-            const result: UpdateResult = await UserModel.updateMany(
-               filter,
-               query,
-               { new: true }
-            );
+            const result: UpdateWriteOpResult = await UserModel.updateMany(filter, query);
             return CommandResult(result.acknowledged, result.modifiedCount);
         }
         catch (error) {
