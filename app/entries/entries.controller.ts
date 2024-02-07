@@ -5,7 +5,7 @@ import {
    logDeleteRequest,
    logGetRequest,
    logPatchRequest,
-} from '../logs/log.utility';
+} from '../shared/log.utility';
 
 export const EntriesController = (service : EntriesService) : Controller => ({
    path    : 'entries/',

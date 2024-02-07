@@ -4,7 +4,7 @@ import {
    logDeleteRequest,
    logGetRequest,
    logPatchRequest,
-} from '../logs/log.utility';
+} from '../shared/log.utility';
 import { JournalsService } from './journals.service';
 
 export const JournalsController = (service : JournalsService) : Controller => ({

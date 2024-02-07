@@ -1,6 +1,6 @@
 import { Controller, Method, RequestHandler } from '@hals/common';
 import { UsersService } from './users.service';
-import { logGetRequest, logPatchRequest } from '../logs/log.utility';
+import { logGetRequest, logPatchRequest } from '../shared/log.utility';
 
 export const UsersController = (service : UsersService) : Controller => ({
    path    : 'users/',
