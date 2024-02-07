@@ -25,4 +25,4 @@ export type UpdateUser = (request : UpdateUserRequest) => Promise<User | Error>;
 export type UpdateUsers = (request : UpdateUsersRequest) => Promise<CommandResult | Error>;
 export type DeleteUser = (request : DeleteUserRequest) => Promise<CommandResult | Error>;
 export type DeleteUsers = (request : DeleteUsersRequest) => Promise<CommandResult | Error>;
-export type UserExists = (username : string) => Promise<boolean>;
+export type UserExists = (username : string) => Promise<boolean | Error>;
