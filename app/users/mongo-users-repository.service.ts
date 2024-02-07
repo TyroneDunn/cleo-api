@@ -42,7 +42,7 @@ export const MongoUsersRepository: UsersRepository = {
     getUsers: async (request: GetUsersRequest): Promise<GetRecordsResponse<User> | Error> => {
         try {
             const filter = mapToGetUsersFilter(request.filter);
-            const count = await UserModel.count(filter);
+            const count = await UserModel.countDocuments(filter);
             const query = UserModel.find(filter);
             if (request.sort !== undefined)
                 query.sort({ [request.sort.sortBy]: request.sort.order === 'asc' ? 1 : -1 });
