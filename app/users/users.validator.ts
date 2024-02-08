@@ -3,7 +3,7 @@ import {
     GetUsersRequest,
     UpdateUserRequest,
 } from "./users.types";
-import { ValidationError } from '@hals/common';
+import { ValidationError, Error, isError } from '@hals/common';
 import { UsersRepository } from './users-repository.type';
 import { UsersMetadataRepository } from './users-metadata-repository.type';
 
@@ -20,7 +20,10 @@ export const UsersValidator = (
     validateGetUserRequest : async (request : GetUserRequest) : Promise<ValidationError | null> => {
         if (!(request.user))
             return ValidationError('Unauthorized', 'Unauthorized user.');
-        if (!(await usersMetadataRepository.isAdmin(request.user.username)))
+        const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
+        if (isError(isAdmin))
+            return ValidationError('Internal', 'Error processing user privileges.');
+        if (isAdmin === false)
             return ValidationError('Forbidden', 'Insufficient permissions.');
         if (!request.username)
             return ValidationError('BadRequest', 'Username required.');
@@ -32,9 +35,11 @@ export const UsersValidator = (
     validateGetUsersRequest : async (request : GetUsersRequest) : Promise<ValidationError | null> => {
         if (!(request.user))
             return ValidationError('Unauthorized', 'Unauthorized user.');
-        if (!(await usersMetadataRepository.isAdmin(request.user.username)))
+        const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
+        if (isError(isAdmin))
+            return ValidationError('Internal', 'Error processing user privileges.');
+        if (isAdmin === false)
             return ValidationError('Forbidden', 'Insufficient permissions.');
-
         if (request.filter) {
             if (request.filter.username && request.filter.usernameRegex)
                 return ValidationError('BadRequest', 'Invalid query. Provide either "name" or "nameRegex".');
@@ -112,7 +117,10 @@ export const UsersValidator = (
     validateUpdateUserRequest : async (request : UpdateUserRequest) : Promise<ValidationError | null> => {
         if (!(request.user))
             return ValidationError('Unauthorized', 'Unauthorized user.');
-        if (!(await usersMetadataRepository.isAdmin(request.user.username)) && (request.user.username !== request.username))
+        const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
+        if (isError(isAdmin))
+            return ValidationError('Internal', 'Error processing user privileges.');
+        if (isAdmin === false)
             return ValidationError('Forbidden', 'Insufficient permissions.');
         if (!(await usersRepository.exists(request.username)))
             return ValidationError('NotFound', `User ${request.username} not found.`);
