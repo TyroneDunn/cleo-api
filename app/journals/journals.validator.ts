@@ -7,7 +7,7 @@ import {
    GetJournalsRequest,
    UpdateJournalRequest,
 } from './journals.types';
-import { ValidationError } from '@hals/common';
+import { Error, isError, ValidationError } from '@hals/common';
 import { UsersMetadataRepository } from '../users/users-metadata-repository.type';
 
 export type JournalsValidator = {
@@ -30,7 +30,10 @@ export const JournalsValidator = (
          return ValidationError('BadRequest', 'Journal ID required.');
       if (!(await journalsRepository.exists(request.id)))
          return ValidationError('NotFound', `Journal ${request.id} not found.`);
-      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersMetadataRepository.isAdmin(request.user.username)))
+      const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
+      if (isError(isAdmin))
+         return ValidationError('Internal', 'Error processing user privileges.');
+      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !isAdmin)
          return ValidationError('Forbidden', 'Insufficient permissions.');
       return null;
    },
@@ -38,13 +41,21 @@ export const JournalsValidator = (
    validateGetJournalsRequest : async (request : GetJournalsRequest): Promise<ValidationError | null> => {
       if (!request.user)
          return ValidationError('Unauthorized', 'Unauthorized user.');
-      if (!(await usersMetadataRepository.isAdmin(request.user.username)) && (request.filter.author || request.filter.authorRegex))
-         return ValidationError('Forbidden', 'Insufficient permissions.');
+      const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
+      if (isError(isAdmin))
+         return ValidationError('Internal', 'Error processing user privileges.');
+
       if (request.filter) {
          if (request.filter.name && request.filter.nameRegex)
             return ValidationError('BadRequest', 'Invalid query. Provide either "name" or "nameRegex".');
          if (request.filter.author && request.filter.authorRegex)
             return ValidationError('BadRequest', 'Invalid query. Provide either "author" or "authorRegex"');
+         if (request.filter.author)
+            if (!isAdmin && (request.user.username !== request.filter.author))
+               return ValidationError('Forbidden', 'Insufficient permissions.');
+         if (request.filter.authorRegex)
+            if (!isAdmin)
+               return ValidationError('Forbidden', 'Insufficient permissions.');
          if (request.filter.timestamps) {
             if (request.filter.timestamps.createdAt) {
                if (request.filter.timestamps.createdAt.start) {
