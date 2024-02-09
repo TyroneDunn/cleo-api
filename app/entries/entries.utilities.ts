@@ -58,11 +58,11 @@ export const mapRequestToGetEntriesRequest = (request : Request) : GetEntriesReq
 
 const mapRequestToEntriesFilter = (request : Request) => ({
    filter: {
-      ...request.queryParamMap['title'] && { name: request.queryParamMap['title'] },
-      ...request.queryParamMap['titleRegex'] && { nameRegex: request.queryParamMap['titleRegex'] },
-      ...request.queryParamMap['body'] && { author: JSON.parse(request.queryParamMap['body']) },
-      ...request.queryParamMap['bodyRegex'] && { authorRegex: request.queryParamMap['bodyRegex'] },
-      ...request.queryParamMap['journal'] && { name: request.queryParamMap['journal'] },
+      ...request.queryParamMap['title'] && { title: request.queryParamMap['title'] },
+      ...request.queryParamMap['titleRegex'] && { titleRegex: request.queryParamMap['titleRegex'] },
+      ...request.queryParamMap['body'] && { body: JSON.parse(request.queryParamMap['body']) },
+      ...request.queryParamMap['bodyRegex'] && { bodyRegex: request.queryParamMap['bodyRegex'] },
+      ...request.queryParamMap['journal'] && { journal: request.queryParamMap['journal'] },
       ...(request.queryParamMap['createdAt'] && !request.queryParamMap['updatedAt']) && {
          timestamps: {
             createdAt: (JSON.parse(request.queryParamMap['createdAt']) as DateRange),
