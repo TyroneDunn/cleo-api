@@ -119,6 +119,11 @@ export const JournalsValidator = (
          return ValidationError('BadRequest', 'Journal name required.');
       if (!request.author)
          return ValidationError('BadRequest', 'Journal author required.');
+      const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
+      if (isError(isAdmin))
+         return ValidationError('Internal', 'Error processing user privileges.');
+      if (!isAdmin && request.author !== request.user.username)
+         return ValidationError('Forbidden', 'Insufficient permissions.');
       return null;
    },
 
