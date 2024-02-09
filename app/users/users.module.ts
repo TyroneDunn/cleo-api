@@ -9,6 +9,7 @@ const usersService : UsersService = UsersService(
    MongoUsersRepository,
    MongoUsersMetadataRepository,
    UsersValidator(MongoUsersRepository, MongoUsersMetadataRepository));
+usersService.init();
 const usersController : Controller = UsersController(usersService);
 
 export default usersController;
