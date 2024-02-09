@@ -1,6 +1,11 @@
 import { UsersMetadataRepository } from './users-metadata-repository.type';
 import { CommandResult, Error } from '@hals/common';
-import { UpdateUserRequest, UserMetadata, UserUpdateFields } from './users.types';
+import {
+   CreateUserMetadataRequest,
+   UpdateUserRequest,
+   UserMetadata,
+   UserUpdateFields,
+} from './users.types';
 import UsersMetadataModel from './mongo-users-metadata-model.type';
 import { DeleteResult } from 'mongodb';
 
@@ -10,6 +15,19 @@ export const MongoUsersMetadataRepository : UsersMetadataRepository = {
          const metadata : UserMetadata | null = await UsersMetadataModel.findOne({ username: username });
          if (!metadata) return Error('NotFound', `User ${username} metadata not found.`);
          else return metadata;
+      }
+      catch (error) {
+         return Error("Internal", (error as Error).message);
+      }
+   },
+
+   createUserMetadata: async (request : CreateUserMetadataRequest) : Promise<UserMetadata | Error> => {
+      try {
+         return new UsersMetadataModel({
+            username: request.user.username,
+            privileges: request.privileges,
+            status: request.status
+         }).save();
       }
       catch (error) {
          return Error("Internal", (error as Error).message);
@@ -49,7 +67,7 @@ export const MongoUsersMetadataRepository : UsersMetadataRepository = {
       catch (error) {
          return Error("Internal", (error as Error).message);
       }
-   }
+   },
 };
 
 const mapToUpdateUserMetadataQuery = (updateFields : UserUpdateFields) => ({
