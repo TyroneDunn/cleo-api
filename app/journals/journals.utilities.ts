@@ -60,7 +60,7 @@ const mapRequestToProductsFilter = (request : Request) => ({
    filter: {
       ...request.queryParamMap['name'] && { name: request.queryParamMap['name'] },
       ...request.queryParamMap['nameRegex'] && { nameRegex: request.queryParamMap['nameRegex'] },
-      ...request.queryParamMap['author'] && { author: JSON.parse(request.queryParamMap['author']) },
+      ...request.queryParamMap['author'] && { author: request.queryParamMap['author'] },
       ...request.queryParamMap['authorRegex'] && { authorRegex: request.queryParamMap['authorRegex'] },
       ...(request.queryParamMap['createdAt'] && !request.queryParamMap['updatedAt']) && {
          timestamps: {
