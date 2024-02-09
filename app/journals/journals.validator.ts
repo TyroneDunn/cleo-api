@@ -9,6 +9,7 @@ import {
 } from './journals.types';
 import { Error, isError, ValidationError } from '@hals/common';
 import { UsersMetadataRepository } from '../users/users-metadata-repository.type';
+import { ObjectId } from 'mongodb';
 
 export type JournalsValidator = {
    validateGetJournalRequest : (request : GetJournalRequest) => Promise<ValidationError | null>,
@@ -28,6 +29,8 @@ export const JournalsValidator = (
          return ValidationError('Unauthorized', 'Unauthorized user.');
       if (!request.id)
          return ValidationError('BadRequest', 'Journal ID required.');
+      if (!ObjectId.isValid(request.id))
+         return ValidationError('BadRequest', 'Invalid journal ID.');
       if (!(await journalsRepository.exists(request.id)))
          return ValidationError('NotFound', `Journal ${request.id} not found.`);
       const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
@@ -124,6 +127,8 @@ export const JournalsValidator = (
          return ValidationError('Unauthorized', 'Unauthorized user.');
       if (!request.id)
          return ValidationError('BadRequest', 'Journal ID required.');
+      if (!ObjectId.isValid(request.id))
+         return ValidationError('BadRequest', 'Invalid journal ID.');
       if (!request.name)
          return ValidationError('BadRequest', 'Journal name required.');
       if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersMetadataRepository.isAdmin(request.user.username)))
@@ -138,6 +143,8 @@ export const JournalsValidator = (
          return ValidationError('Unauthorized', 'Unauthorized user.');
       if (!request.id)
          return ValidationError('BadRequest', 'Journal ID required.');
+      if (!ObjectId.isValid(request.id))
+         return ValidationError('BadRequest', 'Invalid journal ID.');
       if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersMetadataRepository.isAdmin(request.user.username)))
          return ValidationError('Forbidden', 'Insufficient permissions.');
       if (!(await journalsRepository.exists(request.id)))
