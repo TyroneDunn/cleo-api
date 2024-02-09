@@ -22,7 +22,7 @@ const logRequest = (id: string, method: string, request : Request): void => {
       `Timestamp: ${new Date().toISOString()}\n` +
       `ID: ${id}\n` +
       `Method: ${method}\n` +
-      `User: ${request.user}\n` +
+      `User: ${request.user.username}\n` +
       `Path Params: ${JSON.stringify(request.paramMap)}\n` +
       `Query Params: ${JSON.stringify(request.queryParamMap)}\n` +
       `Payload: ${JSON.stringify(request.payload)}\n`
