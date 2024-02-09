@@ -17,11 +17,12 @@ export const logDeleteRequest = (id: string) => async (request: Request): Promis
 };
 
 const logRequest = (id: string, method: string, request : Request): void => {
-   const logMessage =
+   const logMessage : string =
       'Server Request\n' +
       `Timestamp: ${new Date().toISOString()}\n` +
       `ID: ${id}\n` +
       `Method: ${method}\n` +
+      `User: ${request.user}\n` +
       `Path Params: ${JSON.stringify(request.paramMap)}\n` +
       `Query Params: ${JSON.stringify(request.queryParamMap)}\n` +
       `Payload: ${JSON.stringify(request.payload)}\n`
