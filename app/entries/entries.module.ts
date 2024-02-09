@@ -3,13 +3,13 @@ import { Controller } from '@hals/common';
 import { EntriesService } from './entries.service';
 import { MongoEntriesRepository } from './mongo-entries-repository.service';
 import { EntriesValidator } from './entries.validator';
-import { MongoUsersRepository } from '../users/mongo-users-repository.service';
 import { MongoJournalsRepository } from '../journals/mongo-journals-repository.service';
+import { MongoUsersMetadataRepository } from '../users/mongo-users-metadata-repository.service';
 
 const entriesService : EntriesService = EntriesService(
    MongoEntriesRepository,
    EntriesValidator(
-      MongoUsersRepository,
+      MongoUsersMetadataRepository,
       MongoJournalsRepository,
       MongoEntriesRepository
    ));
