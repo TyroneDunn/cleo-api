@@ -1,1 +1,0 @@
-export type OrderOption = -1 | 1;
