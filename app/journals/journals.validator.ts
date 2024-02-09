@@ -48,14 +48,14 @@ export const JournalsValidator = (
       if (isError(isAdmin))
          return ValidationError('Internal', 'Error processing user privileges.');
 
+      if (!isAdmin && (request.user.username !== request.filter.author))
+         return ValidationError('Forbidden', 'Insufficient permissions.');
+
       if (request.filter) {
          if (request.filter.name && request.filter.nameRegex)
             return ValidationError('BadRequest', 'Invalid query. Provide either "name" or "nameRegex".');
          if (request.filter.author && request.filter.authorRegex)
             return ValidationError('BadRequest', 'Invalid query. Provide either "author" or "authorRegex"');
-         if (request.filter.author)
-            if (!isAdmin && (request.user.username !== request.filter.author))
-               return ValidationError('Forbidden', 'Insufficient permissions.');
          if (request.filter.authorRegex)
             if (!isAdmin)
                return ValidationError('Forbidden', 'Insufficient permissions.');
@@ -136,7 +136,10 @@ export const JournalsValidator = (
          return ValidationError('BadRequest', 'Invalid journal ID.');
       if (!request.name)
          return ValidationError('BadRequest', 'Journal name required.');
-      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersMetadataRepository.isAdmin(request.user.username)))
+      const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
+      if (isError(isAdmin))
+         return ValidationError('Internal', 'Error processing user privileges.');
+      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !isAdmin)
          return ValidationError('Forbidden', 'Insufficient permissions.');
       if (!(await journalsRepository.exists(request.id)))
          return ValidationError('NotFound', `Journal ${request.id} not found.`);
@@ -150,7 +153,10 @@ export const JournalsValidator = (
          return ValidationError('BadRequest', 'Journal ID required.');
       if (!ObjectId.isValid(request.id))
          return ValidationError('BadRequest', 'Invalid journal ID.');
-      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !(await usersMetadataRepository.isAdmin(request.user.username)))
+      const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
+      if (isError(isAdmin))
+         return ValidationError('Internal', 'Error processing user privileges.');
+      if (!(await journalsRepository.ownsJournal(request.user.username, request.id)) && !isAdmin)
          return ValidationError('Forbidden', 'Insufficient permissions.');
       if (!(await journalsRepository.exists(request.id)))
          return ValidationError('NotFound', `Journal ${request.id} not found.`);
@@ -160,12 +166,50 @@ export const JournalsValidator = (
    validateDeleteJournalsRequest : async (request : DeleteJournalsRequest): Promise<ValidationError | null> => {
       if (!request.user)
          return ValidationError('Unauthorized', 'Unauthorized user.');
-      if (!(await usersMetadataRepository.isAdmin(request.user.username)) && (request.filter.author || request.filter.authorRegex))
+      const isAdmin: boolean | Error = await usersMetadataRepository.isAdmin(request.user.username);
+      if (isError(isAdmin))
+         return ValidationError('Internal', 'Error processing user privileges.');
+
+      if (!isAdmin && (request.user.username !== request.filter.author))
          return ValidationError('Forbidden', 'Insufficient permissions.');
-      if (request.filter.name && request.filter.nameRegex)
-         return ValidationError('BadRequest', 'Invalid query. Provide either "name" or "nameRegex".');
-      if (request.filter.author && request.filter.authorRegex)
-         return ValidationError('BadRequest', 'Invalid query. Provide either "author" or "authorRegex"');
+
+      if (request.filter) {
+         if (request.filter.name && request.filter.nameRegex)
+            return ValidationError('BadRequest', 'Invalid query. Provide either "name" or "nameRegex".');
+         if (request.filter.author && request.filter.authorRegex)
+            return ValidationError('BadRequest', 'Invalid query. Provide either "author" or "authorRegex"');
+         if (request.filter.authorRegex)
+            if (!isAdmin)
+               return ValidationError('Forbidden', 'Insufficient permissions.');
+
+         if (request.filter.timestamps) {
+            if (request.filter.timestamps.createdAt) {
+               if (request.filter.timestamps.createdAt.start) {
+                  if (isNaN(Date.parse(request.filter.timestamps.createdAt.start)))
+                     return ValidationError('BadRequest', 'Invalid created at start date query.' +
+                        ' Provide a ISO date string.');
+               }
+               if (request.filter.timestamps.createdAt.end) {
+                  if (isNaN(Date.parse(request.filter.timestamps.createdAt.end)))
+                     return ValidationError('BadRequest', 'Invalid created at end date query.' +
+                        ' Provide a ISO date string.');
+               }
+            }
+            if (request.filter.timestamps.updatedAt) {
+               if (request.filter.timestamps.updatedAt.start) {
+                  if (isNaN(Date.parse(request.filter.timestamps.updatedAt.start)))
+                     return ValidationError('BadRequest', 'Invalid updated at start date query.' +
+                        ' Provide a ISO date string.');
+               }
+               if (request.filter.timestamps.updatedAt.end) {
+                  if (isNaN(Date.parse(request.filter.timestamps.updatedAt.end)))
+                     return ValidationError('BadRequest', 'Invalid updated at end date query.' +
+                        ' Provide a ISO date string.');
+               }
+            }
+         }
+      }
+
       if (request.filter.timestamps) {
          if (request.filter.timestamps.createdAt) {
             if (request.filter.timestamps.createdAt.start) {
