@@ -20,7 +20,6 @@ import {
 } from './users.types';
 import { GetUser, GetUsers } from './users-repository.type';
 import { GetRecordsResponse } from '../shared/get-records-response.type';
-
 import { UpdateUserUtility } from './update-user.utility';
 
 export const mapRequestToGetUserRequest = (request : Request) : GetUserRequest => ({
