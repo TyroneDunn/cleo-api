@@ -83,3 +83,9 @@ export type DeleteUsersRequest = {
     startDate? : string,
     endDate? : string,
 };
+
+export type CreateUserMetadataRequest = {
+    user : User,
+    privileges: UserPrivilegeOptions[],
+    status: UserStatusOption
+};
